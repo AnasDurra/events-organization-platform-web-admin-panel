@@ -6,21 +6,22 @@ import Sidebar from './Sidebar';
 import { SidebarItemsTypeByIndex, itemTypes } from './constants';
 import initialData from './initial-state';
 import PropertiesSidebar from './PropertiesSidebar';
+import Header from '../../components/Header';
 
 const handleReorderGroupItems = (prevGroups, source, destination) => {
-  return prevGroups.map((oldGroup) => {
-    if (destination.droppableId === oldGroup.id) {
-      const newFields = [...oldGroup.fields];
+  return prevGroups.map((group) => {
+    if (destination.droppableId === group.id) {
+      const newFields = [...group.fields];
 
       newFields.splice(source.index, 1);
-      newFields.splice(destination.index, 0, oldGroup.fields[source.index]);
+      newFields.splice(destination.index, 0, group.fields[source.index]);
 
       return {
-        ...oldGroup,
+        ...group,
         fields: newFields,
       };
     } else {
-      return oldGroup;
+      return group;
     }
   });
 };
@@ -33,20 +34,25 @@ const handleReorderGroups = (prevGroups, source, destination) => {
 };
 
 const handleSidebarToGroup = (prevGroups, source, destination) => {
-  return prevGroups.map((oldGroup) => {
-    const itemType = SidebarItemsTypeByIndex[source.index];
-    if (destination.droppableId === oldGroup.id) {
-      const newFields = [...oldGroup.fields];
-      newFields.splice(destination.index, 0, {
-        type: itemType,
-        id: uuidv4(),
-      });
-      return {
-        ...oldGroup,
-        fields: newFields,
-      };
-    } else return oldGroup;
-  });
+  const itemType = SidebarItemsTypeByIndex[source.index];
+  if (itemType === itemTypes.GROUP) {
+    const newGroups = [...prevGroups];
+    newGroups.splice(destination.index, 0, { id: uuidv4(), fields: [] });
+    return newGroups;
+  } else
+    return prevGroups.map((group) => {
+      if (destination.droppableId === group.id) {
+        const newFields = [...group.fields];
+        newFields.splice(destination.index, 0, {
+          type: itemType,
+          id: uuidv4(),
+        });
+        return {
+          ...group,
+          fields: newFields,
+        };
+      } else return group;
+    });
 };
 
 const handleMoveItemFromGroupToAnotherGroup = (
@@ -132,8 +138,9 @@ export default function EditFormPage() {
         }
 
         if (
-          destination.droppableId !== source.droppableId &&
-          source.droppableId === 'sidebar-items'
+          (destination.droppableId !== source.droppableId &&
+            source.droppableId === 'sidebar-items') ||
+          source.droppableId === 'sidebar-item-group'
         ) {
           console.log('sidebar to group');
           setGroups((prevGroups) => {
@@ -143,7 +150,7 @@ export default function EditFormPage() {
 
         if (
           destination.droppableId !== source.droppableId &&
-          source.droppableId !== 'sidebar-items'
+          groups.some((group) => group.id === source.droppableId)
         ) {
           console.log('group to group');
           setGroups((prevGroups) => {
@@ -156,6 +163,7 @@ export default function EditFormPage() {
         }
       }}
     >
+
       <div className='grid grid-cols-4 gap-4'>
         <div className='col-span-3 h-full w-full bg-slate-400 p-2'>
           <div className='h-full w-full p-4'>
@@ -198,7 +206,7 @@ export default function EditFormPage() {
             </Droppable>
           </div>
         </div>
-        
+
         {selectedField ? (
           <PropertiesSidebar
             field={selectedField}

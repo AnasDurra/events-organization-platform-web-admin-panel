@@ -62,6 +62,45 @@ export default function Sidebar() {
           </Draggable>
 
           {provided.placeholder}
+
+          <Droppable
+            droppableId='sidebar-item-group'
+            key='sidebar-item-group'
+            type='group'
+            isDropDisabled={true}
+          >
+            {(provided, snapshot) => (
+              <div
+                className='h-full w-full'
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Draggable
+                  key={'draggable-new-group'}
+                  draggableId={'draggable-new-group'}
+                  index={SidebarItemsIndex.GROUP}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                      }}
+                      ref={provided.innerRef}
+                    >
+                      <SidebarItem
+                        title={'Group'}
+                        Icon={<CiText />}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
       )}
     </Droppable>

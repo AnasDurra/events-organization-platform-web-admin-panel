@@ -1,6 +1,6 @@
 import { Grid, Layout } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import { useEffect, useState } from 'react';
@@ -8,12 +8,21 @@ import { isLargerThanLG } from './utils/antd.utils';
 import Sider from './components/Sider';
 
 export default function App() {
+  const { pathname } = useLocation();
   const screens = Grid.useBreakpoint();
+
   const [isLargerThanLGScreen, setIsLargerThanLGScreen] = useState(
     isLargerThanLG(screens)
   );
-
   const [isSiderOpen, setIsSiderOpen] = useState(true);
+
+  const renderHeader = () => {
+    return pathname !== '/form/edit';
+  };
+
+  const renderSidebar = () => {
+    return pathname !== '/form/edit';
+  };
 
   useEffect(() => {
     setIsSiderOpen(isLargerThanLGScreen);
@@ -25,13 +34,16 @@ export default function App() {
 
   return (
     <Layout>
-      <Header
-        onTriggerSiderIconClicked={() => {
-          setIsSiderOpen(!isSiderOpen);
-        }}
-      />
+      {renderHeader() && (
+        <Header
+          onTriggerSiderIconClicked={() => {
+            setIsSiderOpen(!isSiderOpen);
+          }}
+        />
+      )}
+
       <Layout>
-        <Sider isSiderOpen={isSiderOpen} />
+        {renderSidebar() && <Sider isSiderOpen={isSiderOpen} />}
         <Content style={contentStyle}>
           <Outlet />
         </Content>
