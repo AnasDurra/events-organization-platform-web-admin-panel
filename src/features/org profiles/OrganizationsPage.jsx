@@ -18,11 +18,76 @@ import {
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/es/typography/Title';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGetOrganizationsQuery } from './orgsSlice';
+import { URL } from '../../api/constants';
+import OrgMembersModal from './Modal-OrgMembers';
 
 export default function OrganizationsPage() {
   const navigate = useNavigate();
+  const [modalOrg, setModalOrg] = useState();
+  const [isOrgMembersModalOpen, setIsOrgMembersModalOpen] = useState(false);
+
+  const { data: { result: orgs } = { result: [] }, isLoading: isOrgsLoading } =
+    useGetOrganizationsQuery();
+
+  const columns = [
+    {
+      key: 'name',
+      width: '60%',
+      render: (org) => (
+        <Row>
+          <Col
+            offset={1}
+            span={2}
+          >
+            <Avatar
+              src={
+                org?.main_picture
+                  ? `/${URL}+organization/mainPicture/${org.main_picture}`
+                  : undefined
+              }
+            />
+          </Col>
+          <Col offset={1}>
+            {org.name} <br />{' '}
+            <span style={{ color: 'GrayText' }}>
+              {' '}
+              ({org?.employees?.length} member
+              {org?.employees?.length > 1 ? 'S' : null})
+            </span>
+          </Col>
+        </Row>
+      ),
+    },
+    {
+      title: 'Registered',
+      dataIndex: 'registration_date',
+      key: 'registration_date',
+      width: '20%',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      width: '20%',
+      render: (_, record) => (
+        <Space size='middle'>
+          {/* TODO link to profile */}
+          <a>view profile</a>
+          <a
+            onClick={() => {
+              setModalOrg(record);
+              setIsOrgMembersModalOpen(true);
+            }}
+          >
+            view members
+          </a>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <Row
@@ -47,73 +112,16 @@ export default function OrganizationsPage() {
       <Table
         size='middle'
         columns={columns}
-        dataSource={data}
+        dataSource={orgs.map((org) => ({ ...org, key: org.id }))}
+        loading={isOrgsLoading}
+        pagination={{ pageSize: '5' }}
+      />
+
+      <OrgMembersModal
+        isOpen={isOrgMembersModalOpen}
+        org={modalOrg}
+        onClose={() => setIsOrgMembersModalOpen(false)}
       />
     </>
   );
 }
-
-const columns = [
-  {
-    width: '40%',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => (
-      <Row>
-        <Col
-          offset={1}
-          span={2}
-        >
-          <Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${1}`} />
-        </Col>
-        <Col offset={1}>
-          {text} <br /> <span style={{ color: 'GrayText' }}> (10 members)</span>
-        </Col>
-      </Row>
-    ),
-  },
-  {
-    title: 'Activation',
-    dataIndex: 'activation',
-    key: 'activation',
-  },
-  {
-    title: 'Registered',
-    dataIndex: 'registeration_date',
-    key: 'registeration_date',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size='middle'>
-        <a>view profile</a>
-        <a>view members</a>
-        <a>deactivate</a>
-      </Space>
-    ),
-  },
-];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    registeration_date: 'jan 17,2023',
-    activation: true,
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    registeration_date: 'jan 17,2023',
-    activation: true,
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    registeration_date: 'jan 17,2023',
-    activation: true,
-  },
-];

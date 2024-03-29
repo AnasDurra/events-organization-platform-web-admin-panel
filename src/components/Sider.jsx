@@ -1,8 +1,3 @@
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import { GoOrganization } from 'react-icons/go';
 
 import { Layout, Menu } from 'antd';

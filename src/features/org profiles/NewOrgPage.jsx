@@ -16,16 +16,22 @@ import {
   Select,
   Space,
   Upload,
+  message,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/es/typography/Title';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAddNewOrgMutation } from './orgsSlice';
 
 export default function NewOrgPage() {
+  const [addNewOrg, { isLoading, error }] = useAddNewOrgMutation();
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
+
   return (
     <>
+      {contextHolder}
       <Form
         name='basic'
         wrapperCol={{
@@ -38,7 +44,19 @@ export default function NewOrgPage() {
         initialValues={{
           remember: true,
         }}
-        onFinish={() => {}}
+        onFinish={async (fields) => {
+          console.log('fields', fields);
+          await addNewOrg({ ...fields, confirm_password: undefined })
+            .unwrap()
+            .then((payload) => {
+              //TODO provide message api from context and add context holder globally
+              messageApi.success('organization added');
+              navigate('/org/all', { replace: true });
+            })
+            .catch((error) => {
+              messageApi.error(error.data?.result?.response?.message[0]);
+            });
+        }}
         onFinishFailed={() => {}}
         autoComplete='off'
       >
@@ -68,40 +86,30 @@ export default function NewOrgPage() {
         <Row
           justify={'start'}
           gutter={20}
+          style={{ marginTop: '4em' }}
         >
           <Col span={14}>
-            <Row>
-              <Col>
-                <Title
-                  level={5}
-                  style={{ color: 'GrayText' }}
-                >
-                  Organization details
-                </Title>
-              </Col>
-            </Row>
-
             <Row
               justify={'start'}
               gutter={20}
             >
               <Col span={24}>
                 <Form.Item
+                  label='name'
+                  name='name'
                   wrapperCol={{
                     span: 14,
                   }}
                   labelCol={{
                     span: 5,
                   }}
-                  label='name'
-                  name='name'
                   rules={[
                     {
                       required: true,
                     },
                   ]}
                 >
-                  <Input />
+                  <Input style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
             </Row>
@@ -115,7 +123,7 @@ export default function NewOrgPage() {
               <Col>
                 <Title
                   level={5}
-                  style={{ color: 'GrayText' }}
+                  style={{ color: 'GrayText', margin: '1em 0' }}
                 >
                   Administrator
                 </Title>
@@ -128,7 +136,7 @@ export default function NewOrgPage() {
               <Col span={12}>
                 <Form.Item
                   label='first name'
-                  name='first name'
+                  name='first_name'
                   rules={[
                     {
                       required: true,
@@ -142,7 +150,7 @@ export default function NewOrgPage() {
               <Col span={12}>
                 <Form.Item
                   label='last name'
-                  name='last name'
+                  name='last_name'
                   rules={[
                     {
                       required: true,
@@ -175,7 +183,7 @@ export default function NewOrgPage() {
               <Col span={12}>
                 <Form.Item
                   label='phone number'
-                  name='phone number'
+                  name='phone_number'
                   rules={[
                     {
                       required: true,
@@ -193,37 +201,18 @@ export default function NewOrgPage() {
             >
               <Col span={12}>
                 <Form.Item
-                  label='country'
-                  name='country'
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Select
-                    defaultValue='lucy'
-                    options={[
-                      {
-                        value: 'lucy',
-                        label: 'Lucy',
-                      },
-                    ]}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
                   label='birth date'
-                  name='birth date'
+                  name='birth_date'
                   rules={[
                     {
                       required: true,
                     },
                   ]}
                 >
-                  <DatePicker onChange={() => {}} />
+                  <DatePicker
+                    style={{ width: '100%' }}
+                    onChange={() => {}}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -234,9 +223,9 @@ export default function NewOrgPage() {
               <Col>
                 <Title
                   level={5}
-                  style={{ color: 'GrayText' }}
+                  style={{ color: 'GrayText', margin: '1em 0' }}
                 >
-                  security
+                  Administrator credentials
                 </Title>
               </Col>
             </Row>
@@ -245,10 +234,35 @@ export default function NewOrgPage() {
               justify={'start'}
               gutter={20}
             >
-              <Col span={14}>
+              <Col span={24}>
+                <Form.Item
+                  label='username'
+                  name='username'
+                  wrapperCol={{
+                    span: 14,
+                  }}
+                  labelCol={{
+                    span: 5,
+                  }}
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
                 <Form.Item
                   label='password'
                   name='password'
+                  wrapperCol={{
+                    span: 14,
+                  }}
+                  labelCol={{
+                    span: 5,
+                  }}
                   rules={[
                     {
                       required: true,
@@ -259,10 +273,16 @@ export default function NewOrgPage() {
                 </Form.Item>
               </Col>
 
-              <Col span={14}>
+              <Col span={24}>
                 <Form.Item
                   label='confirm password'
-                  name='confirm password'
+                  name='confirm_password'
+                  wrapperCol={{
+                    span: 14,
+                  }}
+                  labelCol={{
+                    span: 5,
+                  }}
                   rules={[
                     {
                       required: true,
