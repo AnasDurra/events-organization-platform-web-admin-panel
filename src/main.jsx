@@ -6,22 +6,25 @@ import { RouterProvider } from 'react-router-dom';
 import './index.css';
 import { router } from './router/index.jsx';
 import { store } from './store.js';
+import { StyleProvider } from '@ant-design/cssinjs';
 
 const theme = {
-  token: {
-    colorPrimary: '#002c8c',
-  },
-  components: {
-    Layout: {
-      headerBg: '#2B3467',
+    token: {
+        colorPrimary: '#002c8c',
     },
-  },
+    components: {
+        Layout: {
+            headerBg: '#2B3467',
+        },
+    },
 };
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
-      <ConfigProvider theme={theme}>
-          <RouterProvider router={router} />
-      </ConfigProvider>
+        <ConfigProvider theme={theme}>
+            <StyleProvider hashPriority='high'>
+                <RouterProvider router={router} />
+            </StyleProvider>
+        </ConfigProvider>
     </Provider>
 );

@@ -7,22 +7,13 @@ import { useEffect, useState } from 'react';
 import { isLargerThanLG } from './utils/antd.utils';
 import Sider from './components/Sider';
 
-export default function App() {
-  const { pathname } = useLocation();
+export default function AppLayout() {
   const screens = Grid.useBreakpoint();
 
   const [isLargerThanLGScreen, setIsLargerThanLGScreen] = useState(
     isLargerThanLG(screens)
   );
   const [isSiderOpen, setIsSiderOpen] = useState(true);
-
-  const renderHeader = () => {
-    return pathname !== '/form/edit';
-  };
-
-  const renderSidebar = () => {
-    return pathname !== '/form/edit';
-  };
 
   useEffect(() => {
     setIsSiderOpen(isLargerThanLGScreen);
@@ -34,16 +25,13 @@ export default function App() {
 
   return (
     <Layout>
-      {renderHeader() && (
-        <Header
-          onTriggerSiderIconClicked={() => {
-            setIsSiderOpen(!isSiderOpen);
-          }}
-        />
-      )}
-
+      <Header
+        onTriggerSiderIconClicked={() => {
+          setIsSiderOpen(!isSiderOpen);
+        }}
+      />
       <Layout>
-        {renderSidebar() && <Sider isSiderOpen={isSiderOpen} />}
+        <Sider isSiderOpen={isSiderOpen} />
         <Content style={contentStyle}>
           <Outlet />
         </Content>

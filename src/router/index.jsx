@@ -1,14 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
-import ErrorPage from '../pages/error-page';
+import AppLayout from '../AppLayout';
 import NewOrgPage from '../features/org profiles/NewOrgPage';
 import OrganizationsPage from '../features/org profiles/OrganizationsPage';
-import EditFormPage from '../features/dynamic forms/EditFormPage';
+import ErrorPage from '../pages/error-page';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <AppLayout />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -21,15 +20,6 @@ export const router = createBrowserRouter([
           {
             path: 'new',
             element: <NewOrgPage />,
-          },
-        ],
-      },
-      {
-        path: '/form',
-        children: [
-          {
-            path: 'edit',
-            element: <EditFormPage />,
           },
         ],
       },
