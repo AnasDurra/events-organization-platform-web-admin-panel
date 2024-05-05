@@ -7,6 +7,7 @@ import './index.css';
 import { router } from './router/index.jsx';
 import { store } from './store.js';
 import { StyleProvider } from '@ant-design/cssinjs';
+import { NotificationProvider } from './utils/useAntNotification.jsx';
 
 const theme = {
     token: {
@@ -22,9 +23,11 @@ const theme = {
 ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
         <ConfigProvider theme={theme}>
-            <StyleProvider hashPriority='high'>
-                <RouterProvider router={router} />
-            </StyleProvider>
+            <NotificationProvider>
+                <StyleProvider hashPriority='high'>
+                    <RouterProvider router={router} />
+                </StyleProvider>
+            </NotificationProvider>
         </ConfigProvider>
     </Provider>
 );

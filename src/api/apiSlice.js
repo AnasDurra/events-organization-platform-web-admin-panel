@@ -7,7 +7,7 @@ export const apiSlice = createApi({
     credentials: 'same-origin',
     baseUrl: URL,
   }),
-  tagTypes: [],
+  tagTypes: ['ticketing-packages'],
   endpoints: () => ({}),
 });
 
