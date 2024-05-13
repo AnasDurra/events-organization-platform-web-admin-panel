@@ -82,30 +82,31 @@ export default function ViewPackagesPage() {
             spinning={isPackagesLoading}
             className='flex h-[100svh] items-center justify-center'
         >
-            <div className='grid grid-cols-10'>
-                <div className='col-start-1 col-span-8 grid grid-cols-4 gap-4'>
-                    <div className='col-start-4 flex justify-center'>
-                        <Button
-                            type='primary'
-                            onClick={handleOpenNewPackageModal}
-                        >
-                            new package
-                        </Button>
+            <div className='grid grid-cols-12'>
+                <div className=' col-start-2 col-span-10 mb-4'>
+                    <Button
+                        type='primary'
+                        onClick={handleOpenNewPackageModal}
+                    >
+                        new package
+                    </Button>
+                </div>
+                <div className='col-start-2 col-span-10 '>
+                    <div className='grid grid-cols-4 gap-4'>
+                        {packages.map((pck, idx) => (
+                            <PackageCard
+                                key={'package_' + idx}
+                                name={pck.name}
+                                status={pck.active ? 'Active' : 'Archived'}
+                                price={pck.default_price?.unit_amount / 100}
+                                tickets={pck.metadata.value}
+                                onClick={() => {
+                                    setSelectedPackage(pck);
+                                    setIsEditPackageModalOpen(true);
+                                }}
+                            />
+                        ))}
                     </div>
-
-                    {packages.map((pck, idx) => (
-                        <PackageCard
-                            key={'package_' + idx}
-                            name={pck.name}
-                            status={pck.active ? 'Active' : 'Archived'}
-                            price={pck.default_price?.unit_amount / 100}
-                            tickets={pck.metadata.value}
-                            onClick={() => {
-                                setSelectedPackage(pck);
-                                setIsEditPackageModalOpen(true);
-                            }}
-                        />
-                    ))}
                 </div>
             </div>
             <NewPackageModal
