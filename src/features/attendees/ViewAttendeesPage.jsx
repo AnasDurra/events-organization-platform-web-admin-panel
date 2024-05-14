@@ -1,4 +1,4 @@
-import { Button, Space, Table } from 'antd';
+import { Avatar, Button, Space, Table, Typography } from 'antd';
 import React, { useState } from 'react';
 
 const data = [
@@ -50,29 +50,37 @@ export default function ViewAttendeesPbought() {
 
     const columns = [
         {
-            title: 'name',
+            title: 'Name',
             dataIndex: 'name',
             key: 'name',
             align: 'center',
             filterSearch: true,
-            width: '15%',
+            width: '25%',
+            render: (text, record, index) => {
+                console.log(text, record, index);
+                const tags = [];
+                return (
+                    <div className='flex w-full justify-start items-center'>
+                        <Avatar className='ml-4 mx-6' />
+                        <div className='flex flex-col text-left'>
+                            <Typography.Text>{text}</Typography.Text>
+                            <Typography.Text type='secondary'>@username</Typography.Text>
+
+                        </div>
+                    </div>
+                );
+            },
         },
+
         {
-            title: 'username',
-            dataIndex: 'username',
-            key: 'username',
-            align: 'center',
-            width: '10%',
-        },
-        {
-            title: 'email',
+            title: 'Email',
             dataIndex: 'email',
             key: 'email',
             align: 'center',
-            width: '15%',
+            width: '20%',
         },
         {
-            title: 'tickets balance',
+            title: 'Tickets balance',
             dataIndex: 'balance',
             key: 'balance',
             sorter: (a, b) => a.address.length - b.address.length,
@@ -81,7 +89,7 @@ export default function ViewAttendeesPbought() {
             width: '15%',
         },
         {
-            title: 'tickets bought',
+            title: 'Tickets bought',
             dataIndex: 'bought',
             key: 'bought',
             sorter: (a, b) => a.address.length - b.address.length,
@@ -113,7 +121,7 @@ export default function ViewAttendeesPbought() {
             render: (_, record) => (
                 <Space size='small'>
                     <a>Notify</a>
-                    <a>Block</a>
+                    <a className='text-red-400'>Block</a>
                 </Space>
             ),
             align: 'center',

@@ -1,9 +1,12 @@
 import { DownSquareTwoTone } from '@ant-design/icons';
-import { Card, Col, Descriptions, Divider, Row } from 'antd';
+import { Card, Col, Descriptions, Divider, Row, theme } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import React from 'react';
 import { TiTicket } from 'react-icons/ti';
 import { BsThreeDots } from 'react-icons/bs';
+
+const { useToken } = theme;
+
 
 const items = [
     {
@@ -22,13 +25,17 @@ const items = [
         children: 'Active',
     },
 ];
+
 export default function PackageCard({ name, price, status, tickets, onClick }) {
+    const { token } = useToken();
+
     return (
         <Card
             className='shadow-lg hover:shadow-sm'
-            title={<div className='text-center'>{name}</div>}
+            title={<div className='text-center' style={{backgroundColor:token.colorPrimary}}>{name}</div>}
             extra={<BsThreeDots className='hover:cursor-pointer hover:text-lg' />}
             onClick={onClick}
+
         >
             <div className='flex justify-center items-center'>
                 <TiTicket className='text-[5em] text-yellow-300 ' />

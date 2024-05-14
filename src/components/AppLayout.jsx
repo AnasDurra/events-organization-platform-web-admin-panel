@@ -1,16 +1,34 @@
-import { Grid, Layout } from 'antd';
+import { Grid, Layout, Spin, theme } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Header from './Header';
 import { useEffect, useState } from 'react';
 import { isLargerThanLG } from '../utils/antd.utils';
 import Sider from './Sider';
+import { useCheckAccessTokenQuery } from '../services/authSlice';
+import { MdAccountCircle } from 'react-icons/md';
+import { AiOutlinePushpin } from 'react-icons/ai';
+import { FiUsers } from 'react-icons/fi';
+import { CgOrganisation } from 'react-icons/cg';
+import { MdPayments } from 'react-icons/md';
+import { TiTicket } from 'react-icons/ti';
+import { GrTransaction } from 'react-icons/gr';
+import { MdBlock } from 'react-icons/md';
+
+const { useToken } = theme;
 
 export default function AppLayout() {
     const screens = Grid.useBreakpoint();
+    const navigate = useNavigate();
+    const { token } = useToken();
 
     const [isLargerThanLGScreen, setIsLargerThanLGScreen] = useState(isLargerThanLG(screens));
+    const {
+        data: checkAccessTokenObj,
+        isLoading: isAccessTokenLoading,
+        error: checkAccessTokenError,
+    } = useCheckAccessTokenQuery();
     const [isSiderOpen, setIsSiderOpen] = useState(true);
 
     useEffect(() => {
@@ -21,90 +39,116 @@ export default function AppLayout() {
         setIsLargerThanLGScreen(isLargerThanLG(screens));
     }, [screens]);
 
-    return (
-        <Layout>
-            <Header
-                onTriggerSiderIconClicked={() => {
-                    setIsSiderOpen(!isSiderOpen);
-                }}
-            />
-            <Layout hasSider={true}>
-                <Sider
-                    isSiderOpen={isSiderOpen}
-                    userMenu={[
-                        {
-                            id: '1',
-                            name: 'Account',
-                            url: '/',
-                            icon: null,
-                        },
-                        {
-                            id: '2',
-                            name: 'Featured',
-                            url: '/featured',
-                            icon: null,
-                        },
-                        {
-                            id: '3',
-                            name: 'Attendees',
-                            url: '/attendees',
-                            icon: null,
-                        },
-                        {
-                            id: '4',
-                            name: 'Organizations',
-                            url: '/org',
-                            icon: null,
-                        },
+    useEffect(() => {
+        if (checkAccessTokenError) {
+            navigate('/login');
+        }
+    }, [checkAccessTokenError]);
 
-                        {
-                            id: '5',
-                            name: 'Payments',
-                            url: '/atten1212dee-events',
-                            icon: null,
-                            sub_menu: [
-                                {
-                                    id: '5-1',
-                                    name: 'Packages',
-                                    url: '/packages',
-                                    icon: null,
-                                },
-                                {
-                                    id: '5-2',
-                                    name: 'Transactions',
-                                    url: '/attendee-ev1121ents/near',
-                                    icon: null,
-                                },
-                            ],
-                        },
-                        {
-                            id: '6',
-                            name: 'Block list',
-                            url: '/attendee-eve121212124nts',
-                            icon: null,
-                            sub_menu: [
-                                {
-                                    id: '6-1',
-                                    name: 'organizations',
-                                    url: '/atte3434ndee-events/popular',
-                                    icon: null,
-                                },
-                                {
-                                    id: '6-2',
-                                    name: 'attendees',
-                                    url: '/at232tendee-events/near',
-                                    icon: null,
-                                },
-                            ],
-                        },
-                    ]}
+    return (
+        <>
+            {isAccessTokenLoading ? (
+                <Spin
+                    fullscreen
+                    spinning
+                    tip={'checking access..'}
                 />
-                <Content style={contentStyle}>
-                    <Outlet />
-                </Content>
-            </Layout>
-            <Footer />
-        </Layout>
+            ) : (
+                <Layout>
+                    <Header
+                        onTriggerSiderIconClicked={() => {
+                            setIsSiderOpen(!isSiderOpen);
+                        }}
+                    />
+                    <Layout hasSider={true}>
+                        <Sider
+                            isSiderOpen={isSiderOpen}
+                            userMenu={[
+                                {
+                                    id: '1',
+                                    name: 'Account',
+                                    url: '/',
+                                    icon: <MdAccountCircle style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                },
+                                {
+                                    id: '2',
+                                    name: 'Featured',
+                                    url: '/featured',
+                                    icon: <AiOutlinePushpin style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                },
+                                {
+                                    id: '3',
+                                    name: 'Attendees',
+                                    url: '/attendees',
+                                    icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                },
+                                {
+                                    id: '4',
+                                    name: 'Organizations',
+                                    url: '/org',
+                                    icon: <CgOrganisation style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                },
+
+                                {
+                                    id: '5',
+                                    name: 'Payments',
+                                    url: '/payment',
+                                    icon: <MdPayments style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+
+                                    sub_menu: [
+                                        {
+                                            id: '5-1',
+                                            name: 'Packages',
+                                            url: '/packages',
+                                            icon: <TiTicket style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                        },
+                                        {
+                                            id: '5-2',
+                                            name: 'Transactions',
+                                            url: '/transactions',
+                                            icon: (
+                                                <GrTransaction
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
+                                        },
+                                    ],
+                                },
+                                {
+                                    id: '6',
+                                    name: 'Block list',
+                                    url: '/block',
+                                    icon: <MdBlock style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+
+                                    sub_menu: [
+                                        {
+                                            id: '6-1',
+                                            name: 'organizations',
+                                            url: '/atte3434ndee-events/popular',
+                                            icon: (
+                                                <CgOrganisation
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
+                                        },
+                                        {
+                                            id: '6-2',
+                                            name: 'attendees',
+                                            url: '/at232tendee-events/near',
+                                            icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                        },
+                                    ],
+                                },
+                            ]}
+                        />
+                        <Content style={contentStyle}>
+                            <Outlet />
+                        </Content>
+                    </Layout>
+                    <Footer />
+                </Layout>
+            )}
+        </>
     );
 }
 

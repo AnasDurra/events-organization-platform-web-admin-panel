@@ -8,6 +8,7 @@ import LoginPage from '../pages/login';
 import AccountPage from '../features/account/AccountPage';
 import FeaturedEventsPage from '../features/featured events/FeaturedEventsPage';
 import ViewAttendeesPage from '../features/attendees/ViewAttendeesPage';
+import ViewTransactionsPage from '../features/ticketing packages/ViewTransactionsPage';
 
 export const router = createBrowserRouter([
     {
@@ -40,7 +41,10 @@ export const router = createBrowserRouter([
                 path: 'packages',
                 element: <ViewPackagesPage />,
             },
-
+            {
+                path: 'transactions',
+                element: <ViewTransactionsPage />,
+            },
             {
                 path: 'featured',
                 element: <FeaturedEventsPage />,

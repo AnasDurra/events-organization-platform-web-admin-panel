@@ -4,13 +4,14 @@ import React from 'react';
 import { MdAdminPanelSettings } from 'react-icons/md';
 import { useLoginMutation } from '../services/authSlice';
 import { useNotification } from '../utils/useAntNotification';
-
+import { useNavigate } from 'react-router-dom';
 const { useToken } = theme;
 
 export default function LoginPage() {
     const { token } = useToken();
+    const navigate = useNavigate();
 
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading:isLoginLoading }] = useLoginMutation();
     const { openNotification } = useNotification();
 
     return (
@@ -27,7 +28,7 @@ export default function LoginPage() {
                 labelAlign='left'
                 onFinish={(fields) => {
                     console.log(fields);
-                    login(fields).then((res) => {
+                    login({ ...fields, role_id: 1 }).then((res) => {
                         if (res.error) {
                             console.log(res);
                             openNotification({
@@ -37,6 +38,7 @@ export default function LoginPage() {
                                 placement: 'bottomRight',
                             });
                         } else {
+                            navigate('/');
                         }
                     });
                 }}
@@ -81,6 +83,7 @@ export default function LoginPage() {
                         <Button
                             type='primary'
                             htmlType='submit'
+                            loading={isLoginLoading}
                             className='w-full'
                         >
                             Login

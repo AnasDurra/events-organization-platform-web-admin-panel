@@ -24,12 +24,19 @@ export const auth = apiSlice.injectEndpoints({
             },
         }),
 
-        // logout: builder.mutation({
-        //   query: () => ({
-        //     url: 'auth/logout',
-        //     method: 'POST',
-        //   }),
-        // }),
+        checkAccessToken: builder.query({
+            query: () => ({
+                url: 'user/exchange',
+                method: 'GET',
+            }),
+        }),
+
+        logout: builder.mutation({
+            query: () => ({
+                url: 'auth/logout',
+                method: 'POST',
+            }),
+        }),
 
         refresh: builder.query({
             query: (refresh_token) => ({
@@ -60,4 +67,5 @@ export const getLoggedInUserV2 = () => {
     return JSON.parse(Cookies.get('user'));
 };
 
-export const { useLoginMutation, useLogoutMutation, useSignupMutation, useUserMenuQuery } = auth;
+export const { useLoginMutation, useLogoutMutation, useUserMenuQuery, useCheckAccessTokenQuery } =
+    auth;

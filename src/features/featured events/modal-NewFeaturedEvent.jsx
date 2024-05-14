@@ -1,7 +1,24 @@
-import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
-import React from 'react';
+import { Button, DatePicker, Form, Input, Modal, Select, Typography } from 'antd';
+import React, { useState } from 'react';
+import { useGetOrganizationsQuery } from '../org profiles/orgsSlice';
+import Title from 'antd/es/typography/Title';
+import { useGetFutureUnfeaturedEventsQuery } from './featuredSlice';
 
 export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
+    const [form]=Form.useForm();
+    const { data: { result: orgs } = { result: [] }, isLoading: isOrgsLoading } = useGetOrganizationsQuery();
+    const [selectedOrgId, setSelectedOrgId] = useState(null);
+
+    const {data:featuredEvents}= useGetFutureUnfeaturedEventsQuery(selectedOrgId);
+    const handleFormValuesChange = (changedValues) => {
+        const formFieldName = Object.keys(changedValues)[0];
+
+        if (formFieldName === 'organization') {
+            setSelectedOrgId(changedValues[formFieldName]);
+            form.setFieldsValue({ event: undefined }); //reset product selection
+        }
+    };
+
     return (
         <Modal
             open={isOpen}
@@ -14,7 +31,8 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
             maskClosable
         >
             <Form
-                name='basic'
+                name='new featured'
+                form={form}
                 labelCol={{
                     span: 8,
                 }}
@@ -24,6 +42,7 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
                 onFinish={onFinish}
                 autoComplete='off'
                 labelAlign='left'
+                onValuesChange={handleFormValuesChange}
             >
                 <Form.Item
                     label='Select organization'
@@ -35,9 +54,20 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
                         },
                     ]}
                 >
-                    <Select>
-                        <Select.Option value='demo'>Demo</Select.Option>
-                    </Select>
+                    <Select
+                        options={orgs.map((org) => ({
+                            value: org.id,
+                            label: org.name,
+                            bio: org.bio,
+                        }))}
+                        optionRender={(option) => (
+                            <div className='flex flex-col items-start justify-center'>
+                                <Typography.Text>{option.data.label}</Typography.Text>
+                                <Typography.Text type='secondary'>{option.data.bio}</Typography.Text>
+                            </div>
+                        )}
+                        loading={isOrgsLoading}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -57,7 +87,7 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
 
                 <Form.Item
                     label='Select Type'
-                    name='type'
+                    name='type_id'
                     rules={[
                         {
                             required: true,
@@ -66,7 +96,7 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel }) {
                     ]}
                 >
                     <Select>
-                        <Select.Option value='demo'>Demo</Select.Option>
+                        <Select.Option value={1}>Home page carousel</Select.Option>
                     </Select>
                 </Form.Item>
 

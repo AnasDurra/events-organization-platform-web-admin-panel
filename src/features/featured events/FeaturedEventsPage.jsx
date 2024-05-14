@@ -1,4 +1,4 @@
-import { Button, Space, Table } from 'antd';
+import { Avatar, Button, Space, Table, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 import NewFeaturedEventModal from './modal-NewFeaturedEvent';
 
@@ -99,6 +99,16 @@ export default function FeaturedEventsPage() {
             align: 'center',
             filterSearch: true,
             width: '20%',
+            render: (text, record, index) => {
+                console.log(text, record, index);
+                const tags = [];
+                return (
+                    <div className='flex w-full justify-start items-center'>
+                        <Avatar className='ml-4 mx-6' />
+                        {text}
+                    </div>
+                );
+            },
         },
         {
             title: 'Event',
@@ -106,7 +116,28 @@ export default function FeaturedEventsPage() {
             key: 'event',
             ellipsis: true,
             align: 'center',
-            width: '20%',
+            width: '25%',
+            render: (text, record, index) => {
+                console.log(text, record, index);
+                const tags = [];
+                return (
+                    <div className='flex flex-col w-full '>
+                        <div className='flex w-full items-center'>
+                            <div className='w-[95%] text-left text-wrap '>
+                                <Typography.Text className='line-clamp-2 text-sm'>
+                                    {text}
+                                </Typography.Text>
+                                <Typography.Text
+                                    type='secondary'
+                                    className='line-clamp-2 text-xs'
+                                >
+                                    event description is here event description is here event description is here
+                                </Typography.Text>
+                            </div>
+                        </div>
+                    </div>
+                );
+            },
         },
         {
             title: 'Type',
@@ -123,9 +154,8 @@ export default function FeaturedEventsPage() {
                 },
             ],
             onFilter: (value, record) => record.address.includes(value),
-            ellipsis: true,
             align: 'center',
-            width: '20%',
+            width: '15%',
         },
         {
             title: 'Start',
@@ -199,9 +229,9 @@ export default function FeaturedEventsPage() {
                         rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                         columns={columns}
                         dataSource={data}
-                        size='middle'
+                        size='large'
                         bordered
-                        pagination={{ pageSize: 10, total: 100, hideOnSinglePage: true, showSizeChanger: true }}
+                        pagination={{ pageSize: 10, total: data.length, hideOnSinglePage: true, showSizeChanger: true }}
                     />
                 </div>
             </div>

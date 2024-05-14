@@ -1,7 +1,8 @@
-import { Button, Form, Input, theme } from 'antd';
+import { Button, Form, Input, Spin, theme } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { MdAdminPanelSettings } from 'react-icons/md';
+import { getLoggedInUserV2 } from '../../services/authSlice';
 
 const { useToken } = theme;
 
@@ -12,18 +13,13 @@ export default function AccountPage() {
 
     const onValuesChange = (changedValues, allValues) => {
         if (
-            allValues.username != undefined &&
-            allValues.password != undefined &&
-            allValues.username != '' &&
-            allValues.username != 'old username' &&
-            allValues.password != '' &&
-            allValues.confirm == allValues.password
+            (allValues.username && allValues.username != getLoggedInUserV2().username) ||
+            (allValues.password && allValues.username && allValues.confirm == allValues.password)
         ) {
             setIsBtnDisabled(false);
         } else {
             setIsBtnDisabled(true);
         }
-        console.log(allValues)
     };
     return (
         <div className='grid grid-cols-12'>
@@ -36,85 +32,81 @@ export default function AccountPage() {
                     <Title> Admin</Title>
                 </div>
 
-                <Form
-                    name='update-account'
-                    onFinish={(fields) => {
-                        console.log(fields);
-                    }}
-                    initialValues={{
-                        username: 'initial-username',
-                    }}
-                    scrollToFirstError
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    labelAlign='left'
-                    onValuesChange={onValuesChange}
-                >
-                    <Form.Item
-                        name='username'
-                        label='username'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input username!',
-                            },
-                        ]}
+                <Spin  spinning={false} >
+                    <Form
+                        name='update-account'
+                        onFinish={(fields) => {
+                            console.log({
+                                ...fields,
+                                username: fields.username == getLoggedInUserV2().username ? undefined : fields.username,
+                                password: fields.password ? fields.password : undefined,
+                                confirm: undefined,
+                            });
+                        }}
+                        initialValues={{
+                            username: 'initial-username',
+                        }}
+                        scrollToFirstError
+                        labelCol={{
+                            span: 8,
+                        }}
+                        wrapperCol={{
+                            span: 16,
+                        }}
+                        labelAlign='left'
+                        onValuesChange={onValuesChange}
                     >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        name='password'
-                        label='New Password'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                        hasFeedback
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    <Form.Item
-                        name='confirm'
-                        label='Confirm Password'
-                        dependencies={['password']}
-                        hasFeedback
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please confirm your password!',
-                            },
-                            ({ getFieldValue }) => ({
-                                validator(_, value) {
-                                    if (!value || getFieldValue('password') === value) {
-                                        return Promise.resolve();
-                                    }
-                                    return Promise.reject(new Error('The new password that you entered do not match!'));
+                        <Form.Item
+                            name='username'
+                            label='username'
+                            rules={[
+                                { min: 5, message: 'Username must be minimum 5 characters.' },
+                                {
+                                    required: true,
+                                    message: 'Please input username!',
                                 },
-                            }),
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
-                        <Button
-                            disabled={isBtnDisabled}
-                            type='primary'
-                            htmlType='submit'
-                            className='w-full'
+                            ]}
                         >
-                            update
-                        </Button>
-                    </Form.Item>
-                </Form>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name='password'
+                            label='New Password'
+                            rules={[{ min: 5, message: 'Password must be minimum 5 characters.' }]}
+                            hasFeedback
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item
+                            name='confirm'
+                            label='Confirm Password'
+                            dependencies={['password']}
+                            hasFeedback
+                            rules={[
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') == value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('The new password that you entered do not match!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
+                            <Button
+                                disabled={isBtnDisabled}
+                                type='primary'
+                                htmlType='submit'
+                                className='w-full'
+                            >
+                                update
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Spin>
             </div>
         </div>
     );
