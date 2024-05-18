@@ -13,12 +13,15 @@ export const auth = apiSlice.injectEndpoints({
             transformResponse: (responseData) => {
                 Cookies.set('user', JSON.stringify(responseData?.result), {
                     expires: 12,
+                    path: '/',
                 });
                 Cookies.set('accessToken', responseData?.result?.access_token, {
                     expires: 12,
+                    path: '/',
                 });
                 Cookies.set('refreshToken', responseData?.result?.refresh_token, {
                     expires: 12,
+                    path: '/',
                 });
                 return responseData;
             },
@@ -30,7 +33,20 @@ export const auth = apiSlice.injectEndpoints({
                 method: 'GET',
             }),
         }),
-
+        updateUsernameOrEmail: builder.mutation({
+            query: (body) => ({
+                url: 'auth/update-username-or-email',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatePassword: builder.mutation({
+            query: (body) => ({
+                url: 'auth/change-password',
+                method: 'POST',
+                body,
+            }),
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: 'auth/logout',
@@ -67,5 +83,11 @@ export const getLoggedInUserV2 = () => {
     return JSON.parse(Cookies.get('user'));
 };
 
-export const { useLoginMutation, useLogoutMutation, useUserMenuQuery, useCheckAccessTokenQuery } =
-    auth;
+export const {
+    useLoginMutation,
+    useLogoutMutation,
+    useUserMenuQuery,
+    useCheckAccessTokenQuery,
+    useUpdateUsernameOrEmailMutation,
+    useUpdatePasswordMutation,
+} = auth;

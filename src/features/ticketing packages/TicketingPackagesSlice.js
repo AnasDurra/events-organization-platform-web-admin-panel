@@ -6,6 +6,12 @@ export const ticketingPackagesSlice = apiSlice.injectEndpoints({
             query: () => '/payment/packages',
             providesTags: ['ticketing-packages'],
         }),
+        getPackagesHistory: builder.query({
+            query: () => 'payment/packages-history',
+        }),
+        getTicketsUsage: builder.query({
+            query: () => 'payment/tickets-usage',
+        }),
         addNewPackage: builder.mutation({
             query: (body) => ({
                 url: '/payment/packages/create',
@@ -32,5 +38,11 @@ export const ticketingPackagesSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useAddNewPackageMutation, useUpdatePackageMutation, useGetPackagesQuery, useAddPriceToPackageMutation } =
-    ticketingPackagesSlice;
+export const {
+    useAddNewPackageMutation,
+    useUpdatePackageMutation,
+    useGetPackagesQuery,
+    useAddPriceToPackageMutation,
+    useGetPackagesHistoryQuery,
+    useGetTicketsUsageQuery,
+} = ticketingPackagesSlice;

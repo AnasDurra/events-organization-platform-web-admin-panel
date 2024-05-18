@@ -7,7 +7,6 @@ import { BsThreeDots } from 'react-icons/bs';
 
 const { useToken } = theme;
 
-
 const items = [
     {
         key: '1',
@@ -32,10 +31,16 @@ export default function PackageCard({ name, price, status, tickets, onClick }) {
     return (
         <Card
             className='shadow-lg hover:shadow-sm'
-            title={<div className='text-center' style={{backgroundColor:token.colorPrimary}}>{name}</div>}
+            title={
+                <div
+                    className='text-center'
+                >
+                    {name}
+                </div>
+            }
             extra={<BsThreeDots className='hover:cursor-pointer hover:text-lg' />}
             onClick={onClick}
-
+           
         >
             <div className='flex justify-center items-center'>
                 <TiTicket className='text-[5em] text-yellow-300 ' />

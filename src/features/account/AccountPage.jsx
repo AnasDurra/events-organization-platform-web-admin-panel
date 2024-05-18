@@ -2,19 +2,35 @@ import { Button, Form, Input, Spin, theme } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { MdAdminPanelSettings } from 'react-icons/md';
-import { getLoggedInUserV2 } from '../../services/authSlice';
+import {
+    getLoggedInUserV2,
+    useUpdatePasswordMutation,
+    useUpdateUsernameOrEmailMutation,
+} from '../../services/authSlice';
+import { useNotification } from '../../utils/useAntNotification';
+import Cookies from 'js-cookie';
 
 const { useToken } = theme;
 
 export default function AccountPage() {
     const { token } = useToken();
+    const [form] = Form.useForm();
+    const { openNotification } = useNotification();
 
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
 
+    const [updateUsername, { isLoading: isUpdateUsernameLoading }] = useUpdateUsernameOrEmailMutation();
+    const [updatePassword, { isLoading: isUpdatePasswordLoading }] = useUpdatePasswordMutation();
+
     const onValuesChange = (changedValues, allValues) => {
+        console.log('allvalues: ', allValues);
+        console.log('udner: ', getLoggedInUserV2());
         if (
-            (allValues.username && allValues.username != getLoggedInUserV2().username) ||
-            (allValues.password && allValues.username && allValues.confirm == allValues.password)
+            (allValues.username && allValues.username != getLoggedInUserV2().username && allValues.old_password) ||
+            (allValues.password &&
+                allValues.username &&
+                allValues.confirm_password == allValues.password &&
+                allValues.old_password)
         ) {
             setIsBtnDisabled(false);
         } else {
@@ -32,19 +48,84 @@ export default function AccountPage() {
                     <Title> Admin</Title>
                 </div>
 
-                <Spin  spinning={false} >
+                <Spin spinning={false}>
                     <Form
+                        form={form}
                         name='update-account'
-                        onFinish={(fields) => {
+                        onFinish={async (fields) => {
                             console.log({
                                 ...fields,
                                 username: fields.username == getLoggedInUserV2().username ? undefined : fields.username,
                                 password: fields.password ? fields.password : undefined,
                                 confirm: undefined,
                             });
+
+                            if (fields.username != getLoggedInUserV2().username) {
+                                await updateUsername({
+                                    new_username: fields.username,
+                                    password: fields.old_password,
+                                    role_id: getLoggedInUserV2().user_role,
+                                })
+                                    .unwrap()
+                                    .then((res) => {
+                                        Cookies.set('user', JSON.stringify(res?.result), {
+                                            expires: 12,
+                                            path: '/',
+                                        });
+
+                                        console.log('user', JSON.parse(Cookies.get('user')));
+                                        openNotification({
+                                            type: 'success',
+                                            message: 'username updated successfully',
+                                            placement: 'bottomRight',
+                                        });
+                                    })
+                                    .catch((e) => {
+                                        console.log(e);
+                                        openNotification({
+                                            type: 'error',
+                                            message: 'failed to update credentials',
+                                            description: e?.data?.result?.response?.message,
+                                            placement: 'bottomRight',
+                                        });
+                                    });
+                            }
+
+                            if (fields.password) {
+                                await updatePassword({
+                                    new_password: fields.confirm_password,
+                                    old_password: fields.old_password,
+                                    role_id: getLoggedInUserV2().user_role,
+                                })
+                                    .unwrap()
+                                    .then((res) => {
+                                        Cookies.set('user', JSON.stringify(res?.result), {
+                                            expires: 12,
+                                            path: '/',
+                                        });
+
+                                        openNotification({
+                                            type: 'success',
+                                            message: 'password updated successfully',
+                                            placement: 'bottomRight',
+                                        });
+                                    })
+                                    .catch((e) => {
+                                        openNotification({
+                                            type: 'error',
+                                            message: 'failed to update credentials',
+                                            description: e?.data?.result?.response?.message,
+                                            placement: 'bottomRight',
+                                        });
+                                    });
+                            }
+
+                            form.resetFields();
+                            console.log('last: ', getLoggedInUserV2());
+                            form.setFieldValue('username', getLoggedInUserV2().username);
                         }}
                         initialValues={{
-                            username: 'initial-username',
+                            username: getLoggedInUserV2().username,
                         }}
                         scrollToFirstError
                         labelCol={{
@@ -70,6 +151,19 @@ export default function AccountPage() {
                             <Input />
                         </Form.Item>
                         <Form.Item
+                            name='old_password'
+                            label='Current Password'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input username!',
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item
                             name='password'
                             label='New Password'
                             rules={[{ min: 5, message: 'Password must be minimum 5 characters.' }]}
@@ -78,7 +172,7 @@ export default function AccountPage() {
                             <Input.Password />
                         </Form.Item>
                         <Form.Item
-                            name='confirm'
+                            name='confirm_password'
                             label='Confirm Password'
                             dependencies={['password']}
                             hasFeedback
@@ -88,7 +182,9 @@ export default function AccountPage() {
                                         if (!value || getFieldValue('password') == value) {
                                             return Promise.resolve();
                                         }
-                                        return Promise.reject(new Error('The new password that you entered do not match!'));
+                                        return Promise.reject(
+                                            new Error('The new password that you entered do not match!')
+                                        );
                                     },
                                 }),
                             ]}
@@ -101,6 +197,7 @@ export default function AccountPage() {
                                 type='primary'
                                 htmlType='submit'
                                 className='w-full'
+                                loading={isUpdatePasswordLoading || isUpdateUsernameLoading}
                             >
                                 update
                             </Button>
