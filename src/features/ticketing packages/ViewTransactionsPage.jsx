@@ -1,127 +1,89 @@
 import { Avatar, Space, Table, Tabs, Typography } from 'antd';
 import React from 'react';
-
-const fakeData = [
-    {
-        key: 1,
-        date: '2024-04-01',
-        buyer: 'John Doe',
-        payment: '100$',
-        package: 'Premium',
-        tickets: 3,
-    },
-    {
-        key: 2,
-        date: '2024-04-02',
-        buyer: 'Alice Smith',
-        payment: '100$',
-        package: 'Standard',
-        tickets: 2,
-    },
-    {
-        key: 3,
-        date: '2024-04-03',
-        buyer: 'Bob Johnson',
-        payment: '100$',
-        package: 'Basic',
-        tickets: 1,
-    },
-    // Add more data as needed
-];
-
-const fakeData2 = [
-    {
-        key: 1,
-        date: '2024-04-01 14:55',
-        buyer: 'John Doe',
-        payment: '100$',
-        package: 'Premium',
-        tickets: 3,
-    },
-    {
-        key: 2,
-        date: '2024-04-02 14:55',
-        buyer: 'Alice Smith',
-        payment: '100$',
-        package: 'Standard',
-        tickets: 2,
-    },
-    {
-        key: 3,
-        date: '2024-04-03 14:55',
-        buyer: 'Bob Johnson',
-        payment: '100$',
-        package: 'Basic',
-        tickets: '+40',
-    },
-    // Add more data as needed
-];
+import { useGetPackagesHistoryQuery, useGetTicketsUsageQuery } from './TicketingPackagesSlice';
+import { render } from 'react-dom';
+import dayjs from 'dayjs';
 
 export default function ViewTransactionsPage() {
+    const { data: { result: ticketsUsage } = { result: [] }, isLoading: isTicketsUsageLoading } =
+        useGetTicketsUsageQuery();
+    const { data: { result: packagesHistory } = { result: [] }, isLoading: isPackagesHistoryLoading } =
+        useGetPackagesHistoryQuery();
+
     const columns = [
         {
             title: 'Date',
-            dataIndex: 'date',
-            key: 'date',
+            dataIndex: 'createdAt',
+            render: (date)=>dayjs(date).format('YYYY-MM-DD  HH:mm:ss'),
+            rowScope: 'row',
+            width: '20%',
             align: 'center',
-            width: '5%',
         },
         {
             title: 'Buyer',
-            dataIndex: 'buyer',
+            dataIndex: 'attendee',
             key: 'buyer',
             align: 'center',
-            width: '10%',
+            width: '20%',
+            render: (attendee, record, index) => {
+                return (
+                    <div className='flex w-full justify-start items-center'>
+                        <Avatar className='ml-4 mx-6' />
+                        <div className='flex flex-col text-left'>
+                            <Typography.Text>{attendee?.firstName + ' ' + attendee?.lastName}</Typography.Text>
+                            <Typography.Text type='secondary'>@{attendee?.user?.username}</Typography.Text>
+                        </div>
+                    </div>
+                );
+            },
         },
         {
             title: 'Package',
-            dataIndex: 'package',
+            dataIndex: ['package', 'name'],
             key: 'start',
 
             align: 'center',
-            width: '10%',
+            width: '20%',
         },
         {
             title: 'Price',
-            dataIndex: 'payment',
+            dataIndex: ['package', 'default_price', 'unit_amount'],
+            render: (unit_anmount) => `${parseFloat(unit_anmount / 100)}$`,
             key: 'type',
             align: 'center',
-            width: '5%',
+            width: '20%',
         },
 
         {
             title: 'Tickets',
-            dataIndex: 'tickets',
+            dataIndex: ['package', 'metadata', 'value'],
             key: 'end',
-
             align: 'center',
-            width: '5%',
+            width: '20%',
         },
     ];
 
     const columns2 = [
         {
             title: 'Date',
-            dataIndex: 'date',
+            dataIndex: 'tickets_created_at',
+            render: (date) => dayjs(date).format('YYYY MMMM DD HH:mm:ss'),
             rowScope: 'row',
-            width: '5%',
+            width: '20%',
             align: 'center',
         },
         {
             title: 'Attendee',
-            dataIndex: 'buyer',
             key: 'buyer',
             align: 'center',
-            width: '10%',
-            render: (text, record, index) => {
-                console.log(text, record, index);
-                const tags = [];
+            width: '20%',
+            render: (_, record, index) => {
                 return (
                     <div className='flex w-full justify-start items-center'>
                         <Avatar className='ml-4 mx-6' />
                         <div className='flex flex-col text-left'>
-                            <Typography.Text>{text}</Typography.Text>
-                            <Typography.Text type='secondary'>@username</Typography.Text>
+                            <Typography.Text>{record?.firstName + ' ' + record?.lastName}</Typography.Text>
+                            <Typography.Text type='secondary'>@{record?.user?.username}</Typography.Text>
                         </div>
                     </div>
                 );
@@ -129,38 +91,35 @@ export default function ViewTransactionsPage() {
         },
         {
             title: 'Tickets',
-            dataIndex: 'tickets',
+            dataIndex: 'tickets_value',
             key: 'start',
             align: 'center',
-            width: '5%',
+            width: '20%',
         },
 
         {
             title: 'Organization',
-            dataIndex: 'buyer',
+            dataIndex: 'organization_name',
             key: 'type',
             align: 'center',
-            width: '15%',
+            width: '20%',
         },
         {
             title: 'Event',
-            dataIndex: 'event',
             key: 'end',
             align: 'center',
-            width: '15%',
-            render: (text, record, index) => {
-                console.log(text, record, index);
-                const tags = [];
+            width: '20%',
+            render: (_, record, index) => {
                 return (
                     <div className='flex flex-col w-full '>
                         <div className='flex w-full items-center'>
                             <div className='w-[95%] text-left text-wrap '>
-                                <Typography.Text className='line-clamp-2 text-sm'>event title</Typography.Text>
+                                <Typography.Text className='line-clamp-2 text-sm'>{record.event_title}</Typography.Text>
                                 <Typography.Text
                                     type='secondary'
                                     className='line-clamp-2 text-xs'
                                 >
-                                    event description is here event description is here event description is here
+                                    {record.event_description}
                                 </Typography.Text>
                             </div>
                         </div>
@@ -178,10 +137,16 @@ export default function ViewTransactionsPage() {
                 <Table
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns}
-                    dataSource={fakeData}
-                    size='middle'
+                    dataSource={packagesHistory}
+                    size='small'
                     bordered
-                    pagination={{ pageSize: 10, total: 100, hideOnSinglePage: true, showSizeChanger: true }}
+                    loading={isPackagesHistoryLoading}
+                    pagination={{
+                        pageSize: 7,
+                        total: packagesHistory.length,
+                        hideOnSinglePage: true,
+                        showSizeChanger: true,
+                    }}
                 />
             ),
         },
@@ -192,12 +157,14 @@ export default function ViewTransactionsPage() {
                 <Table
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns2}
-                    dataSource={fakeData2}
+                    //TODO check if it's working fine
+                    dataSource={ticketsUsage}
                     size='small'
                     showHeader={true}
+                    loading={isTicketsUsageLoading}
                     pagination={{
-                        pageSize: 10,
-                        total: fakeData2.length,
+                        pageSize: 7,
+                        total: ticketsUsage.length,
                         hideOnSinglePage: true,
                         showSizeChanger: true,
                     }}

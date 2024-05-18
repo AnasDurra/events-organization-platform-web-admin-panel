@@ -2,14 +2,20 @@ import { ArrowLeftOutlined, BackwardFilled, BackwardOutlined, UploadOutlined } f
 import { Button, Checkbox, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Upload, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/es/typography/Title';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddNewOrgMutation } from './orgsSlice';
 
 export default function NewOrgPage() {
-    const [addNewOrg, { isLoading, error }] = useAddNewOrgMutation();
+    const [addNewOrg, { isLoading, error, isSuccess }] = useAddNewOrgMutation();
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate(-1);
+        }
+    }, [isSuccess, navigate]);
 
     return (
         <>
@@ -153,7 +159,6 @@ export default function NewOrgPage() {
                             <Form.Item
                                 label='username'
                                 name='username'
-                               
                                 rules={[
                                     {
                                         required: true,
@@ -186,11 +191,12 @@ export default function NewOrgPage() {
                             </Form.Item>
                         </div>
 
-                        <Form.Item wrapperCol={{span:24}}>
+                        <Form.Item wrapperCol={{ span: 24 }}>
                             <Button
                                 type='primary'
                                 htmlType='submit'
                                 className='w-full'
+                                loading={isLoading}
                             >
                                 Create
                             </Button>

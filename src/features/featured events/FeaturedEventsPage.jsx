@@ -1,6 +1,15 @@
 import { Avatar, Button, Space, Table, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 import NewFeaturedEventModal from './modal-NewFeaturedEvent';
+import {
+    useAddFeaturedEventMutation,
+    useDeleteFeaturedEventMutation,
+    useGetFeaturedEventsQuery,
+    useGetFutureUnfeaturedEventsQuery,
+} from './featuredSlice';
+
+import dayjs from 'dayjs';
+import { useNotification } from '../../utils/useAntNotification';
 
 const data = [
     {
@@ -70,42 +79,27 @@ const data = [
 ];
 
 export default function FeaturedEventsPage() {
+    const { openNotification } = useNotification();
+
     const [filteredInfo, setFilteredInfo] = useState({});
     const [sortedInfo, setSortedInfo] = useState({});
     const [isNewFeaturedEventModalOpen, setIsNewFeaturedEventModalOpen] = useState(false);
 
+    const { data: { result: events } = { result: [] }, isLoading: isEventsLoading } = useGetFeaturedEventsQuery();
+    const [addFeaturedEvent, { isLoading: isAddFeaturedEventLoading }] = useAddFeaturedEventMutation();
+    const [deleteFeaturedEvent, { isLoading: isDeleteFeaturedEventLoading }] = useDeleteFeaturedEventMutation();
     const columns = [
         {
+            key: 'col-org',
             title: 'Organization',
-            dataIndex: 'org',
-            key: 'org',
-            filters: [
-                {
-                    text: 'Joe',
-                    value: 'Joe',
-                },
-                {
-                    text: 'Jim',
-                    value: 'Jim',
-                },
-            ],
-            onFilter: (value, record) => {
-                console.log(value);
-                console.log(record);
-                console.log(record.org.includes(value));
-                return record.org.includes(value);
-            },
-            ellipsis: true,
+            dataIndex: ['event', 'organization'],
             align: 'center',
-            filterSearch: true,
             width: '20%',
-            render: (text, record, index) => {
-                console.log(text, record, index);
-                const tags = [];
+            render: (org, record, index) => {
                 return (
                     <div className='flex w-full justify-start items-center'>
                         <Avatar className='ml-4 mx-6' />
-                        {text}
+                        {org.name}
                     </div>
                 );
             },
@@ -117,21 +111,17 @@ export default function FeaturedEventsPage() {
             ellipsis: true,
             align: 'center',
             width: '25%',
-            render: (text, record, index) => {
-                console.log(text, record, index);
-                const tags = [];
+            render: (event, record, index) => {
                 return (
                     <div className='flex flex-col w-full '>
                         <div className='flex w-full items-center'>
                             <div className='w-[95%] text-left text-wrap '>
-                                <Typography.Text className='line-clamp-2 text-sm'>
-                                    {text}
-                                </Typography.Text>
+                                <Typography.Text className='line-clamp-2 text-sm'>{event.title}</Typography.Text>
                                 <Typography.Text
                                     type='secondary'
                                     className='line-clamp-2 text-xs'
                                 >
-                                    event description is here event description is here event description is here
+                                    {event.description}
                                 </Typography.Text>
                             </div>
                         </div>
@@ -143,56 +133,64 @@ export default function FeaturedEventsPage() {
             title: 'Type',
             dataIndex: ['type', 'name'],
             key: 'type',
-            filters: [
-                {
-                    text: 'London',
-                    value: 'London',
-                },
-                {
-                    text: 'New York',
-                    value: 'New York',
-                },
-            ],
-            onFilter: (value, record) => record.address.includes(value),
             align: 'center',
             width: '15%',
         },
         {
             title: 'Start',
-            dataIndex: ['timeline', 'start_date'],
+            dataIndex: 'startDate',
             key: 'start',
-            sorter: (a, b) => a.address.length - b.address.length,
-            sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
-            ellipsis: true,
+            render: (date, index, record) => dayjs(date).format('YYYY-MM-DD'),
             align: 'center',
-            width: '10%',
+            width: '15%',
         },
         {
             title: 'End',
-            dataIndex: ['timeline', 'end_date'],
+            dataIndex: 'endDate',
             key: 'end',
-            sorter: (a, b) => a.address.length - b.address.length,
-            sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
-            ellipsis: true,
+            render: (date, index, record) => dayjs(date).format('YYYY-MM-DD'),
             align: 'center',
-            width: '10%',
+            width: '15%',
         },
         {
             title: 'Created',
-            dataIndex: ['timeline', 'creation_date'],
+            dataIndex: 'created_at',
             key: 'created',
-            sorter: (a, b) => a.address.length - b.address.length,
-            sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
-            ellipsis: true,
+            render: (date, index, record) => dayjs(date).format('YYYY-MM-DD'),
             align: 'center',
-            width: '10%',
+            width: '15%',
         },
         {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
                 <Space size='small'>
-                    <a>Deactivate</a>
+                    <a
+                        className='text-red-500 hover:text-red-700'
+                        onClick={() => {
+                            deleteFeaturedEvent(record.id)
+                                .unwrap()
+                                .then((_) => {
+                                    openNotification({
+                                        type: 'success',
+                                        message: 'Featured event deleted successfully',
+                                        placement: 'bottomRight',
+                                    });
+                                })
+                                .catch((e) => {
+                                    console.log(e);
+                                    openNotification({
+                                        type: 'error',
+                                        message: 'Failed to delete featured event',
+                                        description: e?.data?.result?.response?.message,
+                                        placement: 'bottomRight',
+                                    });
+                                });
+                            F;
+                        }}
+                    >
+                        Delete
+                    </a>
                 </Space>
             ),
             align: 'center',
@@ -228,8 +226,9 @@ export default function FeaturedEventsPage() {
                     <Table
                         rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                         columns={columns}
-                        dataSource={data}
+                        dataSource={events}
                         size='large'
+                        loading={isEventsLoading || isDeleteFeaturedEventLoading}
                         bordered
                         pagination={{ pageSize: 10, total: data.length, hideOnSinglePage: true, showSizeChanger: true }}
                     />
@@ -238,7 +237,34 @@ export default function FeaturedEventsPage() {
 
             <NewFeaturedEventModal
                 isOpen={isNewFeaturedEventModalOpen}
-                onFinish={(fields) => {}}
+                onFinish={(fields) => {
+                    console.log('formfields: ', fields);
+                    addFeaturedEvent({
+                        event_id: fields.event_id,
+                        type_id: fields.type_id,
+                        start_date: dayjs(fields.dateRange[0]).format('YYYY-MM-DD'),
+                        end_date: dayjs(fields.dateRange[1]).format('YYYY-MM-DD'),
+                    })
+                        .unwrap()
+                        .then((_) => {
+                            setIsNewFeaturedEventModalOpen(false);
+                            openNotification({
+                                type: 'success',
+                                message: 'Featured event added successfully',
+                                placement: 'bottomRight',
+                            });
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                            openNotification({
+                                type: 'error',
+                                message: 'Failed to add featured event',
+                                description: e?.data?.result?.response?.message,
+                                placement: 'bottomRight',
+                            });
+                        });
+                }}
+                isAddLoading={isAddFeaturedEventLoading}
                 onCancel={() => setIsNewFeaturedEventModalOpen(false)}
             />
         </>

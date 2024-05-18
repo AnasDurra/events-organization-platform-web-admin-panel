@@ -15,6 +15,6 @@ export const apiSlice = createApi({
             return headers;
         },
     }),
-    tagTypes: ['ticketing-packages'],
+    tagTypes: ['ticketing-packages', 'featured-events', 'attendees'],
     endpoints: () => ({}),
 });
