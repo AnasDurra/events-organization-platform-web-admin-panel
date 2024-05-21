@@ -26,7 +26,7 @@ export default function AccountPage() {
         console.log('allvalues: ', allValues);
         console.log('udner: ', getLoggedInUserV2());
         if (
-            (allValues.username && allValues.username != getLoggedInUserV2().username && allValues.old_password) ||
+            (allValues.username && allValues.username != getLoggedInUserV2()?.username && allValues.old_password) ||
             (allValues.password &&
                 allValues.username &&
                 allValues.confirm_password == allValues.password &&
@@ -55,16 +55,16 @@ export default function AccountPage() {
                         onFinish={async (fields) => {
                             console.log({
                                 ...fields,
-                                username: fields.username == getLoggedInUserV2().username ? undefined : fields.username,
+                                username: fields.username == getLoggedInUserV2()?.username ? undefined : fields.username,
                                 password: fields.password ? fields.password : undefined,
                                 confirm: undefined,
                             });
 
-                            if (fields.username != getLoggedInUserV2().username) {
+                            if (fields.username != getLoggedInUserV2()?.username) {
                                 await updateUsername({
                                     new_username: fields.username,
                                     password: fields.old_password,
-                                    role_id: getLoggedInUserV2().user_role,
+                                    role_id: getLoggedInUserV2()?.user_role,
                                 })
                                     .unwrap()
                                     .then((res) => {
@@ -95,7 +95,7 @@ export default function AccountPage() {
                                 await updatePassword({
                                     new_password: fields.confirm_password,
                                     old_password: fields.old_password,
-                                    role_id: getLoggedInUserV2().user_role,
+                                    role_id: getLoggedInUserV2()?.user_role,
                                 })
                                     .unwrap()
                                     .then((res) => {
@@ -122,10 +122,10 @@ export default function AccountPage() {
 
                             form.resetFields();
                             console.log('last: ', getLoggedInUserV2());
-                            form.setFieldValue('username', getLoggedInUserV2().username);
+                            form.setFieldValue('username', getLoggedInUserV2()?.username);
                         }}
                         initialValues={{
-                            username: getLoggedInUserV2().username,
+                            username: getLoggedInUserV2()?.username,
                         }}
                         scrollToFirstError
                         labelCol={{
