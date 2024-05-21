@@ -229,7 +229,6 @@ export default function FeaturedEventsPage() {
                         dataSource={events}
                         size='large'
                         loading={isEventsLoading || isDeleteFeaturedEventLoading}
-                        bordered
                         pagination={{ pageSize: 10, total: data.length, hideOnSinglePage: true, showSizeChanger: true }}
                     />
                 </div>

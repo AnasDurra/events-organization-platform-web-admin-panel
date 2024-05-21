@@ -158,7 +158,6 @@ export default function ViewAttendeesPbought() {
                     dataSource={attendees}
                     loading={isAttendeesLoading}
                     size='middle'
-                    bordered
                     pagination={{
                         pageSize: 10,
                         total: attendees.length,

@@ -4,6 +4,52 @@ import { useGetPackagesHistoryQuery, useGetTicketsUsageQuery } from './Ticketing
 import { render } from 'react-dom';
 import dayjs from 'dayjs';
 
+const fakeData = [
+    {
+      tickets_created_at: "2024-05-17T10:20:00.000Z", // Replace with desired date format
+      buyer: {
+        firstName: "John",
+        lastName: "Doe",
+        user: {
+          username: "johndoe123",
+        },
+      },
+      tickets_value: 2,
+      organization_name: "Acme Inc.",
+      event_title: "Awesome Conference 2024",
+      event_description: "A conference about all things awesome!",
+    },
+    {
+      tickets_created_at: "2024-05-20T15:30:00.000Z", // Replace with desired date format
+      buyer: {
+        firstName: "Jane",
+        lastName: "Smith",
+        user: {
+          username: "janesmith987",
+        },
+      },
+      tickets_value: 1,
+      organization_name: "Startups R Us",
+      event_title: "Workshop on Building Scalable Web Applications",
+      event_description: "Learn how to build applications that can handle high traffic.",
+    },
+    {
+      tickets_created_at: "2024-05-15T08:00:00.000Z", // Replace with desired date format
+      buyer: {
+        firstName: "Michael",
+        lastName: "Jones",
+        user: {
+          username: "mike_jones",
+        },
+      },
+      tickets_value: 3,
+      organization_name: "Freelancers Guild",
+      event_title: "Masterclass on Effective Freelancing",
+      event_description: "Get tips and tricks to become a successful freelancer.",
+    },
+    // Add more data objects as needed
+  ];
+
 export default function ViewTransactionsPage() {
     const { data: { result: ticketsUsage } = { result: [] }, isLoading: isTicketsUsageLoading } =
         useGetTicketsUsageQuery();
@@ -139,7 +185,7 @@ export default function ViewTransactionsPage() {
                     columns={columns}
                     dataSource={packagesHistory}
                     size='small'
-                    bordered
+                    
                     loading={isPackagesHistoryLoading}
                     pagination={{
                         pageSize: 7,
@@ -158,7 +204,7 @@ export default function ViewTransactionsPage() {
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns2}
                     //TODO check if it's working fine
-                    dataSource={ticketsUsage}
+                    dataSource={[...ticketsUsage,...fakeData]}
                     size='small'
                     showHeader={true}
                     loading={isTicketsUsageLoading}

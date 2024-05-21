@@ -9,6 +9,7 @@ import AccountPage from '../features/account/AccountPage';
 import FeaturedEventsPage from '../features/featured events/FeaturedEventsPage';
 import ViewAttendeesPage from '../features/attendees/ViewAttendeesPage';
 import ViewTransactionsPage from '../features/ticketing packages/ViewTransactionsPage';
+import ViewBannedAttendees from '../features/ban/ViewBannedAttendees';
 
 export const router = createBrowserRouter([
     {
@@ -52,6 +53,20 @@ export const router = createBrowserRouter([
             {
                 path: 'attendees',
                 element: <ViewAttendeesPage />,
+            },
+
+            {
+                path: 'blocked',
+                children: [
+                    {
+                        path: 'orgs',
+                        element: <ViewBannedAttendees />,
+                    },
+                    {
+                        path: 'attendees',
+                        element: <ViewBannedAttendees />,
+                    },
+                ],
             },
         ],
     },

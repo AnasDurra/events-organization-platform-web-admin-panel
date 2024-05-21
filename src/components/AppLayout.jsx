@@ -117,14 +117,14 @@ export default function AppLayout() {
                                 {
                                     id: '6',
                                     name: 'Block list',
-                                    url: '/block',
+                                    url: '/blocked',
                                     icon: <MdBlock style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
 
                                     sub_menu: [
                                         {
                                             id: '6-1',
                                             name: 'organizations',
-                                            url: '/atte3434ndee-events/popular',
+                                            url: '/blocked/orgs',
                                             icon: (
                                                 <CgOrganisation
                                                     style={{ fontSize: '1.5em', color: token.colorPrimary }}
@@ -134,7 +134,7 @@ export default function AppLayout() {
                                         {
                                             id: '6-2',
                                             name: 'attendees',
-                                            url: '/at232tendee-events/near',
+                                            url: '/blocked/attendees',
                                             icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                     ],

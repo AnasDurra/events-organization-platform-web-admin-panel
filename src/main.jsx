@@ -16,6 +16,12 @@ const theme = {
         Layout: {
             headerBg: '#2B3467',
         },
+        Table: {
+            headerBg: '#334a9c',
+            headerSplitColor: 'transparent',
+            headerColor: 'white',
+            rowHoverBg:'334a9c'
+        },
     },
 };
 
