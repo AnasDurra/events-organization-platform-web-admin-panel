@@ -80,7 +80,8 @@ export const getLoggedInUser = () => {
 };
 
 export const getLoggedInUserV2 = () => {
-    return JSON.parse(Cookies.get('user'));
+    if (Cookies.get('user')) return JSON.parse(Cookies.get('user'));
+    else return null;
 };
 
 export const {
