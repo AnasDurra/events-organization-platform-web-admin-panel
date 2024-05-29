@@ -1,23 +1,8 @@
 import { Avatar, Button, List, Pagination, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useGetBannedAttendeesQuery, useLazyGetBannedAttendeesQuery } from './banSlice';
+import { useGetBannedAttendeesQuery, useLazyGetBannedAttendeesQuery, useLazyGetBannedOrgsQuery } from './banSlice';
 
-const data = [
-    {
-        title: 'user number 1',
-    },
-    {
-        title: 'user number 2',
-    },
-    {
-        title: 'user number 3',
-    },
-    {
-        title: 'user number 4',
-    },
-];
-
-export default function ViewBannedAttendees() {
+export default function ViewBannedOrgs() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(7);
     const [
@@ -28,7 +13,7 @@ export default function ViewBannedAttendees() {
             },
             isLoading: isAttendeesLoading,
         },
-    ] = useLazyGetBannedAttendeesQuery({ pageSize, page });
+    ] = useLazyGetBannedOrgsQuery({ pageSize, page });
 
     useEffect(() => {
         getBannedAttendees({ page, pageSize });
@@ -38,7 +23,7 @@ export default function ViewBannedAttendees() {
         <div className='grid grid-cols-12 w-full'>
             <div className='col-start-2 col-span-10'>
                 <List
-                    header={'Currently Blocked Attendees'}
+                    header={'Currently Blocked Orgs'}
                     pagination={{
                         onChange: (page) => {
                             setPage(page);
@@ -66,8 +51,8 @@ export default function ViewBannedAttendees() {
                         >
                             {console.log(item)}
                             <List.Item.Meta
-                                avatar={<Avatar src={`${item.attendee?.profile_img}`} />}
-                                title={<a href='https://ant.design'>{item.attendee?.full_name}</a>}
+                                avatar={<Avatar src={`${item.organization?.main_picture}`} />}
+                                title={<a href='https://ant.design'>{item.organization?.name}</a>}
                                 description={`Blocked at: ${item.blocked_at}`}
                             />
                         </List.Item>

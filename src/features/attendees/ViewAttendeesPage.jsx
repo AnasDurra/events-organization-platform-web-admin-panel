@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useGetAttendeesQuery } from './attendeesSlice';
 import dayjs from 'dayjs';
 import { URL } from '../../api/constants';
+import { useBanAttendeeMutation } from '../ban/banSlice';
+import { useNotification } from '../../utils/useAntNotification';
 const data = [
     {
         key: '1',
@@ -50,7 +52,11 @@ export default function ViewAttendeesPbought() {
     const [filteredInfo, setFilteredInfo] = useState({});
     const [sortedInfo, setSortedInfo] = useState({});
 
+    const { openNotification } = useNotification();
+
     const { data: { result: attendees } = { result: [] }, isLoading: isAttendeesLoading } = useGetAttendeesQuery();
+
+    const [banAttendee, { isLoading: isBanAttendeeLoading }] = useBanAttendeeMutation();
 
     const columns = [
         {
@@ -126,8 +132,31 @@ export default function ViewAttendeesPbought() {
             key: 'action',
             render: (_, record) => (
                 <Space size='small'>
+                    {console.log(record)}
                     <a>Notify</a>
-                    <a className='text-red-400'>Block</a>
+                    <a
+                        className='text-red-400'
+                        onClick={() =>
+                            banAttendee(record.attendee_id)
+                                .unwrap()
+                                .then((_) => {
+                                    openNotification({
+                                        type: 'success',
+                                        message: `user @${record.user_username} Blocked`,
+                                        placement: 'bottomRight',
+                                    });
+                                })
+                                .catch((e) => {
+                                    openNotification({
+                                        type: 'error',
+                                        message: `Failed to block user @${record.user_username}`,
+                                        placement: 'bottomRight',
+                                    });
+                                })
+                        }
+                    >
+                        {record.idBlocked ? 'Unblock' : 'Block'}
+                    </a>
                 </Space>
             ),
             align: 'center',
@@ -156,7 +185,7 @@ export default function ViewAttendeesPbought() {
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns}
                     dataSource={attendees}
-                    loading={isAttendeesLoading}
+                    loading={isAttendeesLoading || isBanAttendeeLoading}
                     size='middle'
                     pagination={{
                         pageSize: 10,

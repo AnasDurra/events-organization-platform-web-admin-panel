@@ -42,7 +42,6 @@ export default function NewOrgPage() {
                                 .then((payload) => {
                                     //TODO provide message api from context and add context holder globally
                                     messageApi.success('organization added');
-                                    navigate('/org/all', { replace: true });
                                 })
                                 .catch((error) => {
                                     messageApi.error(error.data?.result?.response?.message[0]);

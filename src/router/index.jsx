@@ -10,6 +10,7 @@ import FeaturedEventsPage from '../features/featured events/FeaturedEventsPage';
 import ViewAttendeesPage from '../features/attendees/ViewAttendeesPage';
 import ViewTransactionsPage from '../features/ticketing packages/ViewTransactionsPage';
 import ViewBannedAttendees from '../features/ban/ViewBannedAttendees';
+import ViewBannedOrgs from '../features/ban/ViewBannedOrgs';
 
 export const router = createBrowserRouter([
     {
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: 'orgs',
-                        element: <ViewBannedAttendees />,
+                        element: <ViewBannedOrgs />,
                     },
                     {
                         path: 'attendees',
