@@ -11,6 +11,9 @@ import ViewAttendeesPage from '../features/attendees/ViewAttendeesPage';
 import ViewTransactionsPage from '../features/ticketing packages/ViewTransactionsPage';
 import ViewBannedAttendees from '../features/ban/ViewBannedAttendees';
 import ViewBannedOrgs from '../features/ban/ViewBannedOrgs';
+import ViewAllBadges from '../features/gamification/badges/ViewAllBadges';
+import ViewAllRules from '../features/gamification/rules/ViewAllRules';
+import NewRulePage from '../features/gamification/rules/NewRulePage';
 
 export const router = createBrowserRouter([
     {
@@ -54,6 +57,22 @@ export const router = createBrowserRouter([
             {
                 path: 'attendees',
                 element: <ViewAttendeesPage />,
+            },
+            {
+                path: 'gamification',
+                children: [
+                    {
+                        path: 'badges',
+                        element: <ViewAllBadges />,
+                    },
+                    {
+                        path: 'rules',
+                        children: [
+                            { index: true, element: <ViewAllRules /> },
+                            { path: 'new', element: <NewRulePage /> },
+                        ],
+                    },
+                ],
             },
 
             {

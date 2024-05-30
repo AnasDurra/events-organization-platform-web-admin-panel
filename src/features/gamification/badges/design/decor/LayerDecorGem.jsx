@@ -5,7 +5,7 @@ export default function LayerDecorGem({ width = 100, height = 100, marginTop = '
         <svg
             width={100}
             height={100}
-            style={{ position, marginTop }}
+            style={{ position, marginTop , zIndex: 25}}
             xmlns='http://www.w3.org/2000/svg'
             viewBox='0 0 60 75'
             x='0px'

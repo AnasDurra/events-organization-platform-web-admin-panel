@@ -15,6 +15,9 @@ import { MdPayments } from 'react-icons/md';
 import { TiTicket } from 'react-icons/ti';
 import { GrTransaction } from 'react-icons/gr';
 import { MdBlock } from 'react-icons/md';
+import { SiGamejolt } from 'react-icons/si';
+import { SlBadge } from 'react-icons/sl';
+import { GoWorkflow } from 'react-icons/go';
 
 const { useToken } = theme;
 
@@ -88,7 +91,6 @@ export default function AppLayout() {
                                     url: '/org',
                                     icon: <CgOrganisation style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                 },
-
                                 {
                                     id: '5',
                                     name: 'Payments',
@@ -116,13 +118,35 @@ export default function AppLayout() {
                                 },
                                 {
                                     id: '6',
+                                    name: 'Gamification',
+                                    url: '/gamification',
+                                    icon: <SiGamejolt style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                    sub_menu: [
+                                        {
+                                            id: '6-2',
+                                            name: 'Rules',
+                                            url: '/gamification/rules',
+                                            icon: (
+                                                <GoWorkflow style={{ fontSize: '1.5em', color: token.colorPrimary }} />
+                                            ),
+                                        },
+                                        {
+                                            id: '6-1',
+                                            name: 'Badges',
+                                            url: '/gamification/badges',
+                                            icon: <SlBadge style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    id: '7',
                                     name: 'Block list',
                                     url: '/blocked',
                                     icon: <MdBlock style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
 
                                     sub_menu: [
                                         {
-                                            id: '6-1',
+                                            id: '7-1',
                                             name: 'organizations',
                                             url: '/blocked/orgs',
                                             icon: (
@@ -132,7 +156,7 @@ export default function AppLayout() {
                                             ),
                                         },
                                         {
-                                            id: '6-2',
+                                            id: '7-2',
                                             name: 'attendees',
                                             url: '/blocked/attendees',
                                             icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,

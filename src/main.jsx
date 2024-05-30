@@ -10,7 +10,9 @@ import { NotificationProvider } from './utils/useAntNotification.jsx';
 
 const theme = {
     token: {
-        colorPrimary: '#002c8c',
+        /*         colorPrimary: '#002c8c',
+         */
+        colorPrimary: '#2B3467',
     },
     components: {
         Layout: {
@@ -20,7 +22,7 @@ const theme = {
             headerBg: '#334a9c',
             headerSplitColor: 'transparent',
             headerColor: 'white',
-            rowHoverBg:'334a9c'
+            rowHoverBg: '334a9c',
         },
     },
 };

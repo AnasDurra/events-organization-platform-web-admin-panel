@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ColorPicker, Divider, Select } from 'antd';
+import { Button, ColorPicker, Divider, Select, Space } from 'antd';
 import { CiPickerHalf } from 'react-icons/ci';
 import { CENTER_TYPES, HORIZONTAL_TYPES, BOTTOM_TYPES, DECOR_TYPES } from './constants';
 import ColorView from './ColorView';
@@ -16,6 +16,7 @@ export default function DesignTools({
     onHorizontalColorChange,
     onBottomColorChange,
     onDecorColorChange,
+    onDownloadAsSvg,
     layers,
     colors,
 }) {
@@ -80,16 +81,6 @@ export default function DesignTools({
                         />
                     ))}
                 </div>
-                <ColorPicker
-                    value={centerColor}
-                    onChange={(color) => handleCenterColorChange(color.toHexString())}
-                >
-                    <Button
-                        className='aspect-square w-full min-w-4'
-                        type='primary'
-                        icon={<CiPickerHalf />}
-                    ></Button>
-                </ColorPicker>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -100,8 +91,18 @@ export default function DesignTools({
                     <Select.Option value={CENTER_TYPES.POLY8}>Poly8</Select.Option>
                     <Select.Option value={CENTER_TYPES.ALMOST_STAR}>Almost Star</Select.Option>
                 </Select>
+                <ColorPicker
+                    value={centerColor}
+                    onChange={(color) => handleCenterColorChange(color.toHexString())}
+                >
+                    <Button
+                        className='aspect-square w-full min-w-4'
+                        type='primary'
+                        icon={<CiPickerHalf />}
+                    ></Button>
+                </ColorPicker>
 
-               {/*  <div className='flex flex-col w-16 justify-center items-center scale-[0.2]'>
+                {/*  <div className='flex flex-col w-16 justify-center items-center scale-[0.2]'>
                     <BadgeOverView
                         layers={layers}
                         colors={{ center: 'red', bottom: 'gray', decor: 'gray', horizontal: 'gray' }}
@@ -119,16 +120,6 @@ export default function DesignTools({
                         />
                     ))}
                 </div>
-                <ColorPicker
-                    value={horizontalColor}
-                    onChange={(color) => handleHorizontalColorChange(color.toHexString())}
-                >
-                    <Button
-                        className='aspect-square w-full min-w-4'
-                        type='primary'
-                        icon={<CiPickerHalf />}
-                    ></Button>
-                </ColorPicker>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -139,8 +130,18 @@ export default function DesignTools({
                     <Select.Option value={HORIZONTAL_TYPES.DETAILS}>Details</Select.Option>
                     <Select.Option value={HORIZONTAL_TYPES.WING}>Wing</Select.Option>
                 </Select>
+                <ColorPicker
+                    value={horizontalColor}
+                    onChange={(color) => handleHorizontalColorChange(color.toHexString())}
+                >
+                    <Button
+                        className='aspect-square w-full min-w-4'
+                        type='primary'
+                        icon={<CiPickerHalf />}
+                    ></Button>
+                </ColorPicker>
 
-               {/*  <div className='flex flex-col w-16 justify-center items-center scale-[0.2]'>
+                {/*  <div className='flex flex-col w-16 justify-center items-center scale-[0.2]'>
                     <BadgeOverView
                         layers={layers}
                         colors={{ center: 'gray', bottom: 'gray', decor: 'gray', horizontal: 'red' }}
@@ -158,16 +159,6 @@ export default function DesignTools({
                         />
                     ))}
                 </div>
-                <ColorPicker
-                    value={bottomColor}
-                    onChange={(color) => handleBottomColorChange(color.toHexString())}
-                >
-                    <Button
-                        className='aspect-square w-full min-w-4'
-                        type='primary'
-                        icon={<CiPickerHalf />}
-                    ></Button>
-                </ColorPicker>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -179,6 +170,16 @@ export default function DesignTools({
                     <Select.Option value={BOTTOM_TYPES.WATERFALL}>Waterfall</Select.Option>
                     <Select.Option value={BOTTOM_TYPES.FLAG}>Flag</Select.Option>
                 </Select>
+                <ColorPicker
+                    value={bottomColor}
+                    onChange={(color) => handleBottomColorChange(color.toHexString())}
+                >
+                    <Button
+                        className='aspect-square w-full min-w-4'
+                        type='primary'
+                        icon={<CiPickerHalf />}
+                    ></Button>
+                </ColorPicker>
             </div>
 
             <div className='flex w-full space-x-4 justify-center items-center'>
@@ -191,16 +192,6 @@ export default function DesignTools({
                         />
                     ))}
                 </div>
-                <ColorPicker
-                    value={decorColor}
-                    onChange={(color) => handleDecorColorChange(color.toHexString())}
-                >
-                    <Button
-                        className='aspect-square w-full min-w-4'
-                        type='primary'
-                        icon={<CiPickerHalf />}
-                    ></Button>
-                </ColorPicker>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -211,15 +202,34 @@ export default function DesignTools({
                     <Select.Option value={DECOR_TYPES.CRYSTAL}>Crystal</Select.Option>
                     <Select.Option value={DECOR_TYPES.GEM_CIRCULAR}>Circular Gem</Select.Option>
                 </Select>
+                <ColorPicker
+                    value={decorColor}
+                    onChange={(color) => handleDecorColorChange(color.toHexString())}
+                >
+                    <Button
+                        className='aspect-square w-full min-w-4'
+                        type='primary'
+                        icon={<CiPickerHalf />}
+                    ></Button>
+                </ColorPicker>
             </div>
 
-            <Button
-                className='w-full'
-                type='primary'
-                onClick={handleMagicClick}
-            >
-                MAGIC
-            </Button>
+            <Space.Compact>
+                <Button
+                    className='w-[60%]'
+                    type='primary'
+                    onClick={handleMagicClick}
+                >
+                    MAGIC
+                </Button>
+                <Button
+                    className='w-[40%]'
+                    onClick={onDownloadAsSvg}
+                    type='dashed'
+                >
+                    Download Svg
+                </Button>
+            </Space.Compact>
         </div>
     );
 }

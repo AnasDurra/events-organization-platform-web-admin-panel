@@ -5,7 +5,7 @@ export default function LayerCenterAlmostStar({ color, width = 180, height = 180
     const lighterColor = lightenColor(color, 20);
     const xlighterColor = lightenColor(color, 40);
     return (
-        <div style={{ position: 'relative', width, height }}>
+        <div style={{ position: 'relative', width, height, zIndex: 20 }}>
             <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='100%'

@@ -3,7 +3,7 @@ import React from 'react';
 export default function LayerHorizontalWing({
     width = 360,
     height = 360,
-    zIndex = -5,
+    zIndex = 15,
     position = 'absolute',
     color,
 }) {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function LayerHorizontal6Poly({ color, zIndex = -2, width = 220, height = 220, position = 'absolute' }) {
+export default function LayerHorizontal6Poly({ color, zIndex = 15, width = 220, height = 220, position = 'absolute' }) {
     return (
         <div style={{ position: position, zIndex }}>
             <svg

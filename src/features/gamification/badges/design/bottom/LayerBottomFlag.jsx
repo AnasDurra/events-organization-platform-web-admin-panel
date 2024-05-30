@@ -5,7 +5,7 @@ export default function LayerBottomFlag({
     height = 280,
     marginTop = '25%',
     position = 'absolute',
-    zIndex = -3,
+    zIndex = 10,
     color,
 }) {
     return (

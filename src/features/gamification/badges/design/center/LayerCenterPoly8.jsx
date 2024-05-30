@@ -5,7 +5,7 @@ export default function LayerCenterPoly8({ color }) {
     const lighterColor = lightenColor(color, 20);
     const xlighterColor = lightenColor(color, 40);
     return (
-        <div style={{ position: 'relative', width: '200px', height: '200px' }}>
+        <div style={{ position: 'relative', width: '200px', height: '200px' , zIndex: 20}}>
             <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='100%'

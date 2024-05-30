@@ -54,7 +54,7 @@ export default function Sider({ isSiderOpen, userMenu, userMenuIsLoading }) {
         >
             <Menu
                 mode='inline'
-                defaultOpenKeys={['/payment', '/blocked']}
+                defaultOpenKeys={['/payment', '/blocked','/gamification']}
                 items={items}
                 onClick={handleMenuClick}
                 className='min-h-[100vh]'

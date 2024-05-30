@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function LayerHorizontalDetails({ color }) {
   return (
-    <div style={{ position: 'absolute', zIndex: -2 }}>
+    <div style={{ position: 'absolute', zIndex: 15 }}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="220"

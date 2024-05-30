@@ -3,7 +3,7 @@ import React from 'react';
 export default function LayerBottomWaterfall({ color }) {
     return (
         <div
-            style={{ position: 'absolute', zIndex: -3 }}
+            style={{ position: 'absolute', zIndex: 10 }}
             className='mt-[15%] transform rotate-180'
         >
             <svg

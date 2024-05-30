@@ -69,11 +69,14 @@ export default function BadgeOverView({ layers, colors }) {
     };
 
     return (
-        <>
+        <div
+            id='badge-svg'
+            className='flex flex-col justify-center items-center relative min-w-[300px] min-h-[300px]'
+        >
             {renderCenterLayer()}
             {renderHorizontalLayer()}
             {renderDecorLayer()}
             {renderBottomLayer()}
-        </>
+        </div>
     );
 }

@@ -28,7 +28,7 @@ export default function DesignBadge() {
         await inlineResources(svgDocument.documentElement);
 
         const svgString = new XMLSerializer().serializeToString(svgDocument);
-        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const blob = new Blob([svgString], { type: 'imagme/svg+xml' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -39,29 +39,24 @@ export default function DesignBadge() {
 
     return (
         <div className='w-full h-full'>
-            <Button onClick={downloadSvg}>hi</Button>
-            <div className='grid grid-cols-12 gap-10 h-full flex justify-center items-center'>
-                <div
-                    className={`${styles.paper} h-[50svh] col-start-3 col-span-4  flex justify-center items-center relative -z-10`}
-                >
-                    <div id='badge-svg' className='flex flex-col justify-center items-center'>
-                        <BadgeOverView
-                            layers={{
-                                center: centerLayer,
-                                horizontal: horizontalLayer,
-                                bottom: bottomLayer,
-                                decor: decorLayer,
-                            }}
-                            colors={{
-                                center: centerColor,
-                                horizontal: horizontalColor,
-                                bottom: bottomColor,
-                                decor: decorColor,
-                            }}
-                        />
-                    </div>
+            <div className='flex  items-center w-full h-full justify-evenly'>
+                <div className={`${styles.paper} h-full w-[50%] min-h-[360px]    flex justify-center items-center  `}>
+                    <BadgeOverView
+                        layers={{
+                            center: centerLayer,
+                            horizontal: horizontalLayer,
+                            bottom: bottomLayer,
+                            decor: decorLayer,
+                        }}
+                        colors={{
+                            center: centerColor,
+                            horizontal: horizontalColor,
+                            bottom: bottomColor,
+                            decor: decorColor,
+                        }}
+                    />
                 </div>
-                <div className='col-span-4 flex justify-center items-center'>
+                <div className='col-span-` col-start-4 flex justify-center items-center'>
                     <DesignTools
                         onCenterChange={(value) => setCenterLayer(value)}
                         onHorizontalChange={(value) => setHorizontalLayer(value)}
@@ -83,6 +78,7 @@ export default function DesignBadge() {
                             bottom: bottomColor,
                             decor: decorColor,
                         }}
+                        onDownloadAsSvg={downloadSvg}
                     />
                 </div>
             </div>

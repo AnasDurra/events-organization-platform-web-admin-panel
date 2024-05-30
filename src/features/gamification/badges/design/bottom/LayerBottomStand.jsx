@@ -3,7 +3,7 @@ import React from 'react';
 export default function LayerBottomStand({ color }) {
     return (
         <div
-            style={{ position: 'absolute', zIndex: -3 }}
+            style={{ position: 'absolute', zIndex: 10 }}
             className='mt-[10%]'
         >
             <svg

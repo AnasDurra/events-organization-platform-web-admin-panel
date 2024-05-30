@@ -5,7 +5,7 @@ export default function LayerBottomJewel({
     width = 160,
     height = 160,
     position = 'absolute',
-    zIndex = -3,
+    zIndex = 10,
     marginTop = '25%',
 }) {
     return (
