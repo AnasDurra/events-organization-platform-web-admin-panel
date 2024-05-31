@@ -4,7 +4,7 @@ export default function LayerBottomWaterfall({ color }) {
     return (
         <div
             style={{ position: 'absolute', zIndex: 10 }}
-            className='mt-[15%] transform rotate-180'
+            className='mt-[25%] transform rotate-180'
         >
             <svg
                 width='150'

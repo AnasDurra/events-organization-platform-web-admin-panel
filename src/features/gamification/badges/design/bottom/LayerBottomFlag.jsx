@@ -3,7 +3,7 @@ import React from 'react';
 export default function LayerBottomFlag({
     width = 280,
     height = 280,
-    marginTop = '25%',
+    marginTop = '35%',
     position = 'absolute',
     zIndex = 10,
     color,

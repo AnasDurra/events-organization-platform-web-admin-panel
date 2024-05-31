@@ -6,7 +6,7 @@ export default function LayerBottomJewel({
     height = 160,
     position = 'absolute',
     zIndex = 10,
-    marginTop = '25%',
+    marginTop = '35%',
 }) {
     return (
         <div style={{ position, zIndex, marginTop }}>

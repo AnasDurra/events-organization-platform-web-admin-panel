@@ -4,7 +4,7 @@ export default function LayerBottomStand({ color }) {
     return (
         <div
             style={{ position: 'absolute', zIndex: 10 }}
-            className='mt-[10%]'
+            className='mt-[20%]'
         >
             <svg
                 xmlns='http://www.w3.org/2000/svg'

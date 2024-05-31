@@ -4,6 +4,8 @@ import { CiPickerHalf } from 'react-icons/ci';
 import { CENTER_TYPES, HORIZONTAL_TYPES, BOTTOM_TYPES, DECOR_TYPES } from './constants';
 import ColorView from './ColorView';
 import BadgeOverView from './BadgeOverView';
+import { FaWandMagicSparkles } from "react-icons/fa6";
+
 
 const niceColors = ['#fbaf51', '#ce355f', '#474f7f', '#e7a99d', '#a986af'];
 
@@ -17,6 +19,7 @@ export default function DesignTools({
     onBottomColorChange,
     onDecorColorChange,
     onDownloadAsSvg,
+    onSave,
     layers,
     colors,
 }) {
@@ -216,18 +219,26 @@ export default function DesignTools({
 
             <Space.Compact>
                 <Button
-                    className='w-[60%]'
+                    className='min-w-[55%]'
+                    onClick={onSave}
                     type='primary'
-                    onClick={handleMagicClick}
+                    
                 >
-                    MAGIC
+                    Save
                 </Button>
                 <Button
-                    className='w-[40%]'
+                    className='min-w-[35%]'
                     onClick={onDownloadAsSvg}
                     type='dashed'
                 >
                     Download Svg
+                </Button>
+                <Button
+                    className='min-w-[10%]'
+                    onClick={handleMagicClick}
+                    type='dashed'
+                    icon={<FaWandMagicSparkles className='text-primary'></FaWandMagicSparkles>}
+                >
                 </Button>
             </Space.Compact>
         </div>

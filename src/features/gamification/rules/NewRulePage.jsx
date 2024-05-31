@@ -7,10 +7,12 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import { Button, Divider, Select, Modal, Form } from 'antd';
+import { Button, Divider, Select, Modal, Form, Space } from 'antd';
 import { BsGift } from 'react-icons/bs';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdOutlineAddRoad, MdEdit } from 'react-icons/md';
+import { CancelOutlined } from '@mui/icons-material';
+import AssignRewardModal from './AssignRewardModal';
 
 const fakeTriggers = [
     { trigger: 'Login Attempt', conditions: ['User is Admin', 'User is New'] },
@@ -23,25 +25,23 @@ export default function NewRulePage() {
     const [steps, setSteps] = useState([]);
     const [currentTrigger, setCurrentTrigger] = useState(null);
     const [currentCondition, setCurrentCondition] = useState(null);
+    const [isAddingStep, setIsAddingStep] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [editIndex, setEditIndex] = useState(null);
     const [form] = Form.useForm();
 
     const handleAddTrigger = (trigger) => {
         setCurrentTrigger(trigger);
-        setCurrentCondition(null);
+        setCurrentCondition(null); // Reset condition when trigger changes
     };
 
     const handleAddCondition = (condition) => {
         setCurrentCondition(condition);
-        handleAddStep(currentTrigger, condition);
-    };
-
-    const handleAddStep = (trigger, condition) => {
-        if (trigger && condition) {
-            setSteps([...steps, { trigger, condition }]);
+        if (currentTrigger && condition) {
+            setSteps([...steps, { trigger: currentTrigger, condition }]);
             setCurrentTrigger(null);
             setCurrentCondition(null);
+            setIsAddingStep(false);
         }
     };
 
@@ -55,10 +55,12 @@ export default function NewRulePage() {
     const handleUpdateStep = () => {
         form.validateFields().then((values) => {
             const updatedSteps = [...steps];
-            updatedSteps[editIndex] = values;
+            updatedSteps[editIndex] = { trigger: values.trigger, condition: values.condition };
             setSteps(updatedSteps);
             setEditModalVisible(false);
             setEditIndex(null);
+            setCurrentTrigger(null);
+            setCurrentCondition(null);
         });
     };
 
@@ -99,15 +101,19 @@ export default function NewRulePage() {
                                 <div className='flex justify-center items-center w-full'>{step.trigger}</div>
                             </TimelineOppositeContent>
                             <TimelineSeparator>
-                                <TimelineConnector />
-                                <TimelineDot
-                                    color='primary'
-                                    className='hover:cursor-pointer hover:shadow-lg'
-                                    onClick={() => handleEditStep(index)}
-                                >
-                                    <MdEdit className='text-xl' />
-                                </TimelineDot>
-                                <TimelineConnector />
+                                <TimelineConnector sx={{ height: '2em' }} />
+                                <Space.Compact size='medium'>
+                                    <Button
+                                        type='primary'
+                                        icon={<CancelOutlined className='hover:cursor-pointer' />}
+                                    />
+                                    <Button
+                                        type='primary'
+                                        icon={<MdEdit className='text-xl' />}
+                                        onClick={() => handleEditStep(index)}
+                                    />
+                                </Space.Compact>
+                                <TimelineConnector sx={{ height: '2em' }} />
                             </TimelineSeparator>
                             <TimelineContent
                                 sx={{ m: 'auto 0' }}
@@ -119,66 +125,106 @@ export default function NewRulePage() {
                     ))}
 
                     {/* Add Trigger or Condition */}
-                    <TimelineItem>
-                        <TimelineOppositeContent
-                            sx={{ m: 'auto 0' }}
-                            align='right'
-                        >
-                            <div className='flex justify-center items-center w-full h-full'>
-                                <Select
-                                    placeholder={<div className='text-center'>Select Trigger</div>}
-                                    onChange={handleAddTrigger}
-                                    className='w-[50%]'
-                                    value={currentTrigger}
-                                >
-                                    {fakeTriggers.map((item, index) => (
-                                        <Select.Option
-                                            key={index}
-                                            value={item.trigger}
-                                        >
-                                            <div className='flex justify-center items-center'>{item.trigger}</div>
-                                        </Select.Option>
-                                    ))}
-                                </Select>
-                            </div>
-                        </TimelineOppositeContent>
-                        <TimelineSeparator>
-                            <TimelineConnector sx={{ height: '2em' }} />
-                            <TimelineDot>
-                                <AiOutlineLoading3Quarters
-                                    className=' text-2xl'
-                                    style={{ animation: 'spin 7s linear infinite' }}
-                                />
-                            </TimelineDot>
-                            <TimelineConnector sx={{ height: '2em' }} />
-                        </TimelineSeparator>
-                        <TimelineContent
-                            sx={{ m: 'auto 0' }}
-                            align='left'
-                        >
-                            {canAddCondition && (
-                                <div className='flex justify-center items-center w-full'>
+                    {isAddingStep ? (
+                        <TimelineItem>
+                            <TimelineOppositeContent
+                                sx={{ m: 'auto 0' }}
+                                align='right'
+                            >
+                                <div className='flex justify-center items-center w-full h-full'>
                                     <Select
-                                        placeholder={<div className='text-center'>Select Condition</div>}
-                                        onChange={handleAddCondition}
+                                        placeholder={<div className='text-center'>Select Trigger</div>}
+                                        onChange={handleAddTrigger}
                                         className='w-[50%]'
-                                        value={currentCondition}
+                                        value={currentTrigger}
                                     >
-                                        {fakeTriggers
-                                            .find((t) => t.trigger === currentTrigger)
-                                            .conditions.map((condition, index) => (
-                                                <Select.Option
-                                                    key={index}
-                                                    value={condition}
-                                                >
-                                                    <div className='flex justify-center items-center'>{condition}</div>
-                                                </Select.Option>
-                                            ))}
+                                        {fakeTriggers.map((item, index) => (
+                                            <Select.Option
+                                                key={index}
+                                                value={item.trigger}
+                                            >
+                                                <div className='flex justify-center items-center'>{item.trigger}</div>
+                                            </Select.Option>
+                                        ))}
                                     </Select>
                                 </div>
-                            )}
-                        </TimelineContent>
-                    </TimelineItem>
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineConnector sx={{ height: '2em' }} />
+                                <TimelineDot
+                                    color='error'
+                                    onClick={() => setIsAddingStep(false)}
+                                >
+                                    {/*    <AiOutlineLoading3Quarters
+                                            className=' text-2xl animate-spin'
+                                            style={{ animation: 'spin 7s linear infinite' }}
+                                        /> */}
+                                    <CancelOutlined className='hover:cursor-pointer'></CancelOutlined>
+                                </TimelineDot>
+                                <TimelineConnector sx={{ height: '2em' }} />
+                            </TimelineSeparator>
+                            <TimelineContent
+                                sx={{ m: 'auto 0' }}
+                                align='left'
+                            >
+                                {canAddCondition && (
+                                    <div className='flex justify-center items-center w-full'>
+                                        <Select
+                                            placeholder={<div className='text-center'>Select Condition</div>}
+                                            onChange={handleAddCondition}
+                                            className='w-[50%]'
+                                            value={currentCondition}
+                                        >
+                                            {fakeTriggers
+                                                .find((t) => t.trigger === currentTrigger)
+                                                .conditions.map((condition, index) => (
+                                                    <Select.Option
+                                                        key={index}
+                                                        value={condition}
+                                                    >
+                                                        <div className='flex justify-center items-center'>
+                                                            {condition}
+                                                        </div>
+                                                    </Select.Option>
+                                                ))}
+                                        </Select>
+                                    </div>
+                                )}
+                            </TimelineContent>
+                        </TimelineItem>
+                    ) : (
+                        <TimelineItem>
+                            <TimelineOppositeContent
+                                sx={{ m: 'auto 0' }}
+                                align='right'
+                            >
+                                <div className='flex justify-center items-center w-full h-full'>
+                                    <Button
+                                        type='dashed'
+                                        icon={<MdOutlineAddRoad />}
+                                        onClick={() => setIsAddingStep(true)}
+                                    >
+                                        Add Step
+                                    </Button>
+                                </div>
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineConnector sx={{ height: '2em' }} />
+                                <TimelineDot>
+                                    <MdOutlineAddRoad className=' text-2xl' />
+                                </TimelineDot>
+                                <TimelineConnector sx={{ height: '2em' }} />
+                            </TimelineSeparator>
+                            <TimelineContent
+                                sx={{ m: 'auto 0' }}
+                                align='left'
+                            >
+                                <div className='flex justify-center items-center w-full h-full'>
+                                    Click "Add Step" to start adding a new checker.
+                                </div>
+                            </TimelineContent>
+                        </TimelineItem>
+                    )}
                 </Timeline>
                 <Divider>Reward</Divider>
 
@@ -239,6 +285,11 @@ export default function NewRulePage() {
                         </Form.Item>
                     </Form>
                 </Modal>
+
+                <AssignRewardModal
+                
+                isOpen={true}
+                 ></AssignRewardModal>
             </div>
         </div>
     );

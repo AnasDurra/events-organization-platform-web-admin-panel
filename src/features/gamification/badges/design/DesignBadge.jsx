@@ -6,7 +6,7 @@ import styles from './paper.module.css';
 import { Button } from 'antd';
 import { documentToSVG, elementToSVG, inlineResources } from 'dom-to-svg';
 
-export default function DesignBadge() {
+export default function DesignBadge({onFinish}) {
     const [centerLayer, setCenterLayer] = useState(CENTER_TYPES.SHARP_POLY6);
     const [horizontalLayer, setHorizontalLayer] = useState(HORIZONTAL_TYPES.DETAILS);
     const [bottomLayer, setBottomLayer] = useState(BOTTOM_TYPES.WATERFALL);
@@ -56,7 +56,7 @@ export default function DesignBadge() {
                         }}
                     />
                 </div>
-                <div className='col-span-` col-start-4 flex justify-center items-center'>
+                <div className='col-span-1 col-start-4 flex justify-center items-center'>
                     <DesignTools
                         onCenterChange={(value) => setCenterLayer(value)}
                         onHorizontalChange={(value) => setHorizontalLayer(value)}
@@ -79,9 +79,11 @@ export default function DesignBadge() {
                             decor: decorColor,
                         }}
                         onDownloadAsSvg={downloadSvg}
+                        onSave={onFinish}
                     />
                 </div>
             </div>
+          
         </div>
     );
 }
