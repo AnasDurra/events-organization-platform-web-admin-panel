@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Button, ColorPicker, Divider, Select, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, ColorPicker, Divider, Select, Space, message } from 'antd';
 import { CiPickerHalf } from 'react-icons/ci';
 import { CENTER_TYPES, HORIZONTAL_TYPES, BOTTOM_TYPES, DECOR_TYPES } from './constants';
 import ColorView from './ColorView';
 import BadgeOverView from './BadgeOverView';
-import { FaWandMagicSparkles } from "react-icons/fa6";
-
+import { FaWandMagicSparkles } from 'react-icons/fa6';
+import { useAddBadgeMutation } from '../../gamificationSlice';
 
 const niceColors = ['#fbaf51', '#ce355f', '#474f7f', '#e7a99d', '#a986af'];
 
@@ -23,6 +23,14 @@ export default function DesignTools({
     layers,
     colors,
 }) {
+    const [addBadge, { isLoading: isAddBadgeLoading, isError: isAddBadgeError }] = useAddBadgeMutation({
+        fixedCacheKey: 'ViewAllBadges',
+    });
+
+    useEffect(() => {
+        if (isAddBadgeError) message.error('Failed to add badge, try again later');
+    }, [isAddBadgeError]);
+
     const [centerColor, setCenterColor] = useState('#123456');
     const [horizontalColor, setHorizontalColor] = useState('#123456');
     const [bottomColor, setBottomColor] = useState('#123456');
@@ -75,15 +83,6 @@ export default function DesignTools({
             <Divider className='text-white'>Layers</Divider>
 
             <div className='flex w-full space-x-4 justify-center items-center'>
-                <div className='flex space-x-2'>
-                    {niceColors.map((color) => (
-                        <ColorView
-                            key={color}
-                            color={color}
-                            onClick={() => handleCenterColorChange(color)}
-                        />
-                    ))}
-                </div>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -94,6 +93,15 @@ export default function DesignTools({
                     <Select.Option value={CENTER_TYPES.POLY8}>Poly8</Select.Option>
                     <Select.Option value={CENTER_TYPES.ALMOST_STAR}>Almost Star</Select.Option>
                 </Select>
+                <div className='flex space-x-2'>
+                    {niceColors.map((color) => (
+                        <ColorView
+                            key={color}
+                            color={color}
+                            onClick={() => handleCenterColorChange(color)}
+                        />
+                    ))}
+                </div>
                 <ColorPicker
                     value={centerColor}
                     onChange={(color) => handleCenterColorChange(color.toHexString())}
@@ -114,15 +122,6 @@ export default function DesignTools({
             </div>
 
             <div className='flex w-full space-x-4 justify-center items-center'>
-                <div className='flex space-x-2'>
-                    {niceColors.map((color) => (
-                        <ColorView
-                            key={color}
-                            color={color}
-                            onClick={() => handleHorizontalColorChange(color)}
-                        />
-                    ))}
-                </div>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -133,6 +132,16 @@ export default function DesignTools({
                     <Select.Option value={HORIZONTAL_TYPES.DETAILS}>Details</Select.Option>
                     <Select.Option value={HORIZONTAL_TYPES.WING}>Wing</Select.Option>
                 </Select>
+
+                <div className='flex space-x-2'>
+                    {niceColors.map((color) => (
+                        <ColorView
+                            key={color}
+                            color={color}
+                            onClick={() => handleHorizontalColorChange(color)}
+                        />
+                    ))}
+                </div>
                 <ColorPicker
                     value={horizontalColor}
                     onChange={(color) => handleHorizontalColorChange(color.toHexString())}
@@ -153,15 +162,6 @@ export default function DesignTools({
             </div>
 
             <div className='flex w-full space-x-4 justify-center items-center'>
-                <div className='flex space-x-2'>
-                    {niceColors.map((color) => (
-                        <ColorView
-                            key={color}
-                            color={color}
-                            onClick={() => handleBottomColorChange(color)}
-                        />
-                    ))}
-                </div>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -173,6 +173,15 @@ export default function DesignTools({
                     <Select.Option value={BOTTOM_TYPES.WATERFALL}>Waterfall</Select.Option>
                     <Select.Option value={BOTTOM_TYPES.FLAG}>Flag</Select.Option>
                 </Select>
+                <div className='flex space-x-2'>
+                    {niceColors.map((color) => (
+                        <ColorView
+                            key={color}
+                            color={color}
+                            onClick={() => handleBottomColorChange(color)}
+                        />
+                    ))}
+                </div>
                 <ColorPicker
                     value={bottomColor}
                     onChange={(color) => handleBottomColorChange(color.toHexString())}
@@ -186,15 +195,6 @@ export default function DesignTools({
             </div>
 
             <div className='flex w-full space-x-4 justify-center items-center'>
-                <div className='flex space-x-2'>
-                    {niceColors.map((color) => (
-                        <ColorView
-                            key={color}
-                            color={color}
-                            onClick={() => handleDecorColorChange(color)}
-                        />
-                    ))}
-                </div>
                 <Select
                     variant='filled'
                     className='w-48'
@@ -205,6 +205,15 @@ export default function DesignTools({
                     <Select.Option value={DECOR_TYPES.CRYSTAL}>Crystal</Select.Option>
                     <Select.Option value={DECOR_TYPES.GEM_CIRCULAR}>Circular Gem</Select.Option>
                 </Select>
+                <div className='flex space-x-2'>
+                    {niceColors.map((color) => (
+                        <ColorView
+                            key={color}
+                            color={color}
+                            onClick={() => handleDecorColorChange(color)}
+                        />
+                    ))}
+                </div>
                 <ColorPicker
                     value={decorColor}
                     onChange={(color) => handleDecorColorChange(color.toHexString())}
@@ -219,13 +228,11 @@ export default function DesignTools({
 
             <Space.Compact>
                 <Button
-                    className='min-w-[55%]'
-                    onClick={onSave}
-                    type='primary'
-                    
-                >
-                    Save
-                </Button>
+                    className='min-w-[10%]'
+                    onClick={handleMagicClick}
+                    type='dashed'
+                    icon={<FaWandMagicSparkles className='text-primary'></FaWandMagicSparkles>}
+                ></Button>
                 <Button
                     className='min-w-[35%]'
                     onClick={onDownloadAsSvg}
@@ -233,12 +240,14 @@ export default function DesignTools({
                 >
                     Download Svg
                 </Button>
+
                 <Button
-                    className='min-w-[10%]'
-                    onClick={handleMagicClick}
-                    type='dashed'
-                    icon={<FaWandMagicSparkles className='text-primary'></FaWandMagicSparkles>}
+                    className='min-w-[55%]'
+                    onClick={onSave}
+                    type='primary'
+                    loading={isAddBadgeLoading}
                 >
+                    Save
                 </Button>
             </Space.Compact>
         </div>

@@ -18,6 +18,8 @@ import { MdBlock } from 'react-icons/md';
 import { SiGamejolt } from 'react-icons/si';
 import { SlBadge } from 'react-icons/sl';
 import { GoWorkflow } from 'react-icons/go';
+import { FaStarHalfStroke } from "react-icons/fa6";
+
 
 const { useToken } = theme;
 
@@ -135,6 +137,12 @@ export default function AppLayout() {
                                             name: 'Badges',
                                             url: '/gamification/badges',
                                             icon: <SlBadge style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                        },
+                                        {
+                                            id: '6-1',
+                                            name: 'Points',
+                                            url: '/gamification/points',
+                                            icon: <FaStarHalfStroke style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                     ],
                                 },
