@@ -1,31 +1,53 @@
+import { CloseOutlined } from '@ant-design/icons';
 import { CancelOutlined } from '@mui/icons-material';
-import { Card } from 'antd';
+import { Card, Divider } from 'antd';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function PointsRewardCard({ point ,onDelete}) {
+export default function PointsRewardCard({ value, name, type, onDelete }) {
     return (
         <Card
             key={uuidv4()}
-            title={<div className='text-center text-white '>{'Platform points'}</div>}
             onClick={() => {}}
             bordered
             className='shadow-lg hover:shadow-none '
-            extra={
-                <div
-                    className='flex justify-center items-center  hover:cursor-pointer '
-                    onClick={onDelete}
-                >
-                    <CancelOutlined className='text-white ' />
-                </div>
-            }
         >
-            <div className='flex justify-center items-center flex-col'>
-                <img
-                    src={`/src/assets/game-point.svg`}
-                    className='w-[10em]'
-                ></img>
-                <div className='text-lg text-blue-400'>{point}</div>
+            <div className='flex justify-end items-center mb-[-2em] '>
+                <CloseOutlined
+                    className='text-[1.5em] text-gray-500 hover:cursor-pointer'
+                    onClick={onDelete}
+                />
+            </div>
+            <div className='mt-[-2em] flex flex-col justify-center items-center'>
+                <div
+                    className={`text-lg font-bold bg-gradient-to-r  text-transparent bg-clip-text inline-block ${
+                        type == 'pp'
+                            ? 'from-green-500 via-green-600 to-green-900'
+                            : type == 'rp'
+                            ? 'from-yellow-500 via-yellow-600 to-yellow-900'
+                            : null
+                    }`}
+                >
+                    {name}
+                </div>
+                <div className='flex justify-center items-center flex-col'>
+                    <img
+                        src={
+                            type == 'pp'
+                                ? `/src/assets/game-point.svg`
+                                : type == 'rp'
+                                ? `/src/assets/points-rp.svg`
+                                : null
+                        }
+                        className='w-[7em]'
+                    ></img>
+                    <Divider
+                        style={{ margin: 0 }}
+                        className='font-mono'
+                    >
+                        {value}
+                    </Divider>
+                </div>
             </div>
         </Card>
     );

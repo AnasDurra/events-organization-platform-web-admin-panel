@@ -24,9 +24,7 @@ export default function AddingNewStepTimeLineItem({ availableTriggers, definedDa
     };
 
     const handleSelectTrigger = (triggerId) => {
-        console.log(triggerId);
         const newTrigger = definedData.find((t) => t.id == triggerId);
-        console.log('trig: ', newTrigger);
         setCurrentTrigger(newTrigger);
         setCurrentCondition(null);
     };
@@ -50,7 +48,6 @@ export default function AddingNewStepTimeLineItem({ availableTriggers, definedDa
                 sx={{ m: 'auto 0' }}
                 align='right'
             >
-                {console.log('curr: ', currentTrigger, currentCondition)}
                 <div className='flex justify-center items-center w-full h-full'>
                     <Select
                         placeholder={<div className='text-center'>Select Trigger</div>}
@@ -73,7 +70,7 @@ export default function AddingNewStepTimeLineItem({ availableTriggers, definedDa
                     >
                         <CancelOutlined className='hover:cursor-pointer'></CancelOutlined>
                     </TimelineDot>
-                    {currentCondition && currentConditionValue > 0 && (
+                    {currentCondition && (currentCondition?.operator?.id == 1 ? currentConditionValue > 0 : true) && (
                         <TimelineDot
                             color='success'
                             onClick={handleFinish}
@@ -111,7 +108,7 @@ export default function AddingNewStepTimeLineItem({ availableTriggers, definedDa
                             </Select>
 
                             <InputNumber
-                                min={1}
+                                min={currentCondition?.id == 1 ? 1 : undefined}
                                 value={currentConditionValue}
                                 onChange={setCurrenConditionValue}
                             ></InputNumber>

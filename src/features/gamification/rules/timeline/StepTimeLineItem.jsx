@@ -6,11 +6,14 @@ import { MdEdit } from 'react-icons/md';
 import { v4 as uuidv4 } from 'uuid';
 
 function createConditionSentence(step) {
-      const { value, trigger, condition } = step;
-      return `${value} ${value === 1 ? 'time' : 'times'}`;
-  }
+    const { value, trigger, condition } = step;
+    return `${condition?.operator?.id == 1 ? '' : condition?.operator?.id == 2 ? 'More than' : 'Less than'} ${value} ${
+        value === 1 ? 'time' : 'times'
+    }`;
+}
 
 export default function StepTimeLineItem({ step, onDelete, onEdit }) {
+    console.log('step: ', step);
     return (
         <TimelineItem key={uuidv4()}>
             <TimelineOppositeContent

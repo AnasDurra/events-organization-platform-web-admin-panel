@@ -1,89 +1,211 @@
-import { Button, Space, Table, Tag } from 'antd';
-import React, { useState } from 'react';
-import { image } from '../badges/image';
-import { render } from 'react-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Button, Form, Input, Space, Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useGetRulesQuery, useUpdateRuleMutation } from '../gamificationSlice';
+import { image } from '../badges/image';
+import dayjs from 'dayjs';
 
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text) => <a>{text}</a>,
-        align: 'center',
-    },
-    {
-        title: 'Conditions',
-        dataIndex: 'age',
-        key: 'age',
-        width: '40%',
-        align: 'center',
-        render: () => {
-            return (
-                <div className='text-pretty text-center text-sm'>
-                    <span>1. fill form 10 times</span> <br></br>
-                    <span>2. send message more than 40 times in 30 days</span>
-                </div>
-            );
-        },
-    },
-    {
-        title: 'Rewards',
-        dataIndex: 'address',
-        key: 'address',
-        width: '40%',
-        align: 'center',
-        render: () => {
-            return (
-                <div className='flex justify-center items-center space-x-4'>
-                    <img
-                        src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
-                        className='w-[3.5em]'
-                    ></img>
-                    <img
-                        src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
-                        className='w-[3.5em]'
-                    ></img>
-                    <img
-                        src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
-                        className='w-[3.5em]'
-                    ></img>
-                </div>
-            );
-        },
-    },
-];
-
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
+const EditableContext = React.createContext(null);
+const EditableRow = ({ index, ...props }) => {
+    const [form] = Form.useForm();
+    return (
+        <Form
+            form={form}
+            component={false}
+        >
+            <EditableContext.Provider value={form}>
+                <tr {...props} />
+            </EditableContext.Provider>
+        </Form>
+    );
+};
+const EditableCell = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
+    const [editing, setEditing] = useState(false);
+    const inputRef = useRef(null);
+    const form = useContext(EditableContext);
+    useEffect(() => {
+        if (editing) {
+            inputRef.current?.focus();
+        }
+    }, [editing]);
+    const toggleEdit = () => {
+        setEditing(!editing);
+        form.setFieldsValue({
+            [dataIndex]: record[dataIndex],
+        });
+    };
+    const save = async () => {
+        try {
+            const values = await form.validateFields();
+            toggleEdit();
+            handleSave({
+                ...record,
+                ...values,
+            });
+        } catch (errInfo) {
+            console.log('Save failed:', errInfo);
+        }
+    };
+    let childNode = children;
+    if (editable) {
+        childNode = editing ? (
+            <Form.Item
+                style={{
+                    margin: 0,
+                }}
+                name={dataIndex}
+                rules={[
+                    {
+                        required: true,
+                        message: `${title} is required.`,
+                    },
+                ]}
+            >
+                <Input
+                    ref={inputRef}
+                    onPressEnter={save}
+                    onBlur={save}
+                />
+            </Form.Item>
+        ) : (
+            <div
+                className='editable-cell-value-wrap'
+                style={{
+                    paddingRight: 24,
+                }}
+                onClick={toggleEdit}
+            >
+                {children}
+            </div>
+        );
+    }
+    return <td {...restProps}>{childNode}</td>;
+};
 
 export default function ViewAllRules() {
-    const [isAddingRule, setIsAddingRule] = useState(false);
     const navigate = useNavigate();
+
+    const { data: { result: rules } = { result: [] }, isLoading: isRulesLoading } = useGetRulesQuery();
+    const [updateRule, { isLoading: isUpdatingRule }] = useUpdateRuleMutation();
+
+    const handleSave = (row) => {
+        updateRule({ rule_id: row.id, name: row.name });
+    };
+
+    const components = {
+        body: {
+            row: EditableRow,
+            cell: EditableCell,
+        },
+    };
+
+    const defaultColumns = [
+        {
+            title: 'created',
+            dataIndex: 'createdAt',
+            key: 'name',
+            width: '20%',
+            render: (date) => (
+               dayjs(date).format('YYYY/MM/DD | HH:mm')
+            ),
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            editable: true,
+            width: '20%',
+            render: (text) => (
+                <Input
+                    variant='filled'
+                    value={text}
+                ></Input>
+            ),
+        },
+        {
+            title: 'Requirements',
+            dataIndex: 'conditions',
+            key: 'conditions',
+            width: '30%',
+            render: (conditions) => {
+                return (
+                    <div className='text-pretty text-left text-sm flex flex-col justify-center items-start'>
+                        {conditions.map((condition, index) => (
+                            <span key={index}>{`🔘
+     ${condition.definedData.name} ${condition.operator.name} ${condition.value}`}</span>
+                        ))}
+                    </div>
+                );
+            },
+        },
+        {
+            title: 'Rewards',
+            dataIndex: 'rewards',
+            key: 'rewards',
+            width: '40%',
+            render: (rewards) => {
+                return (
+                    <div className='flex  space-x-1'>
+                        {rewards.map((reward, index) => (
+                            <img
+                                key={index}
+                                src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
+                                className='w-[3.5em]'
+                                alt={reward.name}
+                            />
+                        ))}
+                    </div>
+                );
+            },
+        },
+        {
+            title: 'Active',
+            dataIndex: 'enabled',
+            key: 'activation',
+            align: 'center',
+            width: '10%',
+            render: (val) => <span className='flex justify-center items-center'>{val ? '✅ ' : '❌ '}</span>,
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            align: 'center',
+
+            render: (_, record) => (
+                <Space
+                    size='middle'
+                    align='center'
+                >
+                    <a
+                        onClick={() => {
+                            updateRule({ rule_id: record.id, enabled: !record.enabled });
+                        }}
+                    >
+                        {record.enabled ? 'Deactivate' : 'Activate'}
+                    </a>
+                </Space>
+            ),
+        },
+    ];
+
+    const columns = defaultColumns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                editable: col.editable,
+                dataIndex: col.dataIndex,
+                title: col.title,
+                handleSave,
+            }),
+        };
+    });
     return (
         <div className='grid grid-cols-12'>
-            <div className='col-start-2  col-span-10 flex flex-col w-full space-y-10'>
+            <div className='col-start-2 col-span-10 flex flex-col w-full space-y-10'>
                 <div className='flex space-x-4'>
                     <Button
                         type='primary'
@@ -95,8 +217,10 @@ export default function ViewAllRules() {
                     </Button>
                 </div>
                 <Table
+                    components={components}
                     columns={columns}
-                    dataSource={data}
+                    dataSource={rules.slice().sort((a, b) => b.id - a.id)}
+                    loading={isRulesLoading || isUpdatingRule}
                 />
             </div>
         </div>

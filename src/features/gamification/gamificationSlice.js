@@ -22,6 +22,33 @@ export const gamificationSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['badges'],
         }),
+
+        getPoints: builder.query({
+            query: () => `gamification/rewards/points`,
+            providesTags: ['points'],
+        }),
+        addPoints: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/rewards/points',
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['points'],
+        }),
+
+        getRedeemablePoints: builder.query({
+            query: () => `gamification/rewards/redeemable-points`,
+            providesTags: ['points-rp'],
+        }),
+        addRedeemablePoints: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/rewards/redeemable-points',
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['points-rp'],
+        }),
+
         getDefinedData: builder.query({
             query: () => `gamification/defined-data`,
         }),
@@ -64,4 +91,16 @@ export const gamificationSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useGetBadgesQuery, useAddBadgeMutation, useUpdateBadgeMutation,useGetDefinedDataQuery } = gamificationSlice;
+export const {
+    useGetPointsQuery,
+    useGetBadgesQuery,
+    useAddBadgeMutation,
+    useUpdateBadgeMutation,
+    useAddPointsMutation,
+    useAddRedeemablePointsMutation,
+    useGetDefinedDataQuery,
+    useAddRuleMutation,
+    useUpdateRuleMutation,
+    useGetRulesQuery,
+    useGetRedeemablePointsQuery,
+} = gamificationSlice;

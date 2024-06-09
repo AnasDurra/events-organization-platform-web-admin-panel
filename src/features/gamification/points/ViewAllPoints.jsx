@@ -2,9 +2,12 @@ import { Button, ConfigProvider, Tabs } from 'antd';
 import React, { useState } from 'react';
 import EditPointModal from './EditPointModal';
 import PointsCard from './PointsCard';
+import ViewPlatformPointsTab from './ViewPlatformPointsTab';
+import ViewRedeemablePointsTab from './ViewRedeemablePointsTab';
 
 export default function ViewAllPoints() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
     const items = [
         /*  {
             key: '11',
@@ -18,21 +21,12 @@ export default function ViewAllPoints() {
                 <div className='flex justify-center items-center gap-x-1'>
                     <img
                         src={'/src/assets/game-point.svg'}
-                        className='w-[1.7em] mt-[0.3em]'
+                        className='w-[2.5em] mt-[0.3em]'
                     ></img>{' '}
                     Platform points
                 </div>
             ),
-            children: (
-                <div className='grid grid-cols-4 gap-4'>
-                    <PointsCard
-                        name={'abo abdo'}
-                        typeId={1}
-                        amount={150}
-                        onEditClick={() => setIsEditModalOpen(true)}
-                    />
-                </div>
-            ),
+            children: <ViewPlatformPointsTab></ViewPlatformPointsTab>,
         },
         {
             key: '2',
@@ -40,7 +34,7 @@ export default function ViewAllPoints() {
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
                         src={'/src/assets/points-xp.svg'}
-                        className='w-[1.5em] mt-[0.1em]'
+                        className='w-[2em] mb-[0.1em]'
                     ></img>{' '}
                     Experience points
                 </div>
@@ -52,13 +46,13 @@ export default function ViewAllPoints() {
             label: (
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
-                        src={'/src/assets/points-xp.svg'}
-                        className='w-[1.5em] mt-[0.1em]'
+                        src={'/src/assets/points-rp.svg'}
+                        className='w-[2.2em] mt-[0.1em]'
                     ></img>{' '}
                     Redeemable points
                 </div>
             ),
-            children: 'RP',
+            children: <ViewRedeemablePointsTab></ViewRedeemablePointsTab>,
         },
     ];
 

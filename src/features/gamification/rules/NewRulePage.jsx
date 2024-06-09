@@ -7,7 +7,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import { Button, Card, ConfigProvider, Divider, Form, Input, Modal, Select, Space, Tooltip } from 'antd';
+import { Button, Card, ConfigProvider, Divider, Form, Input, Modal, Select, Space, Tooltip, message } from 'antd';
 import * as React from 'react';
 import { useState } from 'react';
 import { BsGift } from 'react-icons/bs';
@@ -22,7 +22,7 @@ import EditStepModal from './EditStepModal';
 import StepTimeLineItem from './timeline/StepTimeLineItem';
 import HeaderTimeLineItem from './timeline/HeaderTimeLineItem';
 import { MdOutlineTitle } from 'react-icons/md';
-import { useGetDefinedDataQuery } from '../gamificationSlice';
+import { useAddRuleMutation, useGetDefinedDataQuery } from '../gamificationSlice';
 
 const fakeData = [
     {
@@ -74,6 +74,7 @@ export default function NewRulePage() {
     const [isAssignRewardModalOpen, setIsAssignRewardModalOpen] = useState(false);
 
     const { data: { result: definedData } = { result: [] } } = useGetDefinedDataQuery();
+    const [addRule, { isLoading: isAddingRuleLoading }] = useAddRuleMutation();
 
     const handleEditStep = (index) => {
         setEditIndex(index);
@@ -97,7 +98,37 @@ export default function NewRulePage() {
         setSteps(steps.filter((_, i) => i !== index));
     };
 
-    const availableTriggers = fakeData.filter((data) => !steps.some((step) => step.trigger.name === data.name));
+    const handleFinish = () => {
+        const rule = {
+            name: title,
+            conditions: steps.map((step) => ({
+                defined_data_id: parseInt(step.condition.defined_data_id),
+                operator_id: parseInt(step.condition.operator_id),
+                value: step.value,
+                //time: step.condition.time || null,
+            })),
+            rewards: [...badges, ...points].map((reward) => ({
+                reward_id: reward.reward_id,
+            })),
+        };
+
+        addRule(rule)
+            .unwrap()
+            .then((res) => {
+                navigate(-1);
+            })
+            .catch((e) => {
+                message.error('Failed to add rule');
+            });
+
+        // Rest of your code for handling the rule object
+    };
+    const availableTriggers = definedData.filter((data) => !steps.some((step) => step.trigger.name == data.name));
+
+    const isFinishDisabled =
+        steps.length == 0 ||
+        badges.length + points.length == 0 ||
+        !steps.some((step) => step.condition.operator_id == '1');
 
     return (
         <div className='grid grid-cols-12'>
@@ -105,7 +136,8 @@ export default function NewRulePage() {
                 icon={<ArrowLeftOutlined />}
                 type='text'
                 onClick={() => navigate(-1)}
-            ></Button>
+            />
+            {console.log("poo: ",points)}
             <div className='col-start-2 col-span-10'>
                 <Timeline>
                     {/* Triggers & Conditions */}
@@ -117,12 +149,16 @@ export default function NewRulePage() {
                                 placeholder='Rule Title'
                                 rootClassName='text-center'
                                 prefix={<MdOutlineTitle className='text-gray-500' />}
+                                value={title}
+                                onChange={(e) => {
+                                    setTitle(e.target.value);
+                                }}
                             />
                         </Space.Compact>
                         <Tooltip
                             title={
-                                steps.length == 0 || badges.length + points.length == 0
-                                    ? 'A valid rule contains at least one checker and one reward'
+                                isFinishDisabled
+                                    ? 'A valid rule has a title and contains at least one equal checker and one reward'
                                     : ''
                             }
                         >
@@ -130,7 +166,9 @@ export default function NewRulePage() {
                                 <Button
                                     type='primary'
                                     className='min-w-36'
-                                    disabled={steps.length == 0 || badges.length + points.length == 0}
+                                    disabled={isFinishDisabled}
+                                    onClick={handleFinish}
+                                    loading={isAddingRuleLoading}
                                 >
                                     Add Rule
                                 </Button>{' '}
@@ -227,29 +265,6 @@ export default function NewRulePage() {
                     </TimelineItem>
                 </Timeline>
 
-                {/* Edit Modal */}
-                <EditStepModal
-                    trigger={fakeData.filter((item, i) => i == editIndex)[0]}
-                    fakeData={fakeData}
-                    isOpen={editModalVisible}
-                    onCancel={() => setEditModalVisible(false)}
-                    onFinish={(fields) => {
-                        console.log(fields);
-                    }}
-                />
-
-                {/* Assign Reward Modal */}
-                <AssignRewardModal
-                    isOpen={isAssignRewardModalOpen}
-                    onClose={() => setIsAssignRewardModalOpen(false)}
-                    onFinish={(reward) => {
-                        if (reward.type == 'badge') setBadges([...badges, { ...reward, type: undefined }]);
-                        else if (reward.type == 'points') setPoints([reward.amount]);
-
-                        setIsAssignRewardModalOpen(false);
-                    }}
-                />
-
                 <ConfigProvider
                     theme={{
                         components: {
@@ -272,6 +287,8 @@ export default function NewRulePage() {
                             );
                         })}
 
+                        {console.log(points)}
+
                         {points.map((point, index) => {
                             return (
                                 <PointsRewardCard
@@ -279,12 +296,48 @@ export default function NewRulePage() {
                                     onDelete={() => {
                                         setPoints((points) => points.filter((point, i) => i != index));
                                     }}
-                                    point={point}
+                                    name={point.name}
+                                    type={point.type}
+                                    value={point?.value}
                                 />
                             );
                         })}
                     </div>
                 </ConfigProvider>
+
+                {/* Edit Modal */}
+                <EditStepModal
+                    step={steps[editIndex]}
+                    trigger={definedData.filter((item, i) => i == editIndex)[0]}
+                    isOpen={editModalVisible}
+                    onCancel={() => setEditModalVisible(false)}
+                    onFinish={(fields) => {
+                        steps[editIndex].trigger = definedData?.find((trig) => trig.id == fields.trigger);
+                        steps[editIndex].condition = definedData
+                            ?.find((trig) => trig.id == fields.trigger)
+                            .operators?.find((op) => op.id == fields.condition);
+
+                        steps[editIndex].value = fields?.value;
+
+                        setEditModalVisible(false);
+
+                        console.log('def', definedData);
+                        console.log('steps', steps);
+                        console.log(fields);
+                    }}
+                />
+
+                {/* Assign Reward Modal */}
+                <AssignRewardModal
+                    isOpen={isAssignRewardModalOpen}
+                    onClose={() => setIsAssignRewardModalOpen(false)}
+                    onFinish={(reward) => {
+                        if (reward.type == 'badge') setBadges([...badges, { ...reward, type: undefined }]);
+                        else if (reward.type == 'pp' || reward.type == 'rp') setPoints((p) => [...p, reward]);
+
+                        setIsAssignRewardModalOpen(false);
+                    }}
+                />
             </div>
         </div>
     );

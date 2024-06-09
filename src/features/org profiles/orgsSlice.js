@@ -8,10 +8,11 @@ export const orgsSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: org,
             }),
+            invalidatesTags: ['orgs'],
         }),
         getOrganizations: builder.query({
             query: () => '/organization',
-            providesTags: ['featured-events'],
+            providesTags: ['featured-events','orgs'],
         }),
     }),
 });

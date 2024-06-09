@@ -68,14 +68,26 @@ export default function DesignBadge({ onFinish }) {
                     <Input
                         placeholder='Badge title'
                         className='w-full'
-                        bordered
                         value={badgeTitle}
                         onChange={(e) => setBadgeTitle(e.target.value)}
                         required
                     />
                     <div className='flex justify-start items-center w-full space-x-8 mt-4'>
-                        <Checkbox checked={isActive}>Active</Checkbox>
-                        <Checkbox checked={isAnonymous}> Anonymous</Checkbox>
+                        <Checkbox
+                            checked={isActive}
+                            onChange={(e) => setIsActive(e.target.checked)}
+                        >
+                            Active
+                        </Checkbox>
+                        <Checkbox
+                            checked={isAnonymous}
+                            onChange={(e) => {
+                                setIsAnonymous(e.target.checked);
+                            }}
+                        >
+                            {' '}
+                            Anonymous
+                        </Checkbox>
                     </div>
                     <DesignTools
                         onCenterChange={(value) => setCenterLayer(value)}
