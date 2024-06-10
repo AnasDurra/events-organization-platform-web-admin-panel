@@ -17,6 +17,8 @@ import NewRulePage from '../features/gamification/rules/NewRulePage';
 import ViewAllPoints from '../features/gamification/points/ViewAllPoints';
 import ViewShop from '../features/gamification/shop/ViewShop';
 import ViewShopTickets from '../features/gamification/shop/ViewShopTickets';
+import ViewShop from '../features/gamification/shop/ViewShop';
+import ViewShopTickets from '../features/gamification/shop/ViewShopTickets';
 
 export const router = createBrowserRouter([
     {
