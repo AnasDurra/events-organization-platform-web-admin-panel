@@ -212,7 +212,7 @@ export default function FeaturedEventsPage() {
                             type='primary'
                             onClick={() => setIsNewFeaturedEventModalOpen(true)}
                         >
-                            New Featured Post
+                            New
                         </Button>
                         <Button
                             type='dashed'

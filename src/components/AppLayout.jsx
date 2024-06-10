@@ -19,6 +19,7 @@ import { SiGamejolt } from 'react-icons/si';
 import { SlBadge } from 'react-icons/sl';
 import { GoWorkflow } from 'react-icons/go';
 import { FaStarHalfStroke } from "react-icons/fa6";
+import { LuShoppingCart } from "react-icons/lu";
 
 
 const { useToken } = theme;
@@ -125,7 +126,7 @@ export default function AppLayout() {
                                     icon: <SiGamejolt style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                     sub_menu: [
                                         {
-                                            id: '6-2',
+                                            id: '6-1',
                                             name: 'Rules',
                                             url: '/gamification/rules',
                                             icon: (
@@ -133,16 +134,22 @@ export default function AppLayout() {
                                             ),
                                         },
                                         {
-                                            id: '6-1',
+                                            id: '6-2',
                                             name: 'Badges',
                                             url: '/gamification/badges',
                                             icon: <SlBadge style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                         {
-                                            id: '6-1',
+                                            id: '6-3',
                                             name: 'Points',
                                             url: '/gamification/points',
                                             icon: <FaStarHalfStroke style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                        },
+                                        {
+                                            id: '6-4',
+                                            name: 'Shop',
+                                            url: '/gamification/shop',
+                                            icon: <LuShoppingCart style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                     ],
                                 },

@@ -130,7 +130,7 @@ export default function OrganizationsPage() {
                                 navigate('/org/new');
                             }}
                         >
-                            new organization
+                            new
                         </Button>
                     </Space>
                     <Table
