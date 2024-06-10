@@ -54,10 +54,11 @@ export default function Sider({ isSiderOpen, userMenu, userMenuIsLoading }) {
         >
             <Menu
                 mode='inline'
-                defaultOpenKeys={['/payment', '/blocked','/gamification']}
+                defaultOpenKeys={['/payment', '/blocked', '/gamification']}
                 items={items}
                 onClick={handleMenuClick}
-                className='min-h-[100vh]'
+                className='h-[92svh] overflow-auto scroll-smooth'
+                style={{ scrollbarWidth: 'thin', scrollbarColor: '#2B3467' }}
             />
         </AntDSider>
     );

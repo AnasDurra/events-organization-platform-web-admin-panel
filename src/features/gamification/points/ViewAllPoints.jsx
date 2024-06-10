@@ -34,7 +34,7 @@ export default function ViewAllPoints() {
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
                         src={'/src/assets/points-xp.svg'}
-                        className='w-[2em] mb-[0.1em]'
+                        className='w-[2.2em] mb-[0.1em]'
                     ></img>{' '}
                     Experience points
                 </div>
@@ -47,7 +47,7 @@ export default function ViewAllPoints() {
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
                         src={'/src/assets/points-rp.svg'}
-                        className='w-[2.2em] mt-[0.1em]'
+                        className='w-[2.6em] mt-[0.1em]'
                     ></img>{' '}
                     Redeemable points
                 </div>

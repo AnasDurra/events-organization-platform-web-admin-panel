@@ -15,6 +15,8 @@ import ViewAllBadges from '../features/gamification/badges/ViewAllBadges';
 import ViewAllRules from '../features/gamification/rules/ViewAllRules';
 import NewRulePage from '../features/gamification/rules/NewRulePage';
 import ViewAllPoints from '../features/gamification/points/ViewAllPoints';
+import ViewShop from '../features/gamification/shop/ViewShop';
+import ViewShopTickets from '../features/gamification/shop/ViewShopTickets';
 
 export const router = createBrowserRouter([
     {
@@ -76,6 +78,16 @@ export const router = createBrowserRouter([
                     {
                         path: 'points',
                         element: <ViewAllPoints />,
+                    },
+                    {
+                        path: 'shop',
+                        element: <ViewShop />,
+                        children: [
+                            {
+                                index:true,
+                                element: <ViewShopTickets />,
+                            },
+                        ],
                     },
                 ],
             },

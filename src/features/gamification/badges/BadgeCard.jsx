@@ -6,8 +6,8 @@ import { image } from './image';
 import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { GiShield, GiShieldDisabled } from 'react-icons/gi';
 import { AiOutlineEye } from 'react-icons/ai';
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import { GoShieldSlash } from "react-icons/go";
+import { IoShieldCheckmarkOutline } from 'react-icons/io5';
+import { GoShieldSlash } from 'react-icons/go';
 
 export default function BadgeCard({ badgeObj }) {
     return (
@@ -38,6 +38,24 @@ export default function BadgeCard({ badgeObj }) {
                 description={
                     <div className={`flex flex-col ${'mt-[-0.5em]'}`}>
                         <Divider plain>Rules</Divider>
+                        <div className='text-pretty text-left text-gray-500'>
+                            {badgeObj?.reward?.rule?.conditions ? (
+                                <div>
+                                    {badgeObj?.reward?.rule?.conditions.map((condition, condIndex) => (
+                                        <>
+                                            <span key={condIndex}>
+                                                {`${condIndex + 1}. ${condition.definedData.name} ${
+                                                    condition.operator.name
+                                                } ${condition.value}`}
+                                            </span>
+                                            <br></br>
+                                        </>
+                                    ))}
+                                </div>
+                            ) : (
+                                'No rules'
+                            )}
+                        </div>
                         {/* <Row justify={'center'}>
                         <Col span={8}>Price:</Col>
                         <Col

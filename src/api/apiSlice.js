@@ -15,6 +15,18 @@ export const apiSlice = createApi({
             return headers;
         },
     }),
-    tagTypes: ['ticketing-packages', 'featured-events', 'attendees', 'ban-orgs', 'ban-attendee','orgs', 'badges', 'rules','points','points-rp'],
+    tagTypes: [
+        'ticketing-packages',
+        'featured-events',
+        'attendees',
+        'ban-orgs',
+        'ban-attendee',
+        'orgs',
+        'badges',
+        'rules',
+        'points',
+        'points-rp',
+        'prizes',
+    ],
     endpoints: () => ({}),
 });

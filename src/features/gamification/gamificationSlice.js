@@ -73,6 +73,27 @@ export const gamificationSlice = apiSlice.injectEndpoints({
             invalidatesTags: ['rules'],
         }),
 
+        getPrizes: builder.query({
+            query: () => `gamification/prizes`,
+            providesTags: ['prizes'],
+        }),
+        addTicketPrize: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/prizes/tickets-prize',
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['prizes'],
+        }),
+        editTicketPrize: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/prizes/tickets-prize',
+                method: 'PUT',
+                body: body,
+            }),
+            invalidatesTags: ['prizes'],
+        }),
+
         /*   addFeaturedEvent: builder.mutation({
             query: (body) => ({
                 url: 'featured-events',
@@ -103,4 +124,7 @@ export const {
     useUpdateRuleMutation,
     useGetRulesQuery,
     useGetRedeemablePointsQuery,
+    useGetPrizesQuery,
+    useAddTicketPrizeMutation,
+    useEditTicketPrizeMutation,
 } = gamificationSlice;
