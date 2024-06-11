@@ -10,6 +10,7 @@ import FeaturedEventsPage from '../features/featured events/FeaturedEventsPage';
 import ViewAttendeesPage from '../features/attendees/ViewAttendeesPage';
 import ViewTransactionsPage from '../features/ticketing packages/ViewTransactionsPage';
 import ViewBannedAttendees from '../features/ban/ViewBannedAttendees';
+import ReportsPage from '../features/reports/ReportsPage';
 
 export const router = createBrowserRouter([
     {
@@ -67,6 +68,11 @@ export const router = createBrowserRouter([
                         element: <ViewBannedAttendees />,
                     },
                 ],
+            },
+
+            {
+                path: 'reports',
+                element: <ReportsPage />,
             },
         ],
     },

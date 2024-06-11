@@ -48,11 +48,7 @@ export default function AppLayout() {
     return (
         <>
             {isAccessTokenLoading ? (
-                <Spin
-                    fullscreen
-                    spinning
-                    tip={'checking access..'}
-                />
+                <Spin fullscreen spinning tip={'checking access..'} />
             ) : (
                 <Layout>
                     <Header
