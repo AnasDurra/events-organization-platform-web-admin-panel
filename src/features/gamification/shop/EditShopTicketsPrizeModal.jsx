@@ -52,7 +52,7 @@ export default function EditShopTicketsPrizeModal({ isOpen, handleOk, handleCanc
                             label={
                                 <div className='flex justify-start items-center space-x-2'>
                                     <div>Rank in shop</div>
-                                    <Tooltip title='products with lower rank will show at shop first page.'>
+                                    <Tooltip title="products with lower rank will show at shop's first page or under lower ranks.">
                                         <AiOutlineQuestionCircle></AiOutlineQuestionCircle>
                                     </Tooltip>
                                 </div>
