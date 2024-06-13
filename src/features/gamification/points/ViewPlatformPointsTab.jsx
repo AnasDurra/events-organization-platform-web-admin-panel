@@ -3,13 +3,17 @@ import PointsCard from './PointsCard';
 import { useGetPointsQuery, useUpdatePointsMutation } from '../gamificationSlice';
 import EditPointModal from './EditPointModal';
 import { v4 as uuidv4 } from 'uuid';
-import { message } from 'antd';
+import { Button, Divider, Empty, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export default function ViewPlatformPointsTab() {
+    const navigate = useNavigate();
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedPoint, setSelectedPoint] = useState(null);
 
-    const { data: { result: points } = { result: [] } } = useGetPointsQuery();
+    const { data: { result: points } = { result: [] }, isLoading: isPointsLoading } = useGetPointsQuery();
     const [editPoint, { isLoading: isEditLoading }] = useUpdatePointsMutation();
 
     const pointsWithRules = points.filter((point) => point.reward?.rule);
@@ -45,6 +49,29 @@ export default function ViewPlatformPointsTab() {
                         />
                     ))}
             </div>
+
+            {Array.isArray(pointsWithRules) && pointsWithRules.length == 0 && !isPointsLoading && (
+                <div className='flex justify-center items-center text-center w-full'>
+                    <Empty
+                        image={null}
+                        description={'No Platform Points Rewards Yet..'}
+                    >
+                        <Divider>
+                            <Button
+                                onClick={() => navigate('/gamification/rules/new')}
+                                type='primary'
+                            >
+                                Design new rule
+                            </Button>
+                        </Divider>
+                    </Empty>
+                </div>
+            )}
+            {isPointsLoading && (
+                <div className=' min-h-[50svh] flex justify-center items-start mt-[4em]'>
+                    <LoadingOutlined className='text-[10svh] text-gray-500 '></LoadingOutlined>
+                </div>
+            )}
 
             <EditPointModal
                 type='pp'

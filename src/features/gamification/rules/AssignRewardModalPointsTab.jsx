@@ -1,13 +1,11 @@
 import { Button, Form, Input, InputNumber } from 'antd';
 import { useState } from 'react';
 
-export default function PointsTab({onFinish}) {
+export default function PointsTab({ onFinish, loading }) {
     const [form] = Form.useForm();
     const [selectedPointType, setSelectedPointType] = useState('pp');
 
     const handleFormSubmit = (values) => {
-        console.log(values);
-
         onFinish({ type: selectedPointType, ...values });
     };
 
@@ -130,10 +128,10 @@ export default function PointsTab({onFinish}) {
                         <div className='flex justify-center items-center w-full mt-8'>
                             <Form.Item noStyle>
                                 <Button
-                                    className='w-[50%]'
                                     type='primary'
                                     htmlType='submit'
                                     size='large'
+                                    loading={loading}
                                 >
                                     Assign
                                 </Button>

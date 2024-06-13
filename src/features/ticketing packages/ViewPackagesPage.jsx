@@ -1,4 +1,4 @@
-import { Button, Spin } from 'antd';
+import { Button, Empty, Spin } from 'antd';
 import React, { useState } from 'react';
 import NewPackageModal from './modal-new-package';
 import PackageCard from './PackageCard';
@@ -10,6 +10,8 @@ import {
 } from './TicketingPackagesSlice';
 import { useNotification } from '../../utils/useAntNotification';
 import EditPackageModal from './modal-edit-package';
+import { TiTicket } from 'react-icons/ti';
+import { CloseCircleOutlined, CloseOutlined } from '@ant-design/icons';
 
 export default function ViewPackagesPage() {
     const { data: { result: packages } = { result: [] }, isLoading: isPackagesLoading } = useGetPackagesQuery();
@@ -20,6 +22,7 @@ export default function ViewPackagesPage() {
     const [isNewPackageModalOpen, setIsNewPackageModalOpen] = useState(false);
     const [isEditPackageModalOpen, setIsEditPackageModalOpen] = useState(false);
     const [selectedPackage, setSelectedPackage] = useState(null);
+    const [isActiveFilter, setIsActiveFilter] = useState(false);
 
     const { openNotification } = useNotification();
 
@@ -84,29 +87,53 @@ export default function ViewPackagesPage() {
         >
             <div className='grid grid-cols-12'>
                 <div className=' col-start-2 col-span-10 mb-4'>
-                    <Button
-                        type='primary'
-                        onClick={handleOpenNewPackageModal}
-                    >
-                        new package
-                    </Button>
+                    <div className='flex items-center space-x-4'>
+                        <Button
+                            type='primary'
+                            onClick={handleOpenNewPackageModal}
+                        >
+                            new package
+                        </Button>
+                        <div
+                            className='flex items-center space-x-2 hover:cursor-pointer'
+                            onClick={() => setIsActiveFilter((flag) => !flag)}
+                        >
+                            <Button
+                                type='dashed'
+                                className={`${isActiveFilter ? 'bg-green-200 hover:bg-green-200 ' : null}`}
+                            >
+                                Active
+                            </Button>
+                            {isActiveFilter && <CloseCircleOutlined />}
+                        </div>
+                    </div>
                 </div>
                 <div className='col-start-2 col-span-10 '>
                     <div className='grid grid-cols-4 gap-4'>
-                        {packages.map((pck, idx) => (
-                            <PackageCard
-                                key={'package_' + idx}
-                                name={pck.name}
-                                status={pck.active ? 'Active' : 'Archived'}
-                                price={pck.default_price?.unit_amount / 100}
-                                tickets={pck.metadata.value}
-                                onClick={() => {
-                                    setSelectedPackage(pck);
-                                    setIsEditPackageModalOpen(true);
-                                }}
-                            />
-                        ))}
+                        {packages
+                            .filter((pck) => pck.active || !isActiveFilter)
+                            .map((pck, idx) => (
+                                <PackageCard
+                                    key={'package_' + idx}
+                                    name={pck.name}
+                                    status={pck.active ? 'Active' : 'Archived'}
+                                    price={pck.default_price?.unit_amount / 100}
+                                    tickets={pck.metadata.value}
+                                    onClick={() => {
+                                        setSelectedPackage(pck);
+                                        setIsEditPackageModalOpen(true);
+                                    }}
+                                />
+                            ))}
                     </div>
+
+                    {Array.isArray(packages) && packages.length == 0 && (
+                        <Empty
+                            className='mt-[4em]'
+                            image={<TiTicket className='w-[5em] text-gray-500'></TiTicket>}
+                            description='No packages'
+                        />
+                    )}
                 </div>
             </div>
             <NewPackageModal

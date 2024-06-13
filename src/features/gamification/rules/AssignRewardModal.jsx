@@ -32,7 +32,6 @@ export default function AssignRewardModal({ isOpen, onClose, onFinish }) {
             });
     };
     const handleOnPointsFinish = (fields) => {
-        console.log('roo: ', fields);
         if (fields.type == 'pp') {
             addPoints({
                 name: fields?.name,
@@ -107,7 +106,7 @@ export default function AssignRewardModal({ isOpen, onClose, onFinish }) {
                     </div>
                 )}
 
-                {tabValue == 'points' && <PointsTab onFinish={handleOnPointsFinish} />}
+                {tabValue == 'points' && <PointsTab loading={isAddPointsLoading} onFinish={handleOnPointsFinish} />}
             </div>
         </Modal>
     );

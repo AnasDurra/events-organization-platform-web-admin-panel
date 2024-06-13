@@ -142,7 +142,10 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel, isAd
                         },
                     ]}
                 >
-                    <DatePicker.RangePicker className='w-full' />
+                    <DatePicker.RangePicker
+                        className='w-full'
+                        disabledDate={(current) => current < dayjs().startOf('day')}
+                    />{' '}
                 </Form.Item>
 
                 <Form.Item className='flex justify-end'>

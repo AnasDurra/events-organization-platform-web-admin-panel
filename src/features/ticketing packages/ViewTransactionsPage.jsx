@@ -6,49 +6,49 @@ import dayjs from 'dayjs';
 
 const fakeData = [
     {
-      tickets_created_at: "2024-05-17T10:20:00.000Z", // Replace with desired date format
-      buyer: {
-        firstName: "John",
-        lastName: "Doe",
-        user: {
-          username: "johndoe123",
+        tickets_created_at: '2024-05-17T10:20:00.000Z', // Replace with desired date format
+        buyer: {
+            firstName: 'John',
+            lastName: 'Doe',
+            user: {
+                username: 'johndoe123',
+            },
         },
-      },
-      tickets_value: 2,
-      organization_name: "Acme Inc.",
-      event_title: "Awesome Conference 2024",
-      event_description: "A conference about all things awesome!",
+        tickets_value: 2,
+        organization_name: 'Acme Inc.',
+        event_title: 'Awesome Conference 2024',
+        event_description: 'A conference about all things awesome!',
     },
     {
-      tickets_created_at: "2024-05-20T15:30:00.000Z", // Replace with desired date format
-      buyer: {
-        firstName: "Jane",
-        lastName: "Smith",
-        user: {
-          username: "janesmith987",
+        tickets_created_at: '2024-05-20T15:30:00.000Z', // Replace with desired date format
+        buyer: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            user: {
+                username: 'janesmith987',
+            },
         },
-      },
-      tickets_value: 1,
-      organization_name: "Startups R Us",
-      event_title: "Workshop on Building Scalable Web Applications",
-      event_description: "Learn how to build applications that can handle high traffic.",
+        tickets_value: 1,
+        organization_name: 'Startups R Us',
+        event_title: 'Workshop on Building Scalable Web Applications',
+        event_description: 'Learn how to build applications that can handle high traffic.',
     },
     {
-      tickets_created_at: "2024-05-15T08:00:00.000Z", // Replace with desired date format
-      buyer: {
-        firstName: "Michael",
-        lastName: "Jones",
-        user: {
-          username: "mike_jones",
+        tickets_created_at: '2024-05-15T08:00:00.000Z', // Replace with desired date format
+        buyer: {
+            firstName: 'Michael',
+            lastName: 'Jones',
+            user: {
+                username: 'mike_jones',
+            },
         },
-      },
-      tickets_value: 3,
-      organization_name: "Freelancers Guild",
-      event_title: "Masterclass on Effective Freelancing",
-      event_description: "Get tips and tricks to become a successful freelancer.",
+        tickets_value: 3,
+        organization_name: 'Freelancers Guild',
+        event_title: 'Masterclass on Effective Freelancing',
+        event_description: 'Get tips and tricks to become a successful freelancer.',
     },
     // Add more data objects as needed
-  ];
+];
 
 export default function ViewTransactionsPage() {
     const { data: { result: ticketsUsage } = { result: [] }, isLoading: isTicketsUsageLoading } =
@@ -60,7 +60,7 @@ export default function ViewTransactionsPage() {
         {
             title: 'Date',
             dataIndex: 'createdAt',
-            render: (date)=>dayjs(date).format('YYYY-MM-DD  HH:mm:ss'),
+            render: (date) => dayjs(date).format('YYYY-MM-DD  HH:mm:ss'),
             rowScope: 'row',
             width: '20%',
             align: 'center',
@@ -70,7 +70,7 @@ export default function ViewTransactionsPage() {
             dataIndex: 'attendee',
             key: 'buyer',
             align: 'center',
-            width: '20%',
+            width: '25%',
             render: (attendee, record, index) => {
                 return (
                     <div className='flex w-full justify-start items-center'>
@@ -85,7 +85,7 @@ export default function ViewTransactionsPage() {
         },
         {
             title: 'Package',
-            dataIndex: ['package', 'name'],
+            dataIndex: ['data', 'package_name'],
             key: 'start',
 
             align: 'center',
@@ -93,7 +93,7 @@ export default function ViewTransactionsPage() {
         },
         {
             title: 'Price',
-            dataIndex: ['package', 'default_price', 'unit_amount'],
+            dataIndex: ['data', 'payed'],
             render: (unit_anmount) => `${parseFloat(unit_anmount / 100)}$`,
             key: 'type',
             align: 'center',
@@ -102,7 +102,7 @@ export default function ViewTransactionsPage() {
 
         {
             title: 'Tickets',
-            dataIndex: ['package', 'metadata', 'value'],
+            dataIndex: ['value'],
             key: 'end',
             align: 'center',
             width: '20%',
@@ -128,8 +128,10 @@ export default function ViewTransactionsPage() {
                     <div className='flex w-full justify-start items-center'>
                         <Avatar className='ml-4 mx-6' />
                         <div className='flex flex-col text-left'>
-                            <Typography.Text>{record?.firstName + ' ' + record?.lastName}</Typography.Text>
-                            <Typography.Text type='secondary'>@{record?.user?.username}</Typography.Text>
+                            <Typography.Text>
+                                {record?.attendee_first_name + ' ' + record?.attendee_last_name}
+                            </Typography.Text>
+                            <Typography.Text type='secondary'>@{record?.user_username}</Typography.Text>
                         </div>
                     </div>
                 );
@@ -140,6 +142,7 @@ export default function ViewTransactionsPage() {
             dataIndex: 'tickets_value',
             key: 'start',
             align: 'center',
+            className: 'text-red-500',
             width: '20%',
         },
 
@@ -153,7 +156,6 @@ export default function ViewTransactionsPage() {
         {
             title: 'Event',
             key: 'end',
-            align: 'center',
             width: '20%',
             render: (_, record, index) => {
                 return (
@@ -185,7 +187,6 @@ export default function ViewTransactionsPage() {
                     columns={columns}
                     dataSource={packagesHistory}
                     size='small'
-                    
                     loading={isPackagesHistoryLoading}
                     pagination={{
                         pageSize: 7,
@@ -204,7 +205,7 @@ export default function ViewTransactionsPage() {
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns2}
                     //TODO check if it's working fine
-                    dataSource={[...ticketsUsage,...fakeData]}
+                    dataSource={[...ticketsUsage, ...fakeData]}
                     size='small'
                     showHeader={true}
                     loading={isTicketsUsageLoading}

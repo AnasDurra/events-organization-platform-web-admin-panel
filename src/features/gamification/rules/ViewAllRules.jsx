@@ -201,7 +201,7 @@ export default function ViewAllRules() {
     });
     return (
         <div className='grid grid-cols-12'>
-            <div className='col-start-2 col-span-10 flex flex-col w-full space-y-10'>
+            <div className='col-start-2 col-span-10 flex flex-col w-full space-y-4'>
                 <div className='flex space-x-4'>
                     <Button
                         type='primary'

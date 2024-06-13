@@ -1,5 +1,5 @@
 import { Form, Modal, Select, InputNumber } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigger }) {
     const [form] = Form.useForm();
@@ -11,6 +11,16 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
         }
         return Promise.resolve();
     };
+
+    useEffect(() => {
+        if (isOpen) {
+            form.setFieldsValue({
+                trigger: trigger?.id,
+                condition: step?.condition?.id,
+                value:step?.value
+            });
+        }
+    }, [isOpen]);
 
     return (
         <Modal
@@ -33,7 +43,6 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     name='trigger'
                     label='Trigger'
                     rules={[{ required: true, message: 'Please select a trigger' }]}
-                    initialValue={trigger?.id}
                 >
                     <Select
                         placeholder='Select Trigger'
@@ -51,7 +60,6 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     name='condition'
                     label='Condition'
                     rules={[{ required: true, message: 'Please select a condition' }]}
-                    initialValue={step?.condition?.id}
                 >
                     <Select placeholder='Select Condition'>
                         {trigger?.operators?.map((condition, index) => (
@@ -70,7 +78,7 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     label='Value'
                     dependencies={['condition']}
                     rules={[{ required: true, message: 'Please enter a value' }, { validator: validateValue }]}
-                    initialValue={step?.value}
+                   
                 >
                     <InputNumber
                         className='w-full'

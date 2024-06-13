@@ -24,14 +24,14 @@ export default function PointsCard({ type, amount, name, rules, onEditClick }) {
                 ></img>
             </div>
 
-            <div className='flex justify-between items-center space-x-8'>
-                <div className='flex flex-col justify-center items-center w-full'>
-                    <div className='flex justify-center items-center font-semibold text-md'>Title</div>
-                    <div className='flex justify-center items-center text-gray-600 text-md'>{name}</div>
+            <div className='flex flex-col justify-center items-center w-full h-full'>
+                <div className='flex justify-center items-center w-full text-center '>
+                    <div className='w-[50%] font-semibold text-md'>Title</div>
+                    <div className='w-[50%] font-semibold text-md'>points</div>
                 </div>
-                <div className='flex flex-col justify-center items-center w-full'>
-                    <div className='flex justify-center items-center font-semibold text-md'>points</div>
-                    <div className='flex justify-center items-center text-gray-600 text-md'>{amount}</div>
+                <div className='flex justify-center items-center w-full text-center '>
+                    <div className='w-[50%] text-gray-600 text-md'>{name}</div>
+                    <div className='w-[50%] text-gray-600 text-md'>{amount}</div>
                 </div>
             </div>
 
@@ -39,15 +39,15 @@ export default function PointsCard({ type, amount, name, rules, onEditClick }) {
             <div className='text-pretty text-left text-gray-500'>
                 {rules.map((rule, index) => (
                     <div key={uuidv4()}>
-                        {rule.conditions.map((condition, condIndex) => (
-                            <>
-                                <span key={uuidv4()}>
-                                    {`${condIndex + 1}. ${condition.definedData.name} ${condition.operator.name} ${
-                                        condition.value
+                        {rule?.conditions.map((condition, condIndex) => (
+                            <div key={uuidv4() + 'span'}>
+                                <span>
+                                    {`${condIndex + 1}. ${condition?.definedData?.name} ${condition?.operator?.name} ${
+                                        condition?.value
                                     }`}
                                 </span>
                                 <br></br>
-                            </>
+                            </div>
                         ))}
                     </div>
                 ))}

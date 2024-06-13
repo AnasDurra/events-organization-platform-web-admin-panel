@@ -30,17 +30,10 @@ export default function PackageCard({ name, price, status, tickets, onClick }) {
 
     return (
         <Card
-            className='shadow-lg hover:shadow-sm'
-            title={
-                <div
-                    className='text-center'
-                >
-                    {name}
-                </div>
-            }
+            className='hover:shadow-lg shadow-sm'
+            title={<div className='text-center'>{name}</div>}
             extra={<BsThreeDots className='hover:cursor-pointer hover:text-lg' />}
             onClick={onClick}
-           
         >
             <div className='flex justify-center items-center'>
                 <TiTicket className='text-[5em] text-yellow-300 ' />
@@ -71,7 +64,9 @@ export default function PackageCard({ name, price, status, tickets, onClick }) {
                             <Col span={8}>Status:</Col>
                             <Col
                                 span={8}
-                                className='text-black text-center'
+                                className={`text-black text-center ${
+                                    status == 'Active' ? 'text-green-500' : 'text-gray-500'
+                                }`}
                             >
                                 {status}
                             </Col>

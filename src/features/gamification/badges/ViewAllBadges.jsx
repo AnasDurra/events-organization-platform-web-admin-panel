@@ -1,11 +1,14 @@
-import { ConfigProvider, message } from 'antd';
+import { Button, ConfigProvider, Divider, Empty, message } from 'antd';
 import React, { useState } from 'react';
 import BadgeCard from './BadgeCard';
 import DesignBadgeDrawer from './DesignBadgeDrawer';
 
 import { useAddBadgeMutation, useGetBadgesQuery, useUpdateBadgeMutation } from '../gamificationSlice';
 import EditBadgeModal from './EditBadgeModal';
+import { useNavigate } from 'react-router-dom';
 export default function ViewAllBadges() {
+    const navigate = useNavigate();
+
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isEditBadgeModalOpen, setIsEditBadgeModalOpen] = useState(false);
     const [selectedBadge, setSelectedBadge] = useState(null);
@@ -15,7 +18,7 @@ export default function ViewAllBadges() {
     const [updateBadge, { isLoading: isUpdateBadgeLoading }] = useUpdateBadgeMutation();
 
     const handleUpdateBadge = (fields) => {
-        console.log("upd:",fields)
+        console.log('upd:', fields);
         updateBadge(fields)
             .unwrap()
             .then((res) => {
@@ -95,6 +98,23 @@ export default function ViewAllBadges() {
                                 />
                             ))}
                         </div>
+                        {Array.isArray(badges) && badges.length == 0 && (
+                            <div className='justify-center items-center'>
+                                <Empty
+                                    image={null}
+                                    description={'No badges are designed yet'}
+                                >
+                                    <Divider>
+                                        <Button
+                                            onClick={() => navigate('/gamification/rules/new')}
+                                            type='primary'
+                                        >
+                                            Design new rule
+                                        </Button>
+                                    </Divider>
+                                </Empty>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

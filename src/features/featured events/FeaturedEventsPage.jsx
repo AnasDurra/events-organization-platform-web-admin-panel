@@ -153,6 +153,26 @@ export default function FeaturedEventsPage() {
             width: '15%',
         },
         {
+            key: 'isActive',
+            title: 'Active',
+            render: (record) => {
+                const startDate = dayjs(record?.startDate);
+                const endDate = dayjs(record?.endDate);
+                const currentDate = dayjs();
+
+                // Calculate difference in days between current date and both start/end dates
+                const daysSinceStart = currentDate.diff(startDate, 'day');
+                const daysBeforeEnd = endDate.diff(currentDate, 'day');
+
+                // Event is active if current date is between (inclusive) start and end date
+                const isActive = daysSinceStart >= 0 && daysBeforeEnd >= 0;
+
+                return <span className='flex justify-center items-center'>{isActive ? '✅ ' : '❌ '}</span>;
+            },
+            align: 'center',
+            width: '15%',
+        },
+        {
             title: 'Created',
             dataIndex: 'created_at',
             key: 'created',
@@ -168,7 +188,7 @@ export default function FeaturedEventsPage() {
                     <a
                         className='text-red-500 hover:text-red-700'
                         onClick={() => {
-                            deleteFeaturedEvent(record.id)
+                            deleteFeaturedEvent(record?.id)
                                 .unwrap()
                                 .then((_) => {
                                     openNotification({
@@ -214,14 +234,14 @@ export default function FeaturedEventsPage() {
                         >
                             New
                         </Button>
-                        <Button
+                      {/*   <Button
                             type='dashed'
                             onClick={() => {}}
                         >
                             Show Active Features
-                        </Button>
-                        <Button onClick={() => {}}>Clear filters</Button>
-                        <Button onClick={() => {}}>Clear filters and sorters</Button>
+                        </Button> */}
+                        {/*   <Button onClick={() => {}}>Clear filters</Button>
+                        <Button onClick={() => {}}>Clear filters and sorters</Button> */}
                     </Space>
                     <Table
                         rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}

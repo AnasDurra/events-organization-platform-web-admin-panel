@@ -132,8 +132,7 @@ export default function ViewAttendeesPbought() {
             key: 'action',
             render: (_, record) => (
                 <Space size='small'>
-                    {console.log(record)}
-                    <a>Notify</a>
+                   {/*  <a>Notify</a> */}
                     <a
                         className='text-red-400'
                         onClick={() =>
@@ -155,7 +154,7 @@ export default function ViewAttendeesPbought() {
                                 })
                         }
                     >
-                        {record.idBlocked ? 'Unblock' : 'Block'}
+                        {record.isBlocked ? 'Unblock' : 'Block'}
                     </a>
                 </Space>
             ),
@@ -172,14 +171,14 @@ export default function ViewAttendeesPbought() {
                         marginBottom: 16,
                     }}
                 >
-                    <Button
+                {/*     <Button
                         type='dashed'
                         onClick={() => {}}
                     >
                         Show Blocked Attendees
                     </Button>
                     <Button onClick={() => {}}>Clear filters</Button>
-                    <Button onClick={() => {}}>Clear filters and sorters</Button>
+                    <Button onClick={() => {}}>Clear filters and sorters</Button> */}
                 </Space>
                 <Table
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
