@@ -38,7 +38,7 @@ export default function EditPointModal({ isOpen, onClose, onFinish, pointObj, ty
             >
                 <div className='flex justify-start items-center'>
                     <img
-                        src={`/src/assets/${type == 'rp' ? 'points-rp.svg' : type == 'pp' ? 'game-point.svg' : null}`}
+                        src={`/static/images/${type == 'rp' ? 'points-rp.svg' : type == 'pp' ? 'game-point.svg' : null}`}
                         className='w-[5.5em]'
                         alt='Game Point'
                     ></img>

@@ -34,9 +34,9 @@ export default function PointsRewardCard({ value, name, type, onDelete }) {
                     <img
                         src={
                             type == 'pp'
-                                ? `/src/assets/game-point.svg`
+                                ? `/static/images/game-point.svg`
                                 : type == 'rp'
-                                ? `/src/assets/points-rp.svg`
+                                ? `/static/images/points-rp.svg`
                                 : null
                         }
                         className='w-[7em]'

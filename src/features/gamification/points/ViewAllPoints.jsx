@@ -20,7 +20,7 @@ export default function ViewAllPoints() {
             label: (
                 <div className='flex justify-center items-center gap-x-1'>
                     <img
-                        src={'/src/assets/game-point.svg'}
+                        src={'/static/images/game-point.svg'}
                         className='w-[2.5em] mt-[0.3em]'
                     ></img>{' '}
                     Platform points
@@ -33,7 +33,7 @@ export default function ViewAllPoints() {
             label: (
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
-                        src={'/src/assets/points-xp.svg'}
+                        src={'/static/images/points-xp.svg'}
                         className='w-[2.2em] mb-[0.1em]'
                     ></img>{' '}
                     Experience points
@@ -46,7 +46,7 @@ export default function ViewAllPoints() {
             label: (
                 <div className='flex justify-center items-center gap-x-2'>
                     <img
-                        src={'/src/assets/points-rp.svg'}
+                        src={'/static/images/points-rp.svg'}
                         className='w-[2.6em] mt-[0.1em]'
                     ></img>{' '}
                     Redeemable points

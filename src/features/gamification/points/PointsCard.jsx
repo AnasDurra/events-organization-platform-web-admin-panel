@@ -18,7 +18,7 @@ export default function PointsCard({ type, amount, name, rules, onEditClick }) {
 
             <div className='flex justify-center items-center mb-[-1.2em]'>
                 <img
-                    src={`/public/${type == 'rp' ? 'points-rp.svg' : 'game-point.svg'}`}
+                    src={`/static/images/${type == 'rp' ? 'points-rp.svg' : 'game-point.svg'}`}
                     className='w-[5.5em]'
                     alt='Points'
                 ></img>
