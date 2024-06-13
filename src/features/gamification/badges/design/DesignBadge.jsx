@@ -6,7 +6,7 @@ import styles from './paper.module.css';
 import { Button, Checkbox, Divider, Input, Space, message } from 'antd';
 import { documentToSVG, elementToSVG, inlineResources } from 'dom-to-svg';
 
-export default function DesignBadge({ onFinish }) {
+export default function DesignBadge({ onFinish, showSettings = true }) {
     const [centerLayer, setCenterLayer] = useState(CENTER_TYPES.SHARP_POLY6);
     const [horizontalLayer, setHorizontalLayer] = useState(HORIZONTAL_TYPES.DETAILS);
     const [bottomLayer, setBottomLayer] = useState(BOTTOM_TYPES.WATERFALL);
@@ -41,7 +41,7 @@ export default function DesignBadge({ onFinish }) {
     };
 
     const handleFinishDesign = async () => {
-        if (!badgeTitle.trim()) {
+        if (!badgeTitle.trim() && showSettings) {
             message.error('Badge title is required.');
             return;
         }
@@ -64,31 +64,35 @@ export default function DesignBadge({ onFinish }) {
         <div className='w-full h-full'>
             <div className='flex items-center w-full h-full justify-evenly'>
                 <div className='col-span-1 col-start-4 flex flex-col justify-center items-center'>
-                    <Divider>Badge Settings</Divider>
-                    <Input
-                        placeholder='Badge title'
-                        className='w-full'
-                        value={badgeTitle}
-                        onChange={(e) => setBadgeTitle(e.target.value)}
-                        required
-                    />
-                    <div className='flex justify-start items-center w-full space-x-8 mt-4'>
-                        <Checkbox
-                            checked={isActive}
-                            onChange={(e) => setIsActive(e.target.checked)}
-                        >
-                            Active
-                        </Checkbox>
-                        <Checkbox
-                            checked={isAnonymous}
-                            onChange={(e) => {
-                                setIsAnonymous(e.target.checked);
-                            }}
-                        >
-                            {' '}
-                            Anonymous
-                        </Checkbox>
-                    </div>
+                    {showSettings && (
+                        <>
+                            <Divider>Badge Settings</Divider>
+                            <Input
+                                placeholder='Badge title'
+                                className='w-full'
+                                value={badgeTitle}
+                                onChange={(e) => setBadgeTitle(e.target.value)}
+                                required
+                            />
+                            <div className='flex justify-start items-center w-full space-x-8 mt-4'>
+                                <Checkbox
+                                    checked={isActive}
+                                    onChange={(e) => setIsActive(e.target.checked)}
+                                >
+                                    Active
+                                </Checkbox>
+                                <Checkbox
+                                    checked={isAnonymous}
+                                    onChange={(e) => {
+                                        setIsAnonymous(e.target.checked);
+                                    }}
+                                >
+                                    {' '}
+                                    Anonymous
+                                </Checkbox>
+                            </div>
+                        </>
+                    )}
                     <DesignTools
                         onCenterChange={(value) => setCenterLayer(value)}
                         onHorizontalChange={(value) => setHorizontalLayer(value)}

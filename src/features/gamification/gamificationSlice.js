@@ -35,6 +35,14 @@ export const gamificationSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['points'],
         }),
+        updatePoints: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/rewards/points',
+                method: 'PUT',
+                body: body,
+            }),
+            invalidatesTags: ['points'],
+        }),
 
         getRedeemablePoints: builder.query({
             query: () => `gamification/rewards/redeemable-points`,
@@ -44,6 +52,14 @@ export const gamificationSlice = apiSlice.injectEndpoints({
             query: (body) => ({
                 url: 'gamification/rewards/redeemable-points',
                 method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['points-rp'],
+        }),
+        updateRedeemablePoints: builder.mutation({
+            query: (body) => ({
+                url: 'gamification/rewards/redeemable-points',
+                method: 'PUT',
                 body: body,
             }),
             invalidatesTags: ['points-rp'],
@@ -127,4 +143,6 @@ export const {
     useGetPrizesQuery,
     useAddTicketPrizeMutation,
     useEditTicketPrizeMutation,
+    useUpdatePointsMutation,
+    useUpdateRedeemablePointsMutation
 } = gamificationSlice;

@@ -1,5 +1,4 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { CancelOutlined, OutlinedFlag, TextureOutlined } from '@mui/icons-material';
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
@@ -7,22 +6,21 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import { Button, Card, ConfigProvider, Divider, Form, Input, Modal, Select, Space, Tooltip, message } from 'antd';
+import { Button, ConfigProvider, Divider, Input, Space, Tooltip, message } from 'antd';
 import * as React from 'react';
 import { useState } from 'react';
 import { BsGift } from 'react-icons/bs';
-import { MdEdit, MdOutlineAddRoad } from 'react-icons/md';
+import { MdOutlineAddRoad, MdOutlineTitle } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import AssignRewardModal from './AssignRewardModal';
-import AddingNewStepTimeLineItem from './timeline/AddingNewStepTimeLineItem';
-import BadgeRewardCard from './BadgeRewardCard';
-import PointsRewardCard from './PointsRewardCard';
 import { v4 as uuidv4 } from 'uuid';
-import EditStepModal from './EditStepModal';
-import StepTimeLineItem from './timeline/StepTimeLineItem';
-import HeaderTimeLineItem from './timeline/HeaderTimeLineItem';
-import { MdOutlineTitle } from 'react-icons/md';
 import { useAddRuleMutation, useGetDefinedDataQuery } from '../gamificationSlice';
+import AssignRewardModal from './AssignRewardModal';
+import BadgeRewardCard from './BadgeRewardCard';
+import EditStepModal from './EditStepModal';
+import PointsRewardCard from './PointsRewardCard';
+import AddingNewStepTimeLineItem from './timeline/AddingNewStepTimeLineItem';
+import HeaderTimeLineItem from './timeline/HeaderTimeLineItem';
+import StepTimeLineItem from './timeline/StepTimeLineItem';
 
 const fakeData = [
     {

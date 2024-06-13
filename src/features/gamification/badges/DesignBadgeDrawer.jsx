@@ -1,7 +1,7 @@
 import { Drawer } from 'antd';
 import React from 'react';
 import DesignBadge from './design/DesignBadge';
-export default function DesignBadgeDrawer({ isDrawerOpen, onClose, onFinish }) {
+export default function DesignBadgeDrawer({ isDrawerOpen, onClose, onFinish, showSettings = true }) {
     return (
         <Drawer
             title='Design Badge'
@@ -9,12 +9,14 @@ export default function DesignBadgeDrawer({ isDrawerOpen, onClose, onFinish }) {
             closable={true}
             onClose={onClose}
             open={isDrawerOpen}
-            getContainer={false}
+            //getContainer={false}
             height={'90svh'}
-            zIndex={1}
         >
             <div style={{ zIndex: 10001 }}>
-                <DesignBadge onFinish={onFinish}></DesignBadge>
+                <DesignBadge
+                    showSettings={showSettings}
+                    onFinish={onFinish}
+                ></DesignBadge>
             </div>
         </Drawer>
     );
