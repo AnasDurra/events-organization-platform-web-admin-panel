@@ -70,7 +70,6 @@ const EditableCell = ({ title, editable, children, dataIndex, record, handleSave
         ) : (
             <div
                 className='editable-cell-value-wrap'
-            
                 onClick={toggleEdit}
             >
                 {children}
@@ -103,9 +102,7 @@ export default function ViewAllRules() {
             dataIndex: 'createdAt',
             key: 'name',
             width: '20%',
-            render: (date) => (
-               dayjs(date).format('YYYY/MM/DD | HH:mm')
-            ),
+            render: (date) => dayjs(date).format('YYYY/MM/DD | HH:mm'),
         },
         {
             title: 'Name',
@@ -144,6 +141,7 @@ export default function ViewAllRules() {
             render: (rewards) => {
                 return (
                     <div className='flex  space-x-1'>
+                        {console.log('rewa:',rewards)}
                         {rewards.map((reward, index) => (
                             <img
                                 key={index}

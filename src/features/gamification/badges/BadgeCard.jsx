@@ -9,12 +9,17 @@ import { AiOutlineEye } from 'react-icons/ai';
 import { IoShieldCheckmarkOutline } from 'react-icons/io5';
 import { GoShieldSlash } from 'react-icons/go';
 
-export default function BadgeCard({ badgeObj }) {
+export default function BadgeCard({ badgeObj, onEdit }) {
     return (
         <Card
             className='shadow-lg hover:shadow-sm'
             title={<div className='text-center text-white'>{badgeObj?.reward?.name}</div>}
-            extra={<BsThreeDots className='hover:cursor-pointer hover:scale-125 text-white' />}
+            extra={
+                <BsThreeDots
+                    className='hover:cursor-pointer hover:scale-125 text-white'
+                    onClick={onEdit}
+                />
+            }
             onClick={() => {}}
             bordered
         >
@@ -25,11 +30,12 @@ export default function BadgeCard({ badgeObj }) {
                         className='w-[9.5em]'
                     ></img>
                 )}
+                {console.log(badgeObj)}
             </div>
             <div className='flex justify-end items-end space-x-1 text-primary my-2 mt-[-1.2em] mr-[-0.5em]  '>
-                {badgeObj?.anonymous != true && <AiOutlineEyeInvisible className='text-[1.4em] text-red-400' />}
+                {badgeObj?.anonymous != true && <AiOutlineEye className='text-[1.4em] text-green-400' />}
 
-                {badgeObj?.anonymous && <AiOutlineEyeInvisible className='text-[1.4em] text-green-400' />}
+                {badgeObj?.anonymous && <AiOutlineEyeInvisible className='text-[1.4em] text-red-400' />}
 
                 {badgeObj?.visibility != true && <GoShieldSlash className='text-[1.4em] text-red-400' />}
                 {badgeObj?.visibility == true && <IoShieldCheckmarkOutline className='text-[1.4em] text-green-400' />}

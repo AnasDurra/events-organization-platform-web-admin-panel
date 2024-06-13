@@ -1,19 +1,32 @@
-import { Button, Card, Col, ConfigProvider, Divider, Drawer, Image, Row, Spin } from 'antd';
-import Meta from 'antd/es/card/Meta';
+import { ConfigProvider, message } from 'antd';
 import React, { useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
-import { TiTicket } from 'react-icons/ti';
-import DesignBadgeDrawer from './DesignBadgeDrawer';
-import { image } from './image';
 import BadgeCard from './BadgeCard';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import DesignBadgeDrawer from './DesignBadgeDrawer';
 
-import { useAddBadgeMutation, useGetBadgesQuery } from '../gamificationSlice';
+import { useAddBadgeMutation, useGetBadgesQuery, useUpdateBadgeMutation } from '../gamificationSlice';
+import EditBadgeModal from './EditBadgeModal';
 export default function ViewAllBadges() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isEditBadgeModalOpen, setIsEditBadgeModalOpen] = useState(false);
+    const [selectedBadge, setSelectedBadge] = useState(null);
+
     const { data: { result: badges } = { result: [] }, isLoading: isBadgesLoading } = useGetBadgesQuery();
     const [addBadge, { isLoading: isAddBadgeLoading }] = useAddBadgeMutation({ fixedCacheKey: 'ViewAllBadges' });
+    const [updateBadge, { isLoading: isUpdateBadgeLoading }] = useUpdateBadgeMutation();
 
+    const handleUpdateBadge = (fields) => {
+        console.log("upd:",fields)
+        updateBadge(fields)
+            .unwrap()
+            .then((res) => {
+                message.success('Badge updated');
+                setIsEditBadgeModalOpen(false);
+                setSelectedBadge(null);
+            })
+            .catch((e) => {
+                message.error('failed to update badge');
+            });
+    };
     const handleFinishAddingBadge = (fields) => {
         console.log(fields);
 
@@ -53,7 +66,7 @@ export default function ViewAllBadges() {
                 />
                 <div className='grid grid-cols-12'>
                     <div className='col-start-2  col-span-10 flex flex-col w-full space-y-10'>
-                      {/*   <div className='flex space-x-4'>
+                        {/*   <div className='flex space-x-4'>
                             <Button
                                 type='primary'
                                 onClick={() => {
@@ -75,12 +88,27 @@ export default function ViewAllBadges() {
                                 <BadgeCard
                                     key={badge.id}
                                     badgeObj={badge}
+                                    onEdit={() => {
+                                        setSelectedBadge(badge);
+                                        setIsEditBadgeModalOpen(true);
+                                    }}
                                 />
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <EditBadgeModal
+                badge={selectedBadge}
+                isOpen={isEditBadgeModalOpen}
+                isLoading={isUpdateBadgeLoading}
+                onCancel={() => {
+                    setIsEditBadgeModalOpen(false);
+                    setSelectedBadge(null);
+                }}
+                onFinish={handleUpdateBadge}
+            ></EditBadgeModal>
         </ConfigProvider>
     );
 }

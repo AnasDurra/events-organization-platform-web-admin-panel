@@ -1,10 +1,11 @@
 import { Card, Divider } from 'antd';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function PointsCard({ type, amount, name, rules, onEditClick }) {
     return (
         <Card
-            className='shadow-lg hover:shadow-sm rounded-3xl p-0'
+            className='hover:shadow-lg shadow-sm rounded-3xl p-0'
             onClick={() => {}}
             bordered
         >
@@ -17,7 +18,7 @@ export default function PointsCard({ type, amount, name, rules, onEditClick }) {
 
             <div className='flex justify-center items-center mb-[-1.2em]'>
                 <img
-                    src={`/src/assets/${type=='rp'?'points-rp.svg':'game-point.svg'}`}
+                    src={`/src/assets/${type == 'rp' ? 'points-rp.svg' : 'game-point.svg'}`}
                     className='w-[5.5em]'
                     alt='Points'
                 ></img>
@@ -37,10 +38,10 @@ export default function PointsCard({ type, amount, name, rules, onEditClick }) {
             <Divider plain>Rules</Divider>
             <div className='text-pretty text-left text-gray-500'>
                 {rules.map((rule, index) => (
-                    <div key={index}>
+                    <div key={uuidv4()}>
                         {rule.conditions.map((condition, condIndex) => (
                             <>
-                                <span key={condIndex}>
+                                <span key={uuidv4()}>
                                     {`${condIndex + 1}. ${condition.definedData.name} ${condition.operator.name} ${
                                         condition.value
                                     }`}
