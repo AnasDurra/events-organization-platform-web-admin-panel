@@ -48,7 +48,7 @@ export default function ViewShopTickets() {
                         <div className='flex justify-center items-center gap-x-1 w-[40%]'>
                             {record?.rp_value}
                             <img
-                                src={`/src/assets/points-rp.svg `}
+                                src={`/public/points-rp.svg `}
                                 className='w-[2em]'
                                 alt='Points'
                             ></img>
