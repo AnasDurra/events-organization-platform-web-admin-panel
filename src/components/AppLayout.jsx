@@ -21,6 +21,7 @@ import { GoWorkflow } from 'react-icons/go';
 import { FaStarHalfStroke } from "react-icons/fa6";
 import { LuShoppingCart } from "react-icons/lu";
 
+import { Icon } from '@iconify/react';
 
 const { useToken } = theme;
 
@@ -54,11 +55,7 @@ export default function AppLayout() {
     return (
         <>
             {isAccessTokenLoading ? (
-                <Spin
-                    fullscreen
-                    spinning
-                    tip={'checking access..'}
-                />
+                <Spin fullscreen spinning tip={'checking access..'} />
             ) : (
                 <Layout>
                     <Header
@@ -177,6 +174,17 @@ export default function AppLayout() {
                                             icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                     ],
+                                },
+                                {
+                                    id: '7',
+                                    name: 'Reports',
+                                    url: '/reports ',
+                                    icon: (
+                                        <Icon
+                                            icon='icon-park-solid:table-report'
+                                            style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                        />
+                                    ),
                                 },
                             ]}
                         />
