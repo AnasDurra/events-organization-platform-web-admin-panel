@@ -15,6 +15,7 @@ import { MdPayments } from 'react-icons/md';
 import { TiTicket } from 'react-icons/ti';
 import { GrTransaction } from 'react-icons/gr';
 import { MdBlock } from 'react-icons/md';
+import { Icon } from '@iconify/react';
 
 const { useToken } = theme;
 
@@ -134,6 +135,17 @@ export default function AppLayout() {
                                             icon: <FiUsers style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                         },
                                     ],
+                                },
+                                {
+                                    id: '7',
+                                    name: 'Reports',
+                                    url: '/reports ',
+                                    icon: (
+                                        <Icon
+                                            icon='icon-park-solid:table-report'
+                                            style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                        />
+                                    ),
                                 },
                             ]}
                         />

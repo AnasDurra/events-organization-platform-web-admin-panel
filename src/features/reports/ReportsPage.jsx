@@ -8,6 +8,7 @@ import { useNotification } from '../../utils/useAntNotification';
 import { useAdminReportsQuery, useIgnoreReportMutation, useResolveReportMutation } from './reports';
 
 import './OrgReports.css';
+import Title from 'antd/es/typography/Title';
 
 const ReportsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -158,7 +159,7 @@ const ReportsPage = () => {
     );
 
     const getTypeTagColor = (type) => {
-        return type === 'problem' ? 'darkslategray' : 'darkblue';
+        return type === 'general' ? 'darkblue' : 'darkslategray';
     };
 
     const getStatusTagColor = (status) => {
@@ -283,15 +284,13 @@ const ReportsPage = () => {
                 ]}
             >
                 <Spin spinning={isIgnoreReportLoading || isResolveReportLoading}>
-                    <Divider style={{ margin: '0em 0em 2.5em 0em' }} />
+                    <Divider style={{ margin: '0px' }} />
                     {console.log(data)}
                     <Space direction='vertical' style={{ width: '100%' }} size={20}>
                         {modalContent?.event && (
                             <Space direction='vertical' style={{ width: '100%' }}>
                                 <div>
-                                    <Typography.Title level={5} style={{ marginBottom: '8px', marginTop: '0px' }}>
-                                        Event
-                                    </Typography.Title>
+                                    <Typography.Title level={5}>Event</Typography.Title>
                                     <Typography.Paragraph
                                         style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
                                     >
@@ -308,9 +307,7 @@ const ReportsPage = () => {
 
                         {modalContent?.description && (
                             <div>
-                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
-                                    Report Descreption
-                                </Typography.Title>
+                                <Typography.Title level={5}>Report Descreption</Typography.Title>
                                 <Typography.Paragraph
                                     style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
                                 >
@@ -321,9 +318,7 @@ const ReportsPage = () => {
 
                         {modalContent?.date && (
                             <div>
-                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
-                                    Report Date
-                                </Typography.Title>
+                                <Typography.Title level={5}>Report Date</Typography.Title>
                                 <Typography.Paragraph
                                     style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
                                 >
@@ -334,9 +329,7 @@ const ReportsPage = () => {
 
                         {modalContent?.status && (
                             <div style={{ marginBottom: '2.5em' }}>
-                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
-                                    Report Status
-                                </Typography.Title>
+                                <Typography.Title level={5}>Report Status</Typography.Title>
                                 <Tag
                                     color={getStatusTagColor(modalContent?.status)}
                                     style={{
