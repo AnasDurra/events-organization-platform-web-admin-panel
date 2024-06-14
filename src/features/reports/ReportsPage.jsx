@@ -1,236 +1,359 @@
-import React from 'react';
-import { Table, Button, Tag, Typography, Menu, Dropdown, Popover, Card, Image } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import moment from 'moment/moment';
+import { useEffect, useState } from 'react';
+import { Table, Tag, Dropdown, Menu, Modal, Button, Avatar, Typography, Space, Divider, Spin } from 'antd';
+import moment from 'moment';
 
-const { Text, Title } = Typography;
+import { Icon } from '@iconify/react';
+import { Link } from 'react-router-dom';
+import { useNotification } from '../../utils/useAntNotification';
+import { useAdminReportsQuery, useIgnoreReportMutation, useResolveReportMutation } from './reports';
+
+import './OrgReports.css';
 
 const ReportsPage = () => {
-    const reports = [
-        {
-            id: '1',
-            typeId: 1,
-            event: {
-                event_id: 1,
-                event_name: 'abdo',
-                org: {
-                    bio: null,
-                    cover_picture:
-                        'http://localhost:3000/ââÙÙØ·Ø©Ø§ÙØ´Ø§Ø´Ø©(4)0a81c104-49e4-4183-be8a-9c00558ed8ce.png',
-                    description: null,
-                    id: '1',
-                    main_picture: null,
-                    name: 'abdo',
-                },
-            },
-            description: 'Unscheduled event detected during conference.',
-            reportedBy: {
-                userId: 2,
-                username: 'JohnDoe',
-            },
-            reporterDetails: 'John Doe',
-            date: '2024-06-01T15:45:00Z',
-        },
-        {
-            id: '2',
-            typeId: 2,
-            event: {
-                event_id: 2,
-                event_name: 'abo abdo',
-                org: {
-                    bio: null,
-                    cover_picture:
-                        'http://localhost:3000/ââÙÙØ·Ø©Ø§ÙØ´Ø§Ø´Ø©(4)0a81c104-49e4-4183-be8a-9c00558ed8ce.png',
-                    description: null,
-                    id: '1',
-                    main_picture: null,
-                    name: 'abdo',
-                },
-            },
-            description: 'Inappropriate message content in public chat.',
-            reportedBy: {
-                userId: 3,
-                username: 'JaneSmith',
-            },
-            reporterDetails: 'Jane Smith',
-            date: '2024-06-02T11:30:00Z',
-            message: {
-                content: 'Explicit content found in chat.',
-                timestamp: '2024-06-02T11:25:00Z',
-            },
-        },
-        {
-            id: '3',
-            typeId: 3,
-            event: {
-                event_id: 3,
-                event_name: 'um abdo',
-                org: {
-                    bio: null,
-                    cover_picture:
-                        'http://localhost:3000/ââÙÙØ·Ø©Ø§ÙØ´Ø§Ø´Ø©(4)0a81c104-49e4-4183-be8a-9c00558ed8ce.png',
-                    description: null,
-                    id: '1',
-                    main_picture: null,
-                    name: 'abdo',
-                },
-            },
-            description: 'Network outage affecting multiple sessions.',
-            reportedBy: {
-                userId: 2,
-                username: 'AliceJohnson',
-            },
-            reporterDetails: 'Alice Johnson',
-            date: '2024-06-03T09:00:00Z',
-        },
-    ];
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalContent, setModalContent] = useState(null);
 
-    const getTypeById = (typeId) => {
-        const types = { 1: 'Event', 2: 'Message', 3: 'Global' };
-        return types[typeId];
-    };
-    const getRoleById = (userId) => {
-        const roles = { 2: 'Organizer', 3: 'Attendee' };
-        return roles[userId] || 'Unknown';
+    const { openNotification } = useNotification();
+
+    const { data, isLoading, refetch, isFetching } = useAdminReportsQuery({ page: currentPage, pageSize: pageSize });
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+    const total = data?.result?.metadata?.total || 0;
+
+    const [ignoreReport, { isLoading: isIgnoreReportLoading }] = useIgnoreReportMutation();
+    const [resolveReport, { isLoading: isResolveReportLoading }] = useResolveReportMutation();
+
+    const handleTableChange = (pagination) => {
+        setCurrentPage(pagination.current);
+        setPageSize(pagination.pageSize);
+        refetch(currentPage, pageSize);
     };
 
-    const getActionsByType = (typeId, record) => {
-        switch (typeId) {
-            case 1:
-                return [
-                    { key: 'investigate', text: 'Investigate Event' },
-                    { key: 'delete_event', text: 'Delete Event' },
-                    { key: 'resolve', text: 'Resolve' },
-                ];
-            case 2:
-                return [
-                    { key: 'show', text: 'Show Message' },
-                    { key: 'delete_message', text: 'Delete Message' },
-                    { key: 'resolve', text: 'Resolve' },
-                ];
-            case 3:
-                return [{ key: 'resolve', text: 'Resolve' }];
+    const showModal = (id, type, message, description, event, status, date, isDisabled) => {
+        setModalContent({ id, type, message, description, event, status, date, isDisabled });
+        setIsModalVisible(true);
+    };
+
+    const handleIgnore = (id) => {
+        ignoreReport(id).then((res) => {
+            console.log(res);
+            if (res.error) {
+                openNotification({
+                    type: 'warning',
+                    message: 'Failed to logout',
+                    description: 'try again later',
+                    placement: 'bottomRight',
+                });
+            } else {
+                openNotification({
+                    type: 'info',
+                    message: 'Report Ignored',
+                    description: 'The report has been ignored and no actions have been taken.',
+                    placement: 'topLeft',
+                });
+                setIsModalVisible(false);
+            }
+        });
+    };
+    const handleResolveReport = (id) => {
+        resolveReport(id).then((res) => {
+            console.log(res);
+            if (res.error) {
+                openNotification({
+                    type: 'warning',
+                    message: 'Failed to logout',
+                    description: 'try again later',
+                    placement: 'bottomRight',
+                });
+            } else {
+                openNotification({
+                    type: 'success',
+                    message: 'Problem Resolved',
+                    descreption:
+                        'The reported global problem has been successfully resolved and necessary actions have been taken.',
+                    placement: 'topRight',
+                });
+                setIsModalVisible(false);
+            }
+        });
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const openConfirmationModal = (report_id, action) => {
+        let title = '';
+        let content = '';
+        let okText = '';
+        let cancelText = 'Cancel';
+        let onOk = null;
+
+        switch (action) {
+            case 'resolve_report':
+                title = 'Resolve Problem';
+                content = 'Are you sure you want to resolve this problem?';
+                okText = 'Resolve Problem';
+                onOk = () => {
+                    handleResolveReport(report_id);
+                };
+                break;
+            case 'ignore_report':
+                title = 'Ignore Problem';
+                content = 'Are you sure you want to ignore this problem?';
+                okText = 'Ignore Problem';
+                onOk = () => {
+                    handleIgnore(report_id);
+                };
+                break;
             default:
-                return [];
+                title = 'Confirm';
+                content = 'Are you sure you want to proceed?';
+                okText = 'Yes';
         }
+
+        Modal.confirm({
+            title: title,
+            content: content,
+            okText: okText,
+            cancelText: cancelText,
+            onOk: onOk,
+            okButtonProps: {},
+        });
     };
 
-    const menu = (typeId, record) => (
-        <Menu onClick={(e) => handleAction(e, record)}>
-            {getActionsByType(typeId, record).map((action) => (
-                <Menu.Item key={action.key}>{action.text}</Menu.Item>
-            ))}
+    const menu = (record, isDisabled) => (
+        <Menu>
+            <Menu.Item
+                key='1'
+                onClick={() =>
+                    showModal(
+                        record?.id,
+                        record?.type,
+                        record?.message,
+                        record?.description,
+                        record?.event,
+                        record?.status,
+                        record?.date,
+                        isDisabled
+                    )
+                }
+            >
+                View Details
+            </Menu.Item>
+            <Menu.Item
+                key='2'
+                disabled={isDisabled}
+                onClick={() => openConfirmationModal(record?.id, 'resolve_report')}
+            >
+                Resolve
+            </Menu.Item>
+            <Menu.Item key='3' disabled={isDisabled} onClick={() => openConfirmationModal(record?.id, 'ignore_report')}>
+                Ignore
+            </Menu.Item>
         </Menu>
     );
 
+    const getTypeTagColor = (type) => {
+        return type === 'problem' ? 'darkslategray' : 'darkblue';
+    };
+
+    const getStatusTagColor = (status) => {
+        switch (status) {
+            case 'pending':
+                return 'gold';
+            case 'ignored':
+                return 'volcano';
+            case 'resolved':
+                return 'green';
+            default:
+                return 'blue';
+        }
+    };
+
     const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
+        { title: 'ID', dataIndex: 'id', key: 'id' },
         {
             title: 'Type',
-            dataIndex: 'typeId',
-            key: 'typeId',
-            render: (typeId) => (
-                <Tag style={{ margin: '0px' }} color='geekblue'>
-                    {getTypeById(typeId)}
+            dataIndex: 'type',
+            key: 'type',
+            render: (type) => (
+                <Tag color={getTypeTagColor(type)} style={{ textTransform: 'capitalize' }}>
+                    {type}
                 </Tag>
             ),
         },
-        {
-            title: 'Event Name',
-            dataIndex: ['event', 'event_name'],
-            key: 'eventName',
-            render: (name, row) => (
-                <Popover
-                    content={
-                        <Card bordered={false} style={{}}>
-                            <Card.Meta
-                                avatar={
-                                    <Image
-                                        preview={false}
-                                        width={50}
-                                        height={50}
-                                        src='https://randomuser.me/api/portraits/men/4.jpg'
-                                        alt={row?.event?.org?.name}
-                                        style={{ borderRadius: '50%' }}
-                                    />
-                                }
-                                title={row?.event?.org?.name}
-                                description={row?.event?.org?.description || 'No description available'}
-                            />
-                        </Card>
-                    }
-                    title='Organizer Info'
-                >
-                    {' '}
-                    <Text strong>{name}</Text>
-                </Popover>
-            ),
-        },
+        { title: 'Abuse Type', dataIndex: ['platform_problem', 'label'], key: 'abuseType' },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            render: (descreption) => descreption ?? '-',
         },
+        { title: 'Reporter', dataIndex: ['reporter', 'username'], key: 'reporter' },
         {
-            title: 'Reported By',
-            dataIndex: 'reportedBy',
-            key: 'reportedBy',
-            render: (reportedBy) => (
-                <Tag color={getRoleById(reportedBy.userId) === 'Organizer' ? 'volcano' : 'green'}>
-                    {getRoleById(reportedBy.userId)}
-                </Tag>
-            ),
-        },
-        {
-            title: 'Reporter Details',
-            dataIndex: 'reporterDetails',
-            key: 'reporterDetails',
+            title: 'Reported By Role',
+            dataIndex: ['reporter', 'user_role', 'role_name'],
+            key: 'roleName',
+            render: (role) => <Tag color='darkgrey'>{role}</Tag>,
         },
         {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
-            render: (date) => moment(date).format('MMMM Do YYYY, h:mm:ss a'),
+            render: (date) => moment(date).format('YYYY-MM-DD h:mm:ss A'),
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => (
+                <Tag color={getStatusTagColor(status)} style={{ textTransform: 'capitalize' }}>
+                    {status}
+                </Tag>
+            ),
         },
         {
             title: 'Actions',
             key: 'actions',
             render: (_, record) => (
-                <Dropdown overlay={menu(record.typeId, record)} trigger={['click']}>
-                    <Button style={{ backgroundColor: '#ff4d4f', color: '#fff', borderColor: '#ff4d4f' }}>
-                        <DownOutlined />
+                <Dropdown
+                    overlay={menu(record, record.status === 'ignored' || record.status === 'resolved')}
+                    trigger={['click']}
+                >
+                    <Button type='primary'>
+                        <Icon icon='bxs:down-arrow' />
                     </Button>
                 </Dropdown>
             ),
         },
     ];
 
-    const handleAction = (e, record) => {
-        console.log(
-            `Action "${e.key}" selected for report ${record.eventId} submitted by ${record.reportedBy.username}`
-        );
-        // Implement the action logic based on e.key here
-    };
-
     return (
-        <div>
-            <Title level={2} style={{ marginLeft: '1.5em' }}>
-                Incident Reports Dashboard
-            </Title>
-
+        <>
             <Table
-                dataSource={reports}
-                rowKey='id'
                 columns={columns}
+                dataSource={data?.result?.data}
+                rowKey='id'
+                pagination={{
+                    current: currentPage,
+                    pageSize: pageSize,
+                    total: total,
+                    onChange: handleTableChange,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '30'],
+                    onShowSizeChange: handleTableChange,
+                }}
+                loading={isLoading || isFetching || isResolveReportLoading || isIgnoreReportLoading}
                 bordered
-                style={{ background: '#fff', margin: '24px', padding: '24px' }}
-                pagination={{ pageSize: 5 }}
+                onChange={handleTableChange}
+                scroll={{ x: 'max-content' }}
             />
-        </div>
+
+            <Modal
+                title={<span style={{ textTransform: 'capitalize' }}>{modalContent?.type} Details</span>}
+                open={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key='cancel' size='large' onClick={handleCancel}>
+                        Go Back
+                    </Button>,
+                    <Button
+                        danger
+                        type='primary'
+                        key='ignore'
+                        size='large'
+                        disabled={modalContent?.isDisabled}
+                        onClick={() => openConfirmationModal(modalContent?.id, 'ignore_report')}
+                    >
+                        <span style={{ textTransform: 'capitalize' }}>Ignore {modalContent?.type}</span>
+                    </Button>,
+                    <Button
+                        key='resolve'
+                        type='primary'
+                        size='large'
+                        disabled={modalContent?.isDisabled}
+                        onClick={() => openConfirmationModal(modalContent?.id, 'resolve_report')}
+                    >
+                        <span style={{ textTransform: 'capitalize' }}>Resolve {modalContent?.type}</span>
+                    </Button>,
+                ]}
+            >
+                <Spin spinning={isIgnoreReportLoading || isResolveReportLoading}>
+                    <Divider style={{ margin: '0em 0em 2.5em 0em' }} />
+                    {console.log(data)}
+                    <Space direction='vertical' style={{ width: '100%' }} size={20}>
+                        {modalContent?.event && (
+                            <Space direction='vertical' style={{ width: '100%' }}>
+                                <div>
+                                    <Typography.Title level={5} style={{ marginBottom: '8px', marginTop: '0px' }}>
+                                        Event
+                                    </Typography.Title>
+                                    <Typography.Paragraph
+                                        style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
+                                    >
+                                        {modalContent?.event?.title}
+                                    </Typography.Paragraph>
+                                    <Button size='small' type='primary'>
+                                        <Link to={`/events/${modalContent?.event?.id}`} style={{ color: 'white' }}>
+                                            Go to Event
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </Space>
+                        )}
+
+                        {modalContent?.description && (
+                            <div>
+                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
+                                    Report Descreption
+                                </Typography.Title>
+                                <Typography.Paragraph
+                                    style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
+                                >
+                                    {modalContent?.description}
+                                </Typography.Paragraph>
+                            </div>
+                        )}
+
+                        {modalContent?.date && (
+                            <div>
+                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
+                                    Report Date
+                                </Typography.Title>
+                                <Typography.Paragraph
+                                    style={{ padding: '10px', backgroundColor: '#f0f2f5', borderRadius: '4px' }}
+                                >
+                                    {moment(modalContent?.date).format('MMMM Do YYYY, h:mm:ss A')}
+                                </Typography.Paragraph>
+                            </div>
+                        )}
+
+                        {modalContent?.status && (
+                            <div style={{ marginBottom: '2.5em' }}>
+                                <Typography.Title level={5} style={{ marginBottom: '8px' }}>
+                                    Report Status
+                                </Typography.Title>
+                                <Tag
+                                    color={getStatusTagColor(modalContent?.status)}
+                                    style={{
+                                        padding: '10px',
+                                        fontSize: '14px',
+                                        borderRadius: '4px',
+                                        textTransform: 'capitalize',
+                                    }}
+                                >
+                                    {modalContent?.status}
+                                </Tag>
+                            </div>
+                        )}
+                    </Space>
+                </Spin>
+            </Modal>
+        </>
     );
 };
 
