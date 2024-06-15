@@ -20,7 +20,10 @@ import { SlBadge } from 'react-icons/sl';
 import { GoWorkflow } from 'react-icons/go';
 import { FaStarHalfStroke } from "react-icons/fa6";
 import { LuShoppingCart } from "react-icons/lu";
+import { FcMoneyTransfer } from "react-icons/fc";
+import { TbGiftCardFilled } from "react-icons/tb";
 
+import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 const { useToken } = theme;
 
@@ -117,7 +120,23 @@ export default function AppLayout() {
                                                 />
                                             ),
                                         },
+                                        {
+                                            id: '5-3',
+                                            name: 'Withdraws',
+                                            url: '/withdraws',
+                                            icon: (
+                                                <FcMoneyTransfer
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
+                                        },
                                     ],
+                                },
+                                {
+                                    id: '8',
+                                    name: 'Giftcards',
+                                    url: '/giftcards',
+                                    icon: <TbGiftCardFilled style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                 },
                                 {
                                     id: '6',

@@ -34,6 +34,7 @@
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.21.1",
     "sort-by": "^1.2.0",
+    "spoiled": "^0.3.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

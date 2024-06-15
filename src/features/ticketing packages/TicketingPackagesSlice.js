@@ -12,6 +12,21 @@ export const ticketingPackagesSlice = apiSlice.injectEndpoints({
         getTicketsUsage: builder.query({
             query: () => 'payment/tickets-usage',
         }),
+
+        getWithdraws: builder.query({
+            query: () => 'payment/organization/withdraw/requests',
+            providesTags:['withdraws']
+        }),
+
+        manageWithdraws: builder.mutation({
+            query: (body) => ({
+                url: '/payment/organization/withdraw/manage',
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['withdraws'],
+        }),
+
         addNewPackage: builder.mutation({
             query: (body) => ({
                 url: '/payment/packages/create',
@@ -45,4 +60,6 @@ export const {
     useAddPriceToPackageMutation,
     useGetPackagesHistoryQuery,
     useGetTicketsUsageQuery,
+    useGetWithdrawsQuery,
+    useManageWithdrawsMutation
 } = ticketingPackagesSlice;

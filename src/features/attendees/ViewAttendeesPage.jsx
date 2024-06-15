@@ -136,7 +136,7 @@ export default function ViewAttendeesPbought() {
                     <a
                         className='text-red-400'
                         onClick={() =>
-                            banAttendee(record.attendee_id)
+                            banAttendee(record.user_id)
                                 .unwrap()
                                 .then((_) => {
                                     openNotification({

@@ -17,6 +17,8 @@ import NewRulePage from '../features/gamification/rules/NewRulePage';
 import ViewAllPoints from '../features/gamification/points/ViewAllPoints';
 import ViewShop from '../features/gamification/shop/ViewShop';
 import ViewShopTickets from '../features/gamification/shop/ViewShopTickets';
+import ViewWithdraws from '../features/ticketing packages/ViewWithdraws';
+import ViewGiftcards from '../features/giftcards/ViewGiftcards';
 
 export const router = createBrowserRouter([
     {
@@ -44,6 +46,14 @@ export const router = createBrowserRouter([
                         element: <NewOrgPage />,
                     },
                 ],
+            },
+            {
+                path: 'withdraws',
+                element: <ViewWithdraws />,
+            },
+            {
+                path: 'giftcards',
+                element: <ViewGiftcards />,
             },
             {
                 path: 'packages',
