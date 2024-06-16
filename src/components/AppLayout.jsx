@@ -20,6 +20,9 @@ import { SlBadge } from 'react-icons/sl';
 import { GoWorkflow } from 'react-icons/go';
 import { FaStarHalfStroke } from 'react-icons/fa6';
 import { LuShoppingCart } from 'react-icons/lu';
+import { FcMoneyTransfer } from 'react-icons/fc';
+import { TbGiftCardFilled } from 'react-icons/tb';
+import { FaMoneyBillTransfer } from 'react-icons/fa6';
 
 import { Icon } from '@iconify/react';
 
@@ -57,7 +60,8 @@ export default function AppLayout() {
             {isAccessTokenLoading ? (
                 <Spin fullscreen spinning tip={'checking access..'} />
             ) : (
-                <Layout>
+                <Layout
+                >
                     <Header
                         onTriggerSiderIconClicked={() => {
                             setIsSiderOpen(!isSiderOpen);
@@ -114,7 +118,23 @@ export default function AppLayout() {
                                                 />
                                             ),
                                         },
+                                        {
+                                            id: '5-3',
+                                            name: 'Withdraws',
+                                            url: '/withdraws',
+                                            icon: (
+                                                <FcMoneyTransfer
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
+                                        },
                                     ],
+                                },
+                                {
+                                    id: '8',
+                                    name: 'Giftcards',
+                                    url: '/giftcards',
+                                    icon: <TbGiftCardFilled style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
                                 },
                                 {
                                     id: '6',
@@ -208,10 +228,10 @@ export default function AppLayout() {
 }
 
 const contentStyle = {
-    padding: '1% 5%',
     backgroundColor: '#fdfdfd',
     minHeight: '82vh',
-    width: '75%',
+    width: '85svw',
+    marginLeft: '15svw',
     overflow: 'auto',
-    marginLeft: '10%',
+    paddingTop: '2svh',
 };

@@ -17,4 +17,4 @@ export const orgsSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useAddNewOrgMutation, useGetOrganizationsQuery } = orgsSlice;
+export const { useAddNewOrgMutation, useGetOrganizationsQuery ,useLazyGetOrganizationsQuery} = orgsSlice;

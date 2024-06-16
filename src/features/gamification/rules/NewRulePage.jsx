@@ -133,6 +133,7 @@ export default function NewRulePage() {
             <Button
                 icon={<ArrowLeftOutlined />}
                 type='text'
+                className='ml-[2.5svw]'
                 onClick={() => navigate(-1)}
             />
             {console.log("poo: ",points)}

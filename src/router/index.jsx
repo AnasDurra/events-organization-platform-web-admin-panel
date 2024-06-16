@@ -18,11 +18,29 @@ import NewRulePage from '../features/gamification/rules/NewRulePage';
 import ViewAllPoints from '../features/gamification/points/ViewAllPoints';
 import ViewShop from '../features/gamification/shop/ViewShop';
 import ViewShopTickets from '../features/gamification/shop/ViewShopTickets';
+import ViewWithdraws from '../features/ticketing packages/ViewWithdraws';
+import ViewGiftcards from '../features/giftcards/ViewGiftcards';
+import GiftCardFront from '../features/giftcards/GiftCardFront';
+import GiftcardBack from '../features/giftcards/GiftcardBack';
+import GiftCardPrint from '../features/giftcards/GiftCardPrint';
+
 
 export const router = createBrowserRouter([
     {
         path: 'login',
         element: <LoginPage />,
+    },
+    {
+        path: 'front',
+        element: <GiftCardFront />,
+    },
+    {
+        path: 'back',
+        element: <GiftcardBack />,
+    },
+    {
+        path: 'print',
+        element: <GiftCardPrint />,
     },
     {
         path: '/',
@@ -45,6 +63,14 @@ export const router = createBrowserRouter([
                         element: <NewOrgPage />,
                     },
                 ],
+            },
+            {
+                path: 'withdraws',
+                element: <ViewWithdraws />,
+            },
+            {
+                path: 'giftcards',
+                element: <ViewGiftcards />,
             },
             {
                 path: 'packages',
@@ -85,7 +111,7 @@ export const router = createBrowserRouter([
                         element: <ViewShop />,
                         children: [
                             {
-                                index:true,
+                                index: true,
                                 element: <ViewShopTickets />,
                             },
                         ],

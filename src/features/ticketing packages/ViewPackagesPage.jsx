@@ -127,7 +127,7 @@ export default function ViewPackagesPage() {
                             ))}
                     </div>
 
-                    {Array.isArray(packages) && packages.length == 0 && (
+                    {Array.isArray(packages) && packages.length == 0 && !isPackagesLoading && (
                         <Empty
                             className='mt-[4em]'
                             image={<TiTicket className='w-[5em] text-gray-500'></TiTicket>}

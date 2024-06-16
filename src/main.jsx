@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     /*         colorPrimary: '#002c8c',
                      */
                     colorPrimary: '#2B3467',
-                    fontFamily:'Arial',
+                    fontFamily: 'Arial',
                 },
                 components: {
                     Layout: {

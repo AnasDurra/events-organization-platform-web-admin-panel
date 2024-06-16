@@ -12,3 +12,10 @@ body,
     overflow-y: auto;
     scrollbar-width: none;
 }
+
+.abril-fatface-regular {
+    font-family: "Abril Fatface", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  

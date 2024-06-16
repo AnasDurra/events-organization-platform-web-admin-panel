@@ -64,7 +64,7 @@ export default function ViewAttendeesPbought() {
             key: 'profile',
             align: 'center',
             filterSearch: true,
-            width: '25%',
+            width: '20%',
             render: (text, record, index) => {
                 return (
                     <div className='flex w-full justify-start items-center'>
@@ -117,7 +117,7 @@ export default function ViewAttendeesPbought() {
 
             key: 'lastAttend',
             align: 'center',
-            width: '15%',
+            width: '10%',
         },
         {
             title: 'join date',
@@ -130,13 +130,14 @@ export default function ViewAttendeesPbought() {
         {
             title: 'Action',
             key: 'action',
+            width: '10%',
             render: (_, record) => (
                 <Space size='small'>
-                   {/*  <a>Notify</a> */}
+                    {/*  <a>Notify</a> */}
                     <a
                         className='text-red-400'
                         onClick={() =>
-                            banAttendee(record.attendee_id)
+                            banAttendee(record.user_id)
                                 .unwrap()
                                 .then((_) => {
                                     openNotification({
@@ -171,7 +172,7 @@ export default function ViewAttendeesPbought() {
                         marginBottom: 16,
                     }}
                 >
-                {/*     <Button
+                    {/*     <Button
                         type='dashed'
                         onClick={() => {}}
                     >
@@ -187,7 +188,7 @@ export default function ViewAttendeesPbought() {
                     loading={isAttendeesLoading || isBanAttendeeLoading}
                     size='middle'
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 7,
                         total: attendees.length,
                         hideOnSinglePage: true,
                         showSizeChanger: true,

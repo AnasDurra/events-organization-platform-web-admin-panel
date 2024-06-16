@@ -27,6 +27,7 @@ export const apiSlice = createApi({
         'points',
         'points-rp',
         'prizes',
+        'withdraws',
     ],
     endpoints: () => ({}),
 });
