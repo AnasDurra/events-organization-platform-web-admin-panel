@@ -48,16 +48,19 @@ export default function Sider({ isSiderOpen, userMenu, userMenuIsLoading }) {
             style={{
                 overflow: 'auto',
                 height: '100vh',
+                //backgroundColor:'#f5f5f5',
                 position: 'fixed',
-                width: '15%',
+                backgroundColor: 'red',
+                
             }}
+            width={'15svw'}
         >
             <Menu
                 mode='inline'
                 defaultOpenKeys={['/payment', '/blocked', '/gamification']}
                 items={items}
                 onClick={handleMenuClick}
-                className='h-[92svh] overflow-auto scroll-smooth'
+                className='h-[91svh] overflow-auto scroll-smooth w-[15svw] '
                 style={{ scrollbarWidth: 'thin', scrollbarColor: '#2B3467' }}
             />
         </AntDSider>

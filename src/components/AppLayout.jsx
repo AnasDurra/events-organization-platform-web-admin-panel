@@ -18,12 +18,12 @@ import { MdBlock } from 'react-icons/md';
 import { SiGamejolt } from 'react-icons/si';
 import { SlBadge } from 'react-icons/sl';
 import { GoWorkflow } from 'react-icons/go';
-import { FaStarHalfStroke } from "react-icons/fa6";
-import { LuShoppingCart } from "react-icons/lu";
-import { FcMoneyTransfer } from "react-icons/fc";
-import { TbGiftCardFilled } from "react-icons/tb";
+import { FaStarHalfStroke } from 'react-icons/fa6';
+import { LuShoppingCart } from 'react-icons/lu';
+import { FcMoneyTransfer } from 'react-icons/fc';
+import { TbGiftCardFilled } from 'react-icons/tb';
 
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaMoneyBillTransfer } from 'react-icons/fa6';
 
 const { useToken } = theme;
 
@@ -63,7 +63,8 @@ export default function AppLayout() {
                     tip={'checking access..'}
                 />
             ) : (
-                <Layout>
+                <Layout
+                >
                     <Header
                         onTriggerSiderIconClicked={() => {
                             setIsSiderOpen(!isSiderOpen);
@@ -162,13 +163,21 @@ export default function AppLayout() {
                                             id: '6-3',
                                             name: 'Points',
                                             url: '/gamification/points',
-                                            icon: <FaStarHalfStroke style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                            icon: (
+                                                <FaStarHalfStroke
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
                                         },
                                         {
                                             id: '6-4',
                                             name: 'Shop',
                                             url: '/gamification/shop',
-                                            icon: <LuShoppingCart style={{ fontSize: '1.5em', color: token.colorPrimary }} />,
+                                            icon: (
+                                                <LuShoppingCart
+                                                    style={{ fontSize: '1.5em', color: token.colorPrimary }}
+                                                />
+                                            ),
                                         },
                                     ],
                                 },
@@ -211,10 +220,10 @@ export default function AppLayout() {
 }
 
 const contentStyle = {
-    padding: '1% 5%',
     backgroundColor: '#fdfdfd',
     minHeight: '82vh',
-    width: '75%',
+    width: '85svw',
+    marginLeft: '15svw',
     overflow: 'auto',
-    marginLeft: '10%',
+    paddingTop: '2svh',
 };

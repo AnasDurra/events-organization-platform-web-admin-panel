@@ -5,6 +5,7 @@ export default function Footer() {
     <AntDFooter
       style={{
         textAlign: 'center',
+        backgroundColor:'#fdfdfd'
       }}
     >
       Evento (23-24)
