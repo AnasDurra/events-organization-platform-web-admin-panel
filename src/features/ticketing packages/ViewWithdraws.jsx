@@ -59,6 +59,8 @@ export default function ViewWithdraws() {
         return include;
     });
 
+    const sortedWithdraws = [...withdraws].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     const columns = [
         {
             key: uuidv4(),
@@ -204,10 +206,12 @@ export default function ViewWithdraws() {
                     <div className='flex items-center  w-full justify-center'>
                         <Table
                             className='w-[100%]'
-                            dataSource={filteredWithdraws}
+                            dataSource={sortedWithdraws}
                             columns={columns}
                             loading={isWithdrawsLoading || isManageWithdrawsLoading}
                             bordered
+                            size='small'
+                            pagination={{pageSize:'7'}}
                             
                         />
                     </div>

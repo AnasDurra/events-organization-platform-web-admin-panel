@@ -30,6 +30,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     },
                     Menu: {
                         itemSelectedBg: lightenColor('#2B3467', 70),
+                        itemHoverBg: lightenColor('#2B3467', 80),
+                        itemActiveBg:  lightenColor('#2B3467', 75),
                     },
                 },
             }}

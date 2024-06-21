@@ -1,6 +1,11 @@
-import { Avatar, Button, List, Pagination, Radio, Space } from 'antd';
+import { Avatar, Button, List, Pagination, Radio, Space, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useGetBannedAttendeesQuery, useLazyGetBannedAttendeesQuery, useLazyGetBannedOrgsQuery } from './banSlice';
+import {
+    useGetBannedAttendeesQuery,
+    useLazyGetBannedAttendeesQuery,
+    useLazyGetBannedOrgsQuery,
+    useUnBanOrganizationMutation,
+} from './banSlice';
 
 export default function ViewBannedOrgs() {
     const [page, setPage] = useState(1);
@@ -14,6 +19,8 @@ export default function ViewBannedOrgs() {
             isLoading: isAttendeesLoading,
         },
     ] = useLazyGetBannedOrgsQuery({ pageSize, page });
+
+    const [unBanOrg, { isLoading: isUnBanOrgLoading }] = useUnBanOrganizationMutation();
 
     useEffect(() => {
         getBannedAttendees({ page, pageSize });
@@ -34,7 +41,7 @@ export default function ViewBannedOrgs() {
                         hideOnSinglePage: true,
                     }}
                     dataSource={bannedAttendees}
-                    loading={isAttendeesLoading}
+                    loading={isAttendeesLoading || isUnBanOrgLoading}
                     renderItem={(item, index) => (
                         <List.Item
                             extra={
@@ -42,14 +49,26 @@ export default function ViewBannedOrgs() {
                                     type='dashed'
                                     danger
                                     onClick={() => {
-                                        // TODO unblock
+                                        unBanOrg(item?.organization?.id)
+                                            .unwrap()
+                                            .then((_) => {
+                                                notification.success({
+                                                    message: `Organization @${item?.organization?.name} unblocked`,
+                                                    placement: 'bottomRight',
+                                                });
+                                            })
+                                            .catch((e) => {
+                                                notification.error({
+                                                    message: `Failed to unblocked organization @${item?.organization?.name}`,
+                                                    placement: 'bottomRight',
+                                                });
+                                            });
                                     }}
                                 >
                                     unblock
                                 </Button>
                             }
                         >
-                            {console.log(item)}
                             <List.Item.Meta
                                 avatar={<Avatar src={`${item.organization?.main_picture}`} />}
                                 title={<a href='https://ant.design'>{item.organization?.name}</a>}

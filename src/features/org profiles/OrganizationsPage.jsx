@@ -1,22 +1,21 @@
-import { Avatar, Button, Space, Table, Typography } from 'antd';
+import { Avatar, Button, Space, Table, Typography, notification } from 'antd';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { URL } from '../../api/constants';
 import OrgMembersModal from './Modal-OrgMembers';
 import { useGetOrganizationsQuery } from './orgsSlice';
-import { useBanOrganizationMutation } from '../ban/banSlice';
-import { useNotification } from '../../utils/useAntNotification';
+import { useBanOrganizationMutation, useUnBanOrganizationMutation } from '../ban/banSlice';
 
 export default function OrganizationsPage() {
     const navigate = useNavigate();
-    const { openNotification } = useNotification();
 
     const [modalOrg, setModalOrg] = useState();
     const [isOrgMembersModalOpen, setIsOrgMembersModalOpen] = useState(false);
 
     const { data: { result: orgs } = { result: [] }, isLoading: isOrgsLoading } = useGetOrganizationsQuery();
     const [banOrg, { isLoading: isBanOrgLoading }] = useBanOrganizationMutation();
+    const [unBanOrg, { isLoading: isUnBanOrgLoading }] = useUnBanOrganizationMutation();
 
     const columns = [
         {
@@ -87,27 +86,40 @@ export default function OrganizationsPage() {
                     </a>
                     {console.log(record)}
                     <a
-                        className='text-red-400'
+                        className={`${record.is_blocked ? 'text-gray-500' : 'text-red-400'}`}
                         onClick={() =>
-                            banOrg(record.id)
-                                .unwrap()
-                                .then((_) => {
-                                    openNotification({
-                                        type: 'success',
-                                        message: `Organization ${record.name} Blocked`,
-                                        placement: 'bottomRight',
-                                    });
-                                })
-                                .catch((e) => {
-                                    openNotification({
-                                        type: 'error',
-                                        message: `Failed to block organization @${record.name}`,
-                                        placement: 'bottomRight',
-                                    });
-                                })
+                            record.is_blocked
+                                ? unBanOrg(record?.id)
+                                      .unwrap()
+                                      .then((_) => {
+                                          notification.success({
+                                              message: `Organization @${record?.name} unblocked`,
+                                              placement: 'bottomRight',
+                                          });
+                                      })
+                                      .catch((e) => {
+                                          notification.error({
+                                              message: `Failed to unblocked organization @${record?.name}`,
+                                              placement: 'bottomRight',
+                                          });
+                                      })
+                                : banOrg(record.id)
+                                      .unwrap()
+                                      .then((_) => {
+                                          notification.success({
+                                              message: `Organization @${record?.name} blocked`,
+                                              placement: 'bottomRight',
+                                          });
+                                      })
+                                      .catch((e) => {
+                                          notification.error({
+                                              message: `Failed to block organization @${record?.name}`,
+                                              placement: 'bottomRight',
+                                          });
+                                      })
                         }
                     >
-                        {record.idBlocked ? 'Unblock' : 'Block'}
+                        {record.is_blocked ? 'Unblock' : 'Block'}
                     </a>
                 </Space>
             ),
@@ -137,7 +149,7 @@ export default function OrganizationsPage() {
                         size='middle'
                         columns={columns}
                         dataSource={orgs.map((org) => ({ ...org, key: org.id }))}
-                        loading={isOrgsLoading || isBanOrgLoading}
+                        loading={isOrgsLoading || isBanOrgLoading || isUnBanOrgLoading}
                         pagination={{ pageSize: '5' }}
                     />
 

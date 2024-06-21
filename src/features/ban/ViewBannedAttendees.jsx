@@ -1,6 +1,6 @@
-import { Avatar, Button, List, Pagination, Radio, Space } from 'antd';
+import { Avatar, Button, List, Pagination, Radio, Space, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useGetBannedAttendeesQuery, useLazyGetBannedAttendeesQuery } from './banSlice';
+import { useGetBannedAttendeesQuery, useLazyGetBannedAttendeesQuery, useUnBanAttendeeMutation } from './banSlice';
 
 const data = [
     {
@@ -30,6 +30,8 @@ export default function ViewBannedAttendees() {
         },
     ] = useLazyGetBannedAttendeesQuery({ pageSize, page });
 
+    const [unBanAttendee, { isLoading: isUnBanAttendeeLoading }] = useUnBanAttendeeMutation();
+
     useEffect(() => {
         getBannedAttendees({ page, pageSize });
     }, [page]);
@@ -49,7 +51,7 @@ export default function ViewBannedAttendees() {
                         hideOnSinglePage: true,
                     }}
                     dataSource={bannedAttendees}
-                    loading={isAttendeesLoading}
+                    loading={isAttendeesLoading || isUnBanAttendeeLoading}
                     renderItem={(item, index) => (
                         <List.Item
                             extra={
@@ -57,7 +59,21 @@ export default function ViewBannedAttendees() {
                                     type='dashed'
                                     danger
                                     onClick={() => {
-                                        // TODO unblock
+                                        console.log(item);
+                                        unBanAttendee(item?.attendee?.id)
+                                            .unwrap()
+                                            .then((_) => {
+                                                notification.success({
+                                                    message: `user @${item?.attendee?.full_name} unblocked`,
+                                                    placement: 'bottomRight',
+                                                });
+                                            })
+                                            .catch((e) => {
+                                                notification.error({
+                                                    message: `Failed to unblocked user @${item?.attendee?.full_name}`,
+                                                    placement: 'bottomRight',
+                                                });
+                                            });
                                     }}
                                 >
                                     unblock

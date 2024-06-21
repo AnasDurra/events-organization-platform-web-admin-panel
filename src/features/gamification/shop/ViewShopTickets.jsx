@@ -122,6 +122,7 @@ export default function ViewShopTickets() {
                 loading={isAddLoading || isEditLoading}
                 columns={defaultColumns}
                 dataSource={ticketPrizes}
+                pagination={{ pageSize: 7 }}
                 rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
             />
 
