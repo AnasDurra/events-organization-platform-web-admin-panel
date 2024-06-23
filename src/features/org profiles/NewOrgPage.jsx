@@ -130,7 +130,7 @@ export default function NewOrgPage() {
                                     },
                                 ]}
                             >
-                                <Input defaultValue='26888888' />
+                                <Input  />
                             </Form.Item>
                             <Form.Item
                                 label='birth date'

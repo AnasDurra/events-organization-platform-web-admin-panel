@@ -1,18 +1,17 @@
 import { CloseOutlined, FilterOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, Modal, Progress, Select, Table, Tag, message } from 'antd';
+import { Button, DatePicker, Progress, Table, Tag, message } from 'antd';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import React, { useEffect, useState } from 'react';
 import { BiExport } from 'react-icons/bi';
+import { GrPowerReset } from 'react-icons/gr';
 import { LuGrid } from 'react-icons/lu';
-import { MdOutlineFilterAltOff, MdOutlineNewLabel } from 'react-icons/md';
+import { MdOutlineFilterAltOff } from 'react-icons/md';
 import { PiCardsDuotone } from 'react-icons/pi';
 import { Spoiler } from 'spoiled';
 import { downloadCardsAsCSV } from './exportAsCSV';
-import { downloadCardsAsPDF } from './pritning';
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
-import { GrPowerReset } from 'react-icons/gr';
-import NewGiftCardsModal from './NewGiftCardsModal';
-import { useGetGiftCardsQuery } from './giftcardsSlice';
+import { useGetGiftCardsQuery, usePrintGiftCardsStreamMutation } from './giftcardsSlice';
+import { URL } from '../../api/constants';
 
 dayjs.extend(isBetween);
 
@@ -27,14 +26,71 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
 
     const { data: { result: giftcards } = { result: [] }, isLoading: isGiftCardsLoading } = useGetGiftCardsQuery();
 
-    const handleDownloadPDF = async () => {
+    const [printGiftCardsStream] = usePrintGiftCardsStreamMutation();
+
+    const downloadGiftCards = async (fileName) => {
+        const url = `${URL}/gift-cards/download/${fileName}`;
+
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'cards.zip');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            message.destroy();
+        } catch (error) {
+            message.destroy();
+            message.error('Failed to download your giftcards, try again later');
+        }
+    };
+    const handlePrintGrid = () => {
         setLoading(true);
+        setProgress(0);
+        printGiftCardsStream({
+            data: { gift_cards_ids: selectedRowKeys },
+            onChunk: (chunk) => {
+                console.log(chunk);
+                if (chunk) {
+                    if (chunk.ack == 'No cards matches the given ids') {
+                        setLoading(false);
+                        setProgress(0);
+                        message.error('Failed to prepare your cards, try again later');
+                    } else if (chunk.ack == 'Completed') {
+                        setProgress(100);
+                        message.loading({
+                            content: 'Your cards are ready, your download will start soon..',
+                            duration: 5000,
+                        });
+                        setLoading(false);
+
+                        downloadGiftCards(chunk.fileName);
+                    } else if (chunk.ack == 'In Progress') {
+                        setProgress(chunk.progress);
+                    }
+                } else {
+                    message.error('Failed to prepare your cards, try again later');
+                }
+            },
+        })
+            .unwrap()
+            .then((chunks) => {})
+            .catch((e) => {
+                console.log(e);
+                message.error('Failed to print giftcards, try again later.');
+            });
+
+        /*  setLoading(true);
         await downloadCardsAsPDF({
             cards: giftcards,
             selectedRowKeys: selectedRowKeys,
             onProgressChange: (progress) => setProgress(progress),
         });
-        setLoading(false);
+        setLoading(false); */
     };
 
     const rowSelection = {
@@ -110,6 +166,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
     useEffect(() => {
         setFilteredInfo(defaultFilters);
     }, [defaultFilters]);
+
     const columns = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         {
@@ -251,7 +308,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                     <Button
                         type='dashed'
                         icon={<LuGrid />}
-                        onClick={handleDownloadPDF}
+                        onClick={handlePrintGrid}
                     >
                         Print Grid
                     </Button>
@@ -290,12 +347,20 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
             </div>
 
             {loading && (
-                <div className='flex justify-center items-center'>
-                    <div className='flex items-center justify-center space-x-8 w-[80%]'>
-                        <div className='w-[70%] text-pretty'>preparing your cards, do NOT change the page...</div>
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
+                    <div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-lg text-center'>
+                        <div className='mb-4 text-xl font-semibold text-gray-700'>
+                            Preparing your cards, do <span className='text-red-600 font-bold'>NOT</span> change the
+                            page...
+                        </div>
                         <Progress
                             percent={progress}
                             status='active'
+                            className='w-full'
+                            strokeColor={{
+                                '0%': '#108ee9',
+                                '100%': '#87d068',
+                            }}
                         />
                     </div>
                 </div>
