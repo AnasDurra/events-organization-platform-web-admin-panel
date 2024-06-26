@@ -60,7 +60,7 @@ export default function Sider({ isSiderOpen, userMenu, userMenuIsLoading }) {
                 defaultOpenKeys={['/payment', '/blocked', '/gamification']}
                 items={items}
                 onClick={handleMenuClick}
-                className='h-[91svh] overflow-auto scroll-smooth w-[15svw] '
+                className='h-[93svh] overflow-auto scroll-smooth w-[15svw] '
                 style={{ scrollbarWidth: 'thin', scrollbarColor: '#2B3467' }}
             />
         </AntDSider>

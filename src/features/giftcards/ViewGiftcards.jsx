@@ -18,8 +18,8 @@ export default function ViewGiftcards() {
     const [activeTabKey, setActiveTabKey] = useState('1');
     const [selectedCollectionFilters, setSelectedCollectionFilters] = useState([]);
 
-    const [createVariant] = useCreateVariantMutation();
-    const [generateGiftCards] = useGenerateGiftCardsMutation();
+    const [createVariant, { isLoading: isCreateVariantLoading }] = useCreateVariantMutation();
+    const [generateGiftCards, { isLoading: isGenerateGiftCardsLoading }] = useGenerateGiftCardsMutation();
 
     const handleAddCardsFinish = (fields) => {
         if (fields.isNewCollection) {
@@ -40,7 +40,7 @@ export default function ViewGiftcards() {
                     message.error('Failed to add a new collection');
                 });
         } else {
-            generateGiftCards({ ...fields?.values})
+            generateGiftCards({ ...fields?.values })
                 .unwrap()
                 .then((e) => {
                     message.success(`New collection ${fields?.values?.label} added successfully`);
@@ -122,6 +122,7 @@ export default function ViewGiftcards() {
                 onClose={() => setIsAddCardsModalOpen(false)}
                 isOpen={isAddCardsModalOpen}
                 onFinish={handleAddCardsFinish}
+                loading={isGenerateGiftCardsLoading || isCreateVariantLoading}
             />
         </ConfigProvider>
     );

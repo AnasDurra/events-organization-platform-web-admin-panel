@@ -25,9 +25,7 @@ export default function OrganizationsPage() {
             render: (org, record) => (
                 <div className='flex space-x-4  items-center'>
                     <div>
-                        <Avatar
-                            src={org?.main_picture ? `/${URL}+organization/mainPicture/${org.main_picture}` : undefined}
-                        />
+                        <Avatar src={`${URL}/organization/mainPicture/${org?.main_picture}`} />
                     </div>
 
                     <div className='flex flex-col justify-center items-start'>
@@ -144,6 +142,7 @@ export default function OrganizationsPage() {
                         >
                             new
                         </Button>
+                        {console.log(orgs)}
                     </Space>
                     <Table
                         size='middle'

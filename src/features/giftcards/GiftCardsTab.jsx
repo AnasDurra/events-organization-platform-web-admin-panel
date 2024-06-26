@@ -12,6 +12,7 @@ import { Spoiler } from 'spoiled';
 import { downloadCardsAsCSV } from './exportAsCSV';
 import { useGetGiftCardsQuery, usePrintGiftCardsStreamMutation } from './giftcardsSlice';
 import { URL } from '../../api/constants';
+import LoadingScreen from './LoadingScreen';
 
 dayjs.extend(isBetween);
 
@@ -46,6 +47,8 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
         } catch (error) {
             message.destroy();
             message.error('Failed to download your giftcards, try again later');
+            setLoading(false);
+            setProgress(0);
         }
     };
     const handlePrintGrid = () => {
@@ -74,6 +77,8 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                     }
                 } else {
                     message.error('Failed to prepare your cards, try again later');
+                    setLoading(false);
+                    setProgress(0);
                 }
             },
         })
@@ -82,6 +87,8 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
             .catch((e) => {
                 console.log(e);
                 message.error('Failed to print giftcards, try again later.');
+                setLoading(false);
+                setProgress(0);
             });
 
         /*  setLoading(true);
@@ -346,7 +353,12 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                 })}
             </div>
 
-            {loading && (
+            <LoadingScreen
+                loading={loading}
+                progress={progress}
+                initialMessage={['hi']}
+            ></LoadingScreen>
+            {/*     {loading && (
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
                     <div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-lg text-center'>
                         <div className='mb-4 text-xl font-semibold text-gray-700'>
@@ -364,7 +376,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                         />
                     </div>
                 </div>
-            )}
+            )} */}
             <Table
                 rowSelection={rowSelection}
                 dataSource={filteredData}

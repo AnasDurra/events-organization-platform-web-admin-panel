@@ -10,7 +10,7 @@ import {
     useGetVariantsQuery,
 } from './giftcardsSlice';
 
-export default function NewGiftCardsModal({ isOpen, onClose, onFinish, defaultIsExistingCollection = true }) {
+export default function NewGiftCardsModal({ isOpen, onClose, onFinish, loading, defaultIsExistingCollection = true }) {
     const [isExistingCollection, setIsExistingCollection] = useState(defaultIsExistingCollection);
 
     const { data: { result: variants } = { result: [] }, isLoading: isVariantsLoading } = useGetVariantsQuery();
@@ -44,6 +44,7 @@ export default function NewGiftCardsModal({ isOpen, onClose, onFinish, defaultIs
                     <Button
                         type='primary'
                         onClick={() => form.submit()}
+                        loading={loading}
                     >
                         Confirm
                     </Button>

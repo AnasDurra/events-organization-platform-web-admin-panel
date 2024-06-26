@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import { Spin } from 'antd';
+import React from 'react';
+import { useGetVariantsQuery } from '../giftcardsSlice';
 import CollectionCard from './CollectionCard';
 import NewCollectionCard from './NewCollectionCard';
-import NewGiftCardsModal from '../NewGiftCardsModal';
-import { useCreateVariantMutation, useGenerateGiftCardsMutation, useGetVariantsQuery } from '../giftcardsSlice';
-import { Spin, message } from 'antd';
-import { Loading3QuartersOutlined } from '@ant-design/icons';
 
 export default function CollectionsTab({ onGenerateCards, showCollection }) {
     const { data: { result: variants } = { result: [] }, isLoading: isVariantsLoading } = useGetVariantsQuery();
