@@ -10,6 +10,7 @@ import {
 
 import dayjs from 'dayjs';
 import { useNotification } from '../../utils/useAntNotification';
+import { URL } from '../../api/constants';
 
 const data = [
     {
@@ -94,11 +95,17 @@ export default function FeaturedEventsPage() {
             title: 'Organization',
             dataIndex: ['event', 'organization'],
             align: 'center',
-            width: '20%',
+            width: '30%',
             render: (org, record, index) => {
                 return (
                     <div className='flex w-full justify-start items-center'>
-                        <Avatar className='ml-4 mx-6' />
+                        <div className='w-[40%] aspect-square'>
+                            <Avatar
+                                size={'large'}
+                                src={`${URL}/organization/mainPicture/${org.main_picture}`}
+                            />
+                        </div>
+
                         {org.name}
                     </div>
                 );
@@ -234,7 +241,7 @@ export default function FeaturedEventsPage() {
                         >
                             New
                         </Button>
-                      {/*   <Button
+                        {/*   <Button
                             type='dashed'
                             onClick={() => {}}
                         >

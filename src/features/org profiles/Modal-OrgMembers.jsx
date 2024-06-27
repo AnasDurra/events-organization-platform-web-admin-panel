@@ -28,7 +28,7 @@ export default function OrgMembersModal({ org, isOpen, onClose }) {
                             avatar={
                                 <Avatar
                                     size={'large'}
-                                    src={URL + 'employee/profileImage/' + emp.profile_picture}
+                                    src={URL + '/employee/profileImage/' + emp.profile_picture}
                                 />
                             }
                             title={emp.first_name + ' ' + emp.last_name}

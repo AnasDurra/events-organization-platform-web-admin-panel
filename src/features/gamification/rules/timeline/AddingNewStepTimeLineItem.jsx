@@ -108,7 +108,7 @@ export default function AddingNewStepTimeLineItem({ availableTriggers, definedDa
                             </Select>
 
                             <InputNumber
-                                min={currentCondition?.id == 1 ? 1 : undefined}
+                                min={currentCondition?.operator?.id == 1 ? 1 : undefined}
                                 value={currentConditionValue}
                                 onChange={setCurrenConditionValue}
                             ></InputNumber>

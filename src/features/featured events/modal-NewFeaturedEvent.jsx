@@ -47,8 +47,8 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel, isAd
                     span: 16,
                 }}
                 onFinish={(fields) => {
-                    form.resetFields();
                     onFinish(fields);
+                    form.resetFields();
                 }}
                 autoComplete='off'
                 labelAlign='left'
@@ -145,7 +145,7 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel, isAd
                     <DatePicker.RangePicker
                         className='w-full'
                         disabledDate={(current) => current < dayjs().startOf('day')}
-                    />{' '}
+                    />
                 </Form.Item>
 
                 <Form.Item className='flex justify-end'>

@@ -13,14 +13,8 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
     };
 
     useEffect(() => {
-        if (isOpen) {
-            form.setFieldsValue({
-                trigger: trigger?.id,
-                condition: step?.condition?.id,
-                value:step?.value
-            });
-        }
-    }, [isOpen]);
+        form.resetFields();
+    }, [step]);
 
     return (
         <Modal
@@ -30,6 +24,7 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
             onOk={() => {
                 form.submit();
             }}
+            destroyOnClose={true}
         >
             {console.log('trigger: ', trigger)}
             <Form
@@ -43,6 +38,7 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     name='trigger'
                     label='Trigger'
                     rules={[{ required: true, message: 'Please select a trigger' }]}
+                    initialValue={trigger?.id}
                 >
                     <Select
                         placeholder='Select Trigger'
@@ -60,16 +56,24 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     name='condition'
                     label='Condition'
                     rules={[{ required: true, message: 'Please select a condition' }]}
+                    initialValue={step?.condition?.id}
                 >
-                    <Select placeholder='Select Condition'>
-                        {trigger?.operators?.map((condition, index) => (
+                    <Select
+                        placeholder='Select Condition'
+                        options={trigger?.operators?.map((condition, index) => ({
+                            label: condition.operator?.name,
+                            value: condition?.id,
+                            key: condition.id + '$condition',
+                        }))}
+                    >
+                        {/*   {trigger?.operators?.map((condition, index) => (
                             <Select.Option
                                 key={condition.id + '$condition'}
                                 value={condition?.id}
                             >
                                 {condition?.operator?.name}
                             </Select.Option>
-                        ))}
+                        ))} */}
                     </Select>
                 </Form.Item>
 
@@ -77,8 +81,8 @@ export default function EditStepModal({ step, isOpen, onCancel, onFinish, trigge
                     name='value'
                     label='Value'
                     dependencies={['condition']}
+                    initialValue={step?.value}
                     rules={[{ required: true, message: 'Please enter a value' }, { validator: validateValue }]}
-                   
                 >
                     <InputNumber
                         className='w-full'
