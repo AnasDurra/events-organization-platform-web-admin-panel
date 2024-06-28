@@ -6,7 +6,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import { Button, ConfigProvider, Divider, Input, Space, Tooltip, message } from 'antd';
+import { Button, ConfigProvider, Divider, Input, Space, Switch, Tooltip, message } from 'antd';
 import * as React from 'react';
 import { useState } from 'react';
 import { BsGift } from 'react-icons/bs';
@@ -64,6 +64,7 @@ export default function NewRulePage() {
     const [badges, setBadges] = useState([]);
     const [points, setPoints] = useState([]);
     const [title, setTitle] = useState(null);
+    const [isRecurring, setIsRecurring] = useState(false);
     const [CurrentModalTrigger, setCurrentModalTrigger] = useState(null);
 
     const [isAddingStep, setIsAddingStep] = useState(false);
@@ -99,6 +100,8 @@ export default function NewRulePage() {
     const handleFinish = () => {
         const rule = {
             name: title,
+            recurring: isRecurring,
+
             conditions: steps.map((step) => ({
                 defined_data_id: parseInt(step.condition.defined_data_id),
                 operator_id: parseInt(step.condition.operator_id),
@@ -126,7 +129,8 @@ export default function NewRulePage() {
     const isFinishDisabled =
         steps.length == 0 ||
         badges.length + points.length == 0 ||
-        !steps.some((step) => step.condition.operator_id == '1');
+        !steps.some((step) => step.condition.operator_id == '1') ||
+        !title;
 
     return (
         <div className='grid grid-cols-12'>
@@ -136,24 +140,34 @@ export default function NewRulePage() {
                 className='ml-[2.5svw]'
                 onClick={() => navigate(-1)}
             />
-            {console.log("poo: ",points)}
+            {console.log('poo: ', points)}
             <div className='col-start-2 col-span-10'>
                 <Timeline>
                     {/* Triggers & Conditions */}
                     <div className='flex justify-between items-center mb-2 space-x-2'>
-                        <Space.Compact>
-                            <Input
-                                variant='outlined'
-                                className='min-w-40'
-                                placeholder='Rule Title'
-                                rootClassName='text-center'
-                                prefix={<MdOutlineTitle className='text-gray-500' />}
-                                value={title}
-                                onChange={(e) => {
-                                    setTitle(e.target.value);
-                                }}
-                            />
-                        </Space.Compact>
+                        <div className='flex items-center space-x-4'>
+                            <Space.Compact>
+                                <Input
+                                    variant='outlined'
+                                    className='min-w-40'
+                                    placeholder='Rule Title'
+                                    rootClassName='text-center'
+                                    prefix={<MdOutlineTitle className='text-gray-500' />}
+                                    value={title}
+                                    onChange={(e) => {
+                                        setTitle(e.target.value);
+                                    }}
+                                />
+                            </Space.Compact>
+                            <Switch
+                                checked={!isRecurring}
+                                onChange={(checked) => setIsRecurring(!checked)}
+                                checkedChildren='one time rewards'
+                                unCheckedChildren='one time rewards'
+                            >
+                                on time rewards
+                            </Switch>
+                        </div>
                         <Tooltip
                             title={
                                 isFinishDisabled
