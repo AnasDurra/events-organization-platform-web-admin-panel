@@ -12,6 +12,7 @@ export const apiSlice = createApi({
             if (token) {
                 headers.set('authorization', `Bearer ${token}`);
             }
+            headers.set('ngrok-skip-browser-warning', true); // TODO: Delete this
             return headers;
         },
     }),
@@ -29,7 +30,7 @@ export const apiSlice = createApi({
         'prizes',
         'withdraws',
         'giftcards',
-        'giftcards-variants'
+        'giftcards-variants',
     ],
     endpoints: () => ({}),
 });
