@@ -101,7 +101,7 @@ export default function ViewAllRules() {
             title: 'created',
             dataIndex: 'createdAt',
             key: 'name',
-            width: '20%',
+            width: '10%',
             render: (date) => dayjs(date).format('YYYY/MM/DD | HH:mm'),
         },
         {
@@ -124,7 +124,7 @@ export default function ViewAllRules() {
             width: '30%',
             render: (conditions) => {
                 return (
-                    <div className='text-pretty text-left text-sm flex flex-col justify-center items-start'>
+                    <div className='text-pretty text-[0.75rem] text-left text-sm flex flex-col justify-center items-start'>
                         {conditions.map((condition, index) => (
                             <span key={index}>{`🔘
      ${condition.definedData.name} ${condition.operator.name} ${condition.value}`}</span>
@@ -137,22 +137,50 @@ export default function ViewAllRules() {
             title: 'Rewards',
             dataIndex: 'rewards',
             key: 'rewards',
-            width: '40%',
+            width: '30%',
             render: (rewards) => {
                 return (
-                    <div className='flex  space-x-1'>
-                        {console.log('rewa:',rewards)}
-                        {rewards.map((reward, index) => (
-                            <img
-                                key={index}
-                                src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
-                                className='w-[3.5em]'
-                                alt={reward.name}
-                            />
-                        ))}
+                    <div className='flex  space-x-1 items-center '>
+                        {console.log('rewa:', rewards)}
+                        {rewards.map((reward, index) => {
+                            if (reward.type_id == '1') {
+                                return (
+                                    <img
+                                        key={reward.id}
+                                        src={`/static/images/points-rp.svg`}
+                                        className='w-[1.8rem]'
+                                    ></img>
+                                );
+                            } else if (reward.type_id == '2') {
+                                return (
+                                    <img
+                                        key={index}
+                                        src={`data:image/svg+xml;utf8,${encodeURIComponent(reward?.badge?.shape?.svg)}`}
+                                        className='w-[1.8rem] -mt-2'
+                                        alt={reward.name}
+                                    />
+                                );
+                            } else if (reward.type_id == '3') {
+                                return (
+                                    <img
+                                        key={reward.id}
+                                        src={`/static/images/game-point.svg`}
+                                        className='w-[1.6rem]'
+                                    ></img>
+                                );
+                            } else return <></>;
+                        })}
                     </div>
                 );
             },
+        },
+        {
+            title: 'One time rewards',
+            dataIndex: 'recurring',
+            key: 'activation',
+            align: 'center',
+            width: '20%',
+            render: (val) => <span className='flex justify-center items-center'>{!val ? '✅ ' : '❌ '}</span>,
         },
         {
             title: 'Active',
@@ -166,7 +194,7 @@ export default function ViewAllRules() {
             title: 'Action',
             key: 'action',
             align: 'center',
-
+            width: '20%',
             render: (_, record) => (
                 <Space
                     size='middle'
@@ -178,6 +206,13 @@ export default function ViewAllRules() {
                         }}
                     >
                         {record.enabled ? 'Deactivate' : 'Activate'}
+                    </a>
+                    <a
+                        onClick={() => {
+                            updateRule({ rule_id: record.id, recurring: !record.recurring });
+                        }}
+                    >
+                        {record.recurring ? 'Make rewards one time' : 'disable one time rewards'}
                     </a>
                 </Space>
             ),

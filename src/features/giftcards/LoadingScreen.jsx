@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Progress } from 'antd';
 
-const LoadingScreen = ({ loading, progress, initialMessage }) => {
+const LoadingScreen = ({ loading, progress,  }) => {
     const [messageIndex, setMessageIndex] = useState(0);
-    const [message, setMessage] = useState(initialMessage);
+    const [message, setMessage] = useState();
 
-    const messages = [`${message}, please wait...`, `${message}, almost there...`, `${message}, hang tight...`];
+    const messages = [`please wait...`,`don't close the page`, `almost there...`, `hang tight...`];
 
     useEffect(() => {
         if (loading) {
             const interval = setInterval(() => {
                 setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
-            }, 2000); 
+            }, 3000); 
 
             return () => clearInterval(interval);
         }
