@@ -9,10 +9,7 @@ const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
     const [form] = Form.useForm();
     return (
-        <Form
-            form={form}
-            component={false}
-        >
+        <Form form={form} component={false}>
             <EditableContext.Provider value={form}>
                 <tr {...props} />
             </EditableContext.Provider>
@@ -61,17 +58,10 @@ const EditableCell = ({ title, editable, children, dataIndex, record, handleSave
                     },
                 ]}
             >
-                <Input
-                    ref={inputRef}
-                    onPressEnter={save}
-                    onBlur={save}
-                />
+                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
             </Form.Item>
         ) : (
-            <div
-                className='editable-cell-value-wrap'
-                onClick={toggleEdit}
-            >
+            <div className='editable-cell-value-wrap' onClick={toggleEdit}>
                 {children}
             </div>
         );
@@ -110,12 +100,7 @@ export default function ViewAllRules() {
             key: 'name',
             editable: true,
             width: '20%',
-            render: (text) => (
-                <Input
-                    variant='filled'
-                    value={text}
-                ></Input>
-            ),
+            render: (text) => <Input variant='filled' value={text}></Input>,
         },
         {
             title: 'Requirements',
@@ -140,16 +125,15 @@ export default function ViewAllRules() {
             width: '30%',
             render: (rewards) => {
                 return (
-                    <div className='flex  space-x-1 items-center '>
+                    <div className='flex  space-x-1 items-center flex-col justify-center  '>
                         {console.log('rewa:', rewards)}
                         {rewards.map((reward, index) => {
                             if (reward.type_id == '1') {
                                 return (
-                                    <img
-                                        key={reward.id}
-                                        src={`/static/images/points-rp.svg`}
-                                        className='w-[1.8rem]'
-                                    ></img>
+                                    <div className='flex items-center space-x-2' key={reward.id}>
+                                        <img src={`/static/images/points-rp.svg`} className='w-[1.8rem]'></img>
+                                        <div> {reward.points?.value}</div>
+                                    </div>
                                 );
                             } else if (reward.type_id == '2') {
                                 return (
@@ -162,11 +146,14 @@ export default function ViewAllRules() {
                                 );
                             } else if (reward.type_id == '3') {
                                 return (
-                                    <img
-                                        key={reward.id}
-                                        src={`/static/images/game-point.svg`}
-                                        className='w-[1.6rem]'
-                                    ></img>
+                                    <div className='flex items-center space-x-2' key={reward.id}>
+                                        <img
+                                            key={reward.id}
+                                            src={`/static/images/game-point.svg`}
+                                            className='w-[1.6rem]'
+                                        ></img>{' '}
+                                        <div> {reward.rp?.value}</div>
+                                    </div>
                                 );
                             } else return <></>;
                         })}
@@ -196,10 +183,7 @@ export default function ViewAllRules() {
             align: 'center',
             width: '20%',
             render: (_, record) => (
-                <Space
-                    size='middle'
-                    align='center'
-                >
+                <Space size='middle' align='center'>
                     <a
                         onClick={() => {
                             updateRule({ rule_id: record.id, enabled: !record.enabled });

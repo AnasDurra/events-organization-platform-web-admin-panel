@@ -1,7 +1,21 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from 'react';
-import { Table, Tag, Dropdown, Menu, Modal, Button, Avatar, Typography, Space, Divider, Spin } from 'antd';
+import {
+    Table,
+    Tag,
+    Dropdown,
+    Menu,
+    Modal,
+    Button,
+    Avatar,
+    Typography,
+    Space,
+    Divider,
+    Spin,
+    Descriptions,
+    Popover,
+} from 'antd';
 import moment from 'moment';
 
 import { Icon } from '@iconify/react';
@@ -35,8 +49,9 @@ const ReportsPage = () => {
         refetch(currentPage, pageSize);
     };
 
-    const showModal = (id, type, message, description, event, status, date, isDisabled) => {
-        setModalContent({ id, type, message, description, event, status, date, isDisabled });
+    const showModal = (id, type, message, description, event, status, date, resolved_at, resolved_by, isDisabled) => {
+        console.log(resolved_at);
+        setModalContent({ id, type, message, description, event, status, date, resolved_at, resolved_by, isDisabled });
         setIsModalVisible(true);
     };
 
@@ -141,6 +156,8 @@ const ReportsPage = () => {
                         record?.event,
                         record?.status,
                         record?.date,
+                        record?.resolved_at,
+                        record?.resolved_by,
                         isDisabled
                     )
                 }
@@ -348,6 +365,43 @@ const ReportsPage = () => {
                                 >
                                     {modalContent?.status}
                                 </Tag>
+                            </div>
+                        )}
+                        {console.log(modalContent?.resolved_at)}
+                        {modalContent?.resolved_at && (
+                            <div style={{ marginBottom: '2.5em' }}>
+                                <Descriptions title='Resolution Details' bordered column={1}>
+                                    <Descriptions.Item label='Resolved By'>
+                                        <Popover
+                                            content={
+                                                <Descriptions size='small' column={1} bordered>
+                                                    <Descriptions.Item label='Name'>
+                                                        {modalContent?.resolved_by?.employee?.first_name}{' '}
+                                                        {modalContent?.resolved_by?.employee?.last_name}
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item label='Email'>
+                                                        {modalContent?.resolved_by?.user_email}
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item label='Phone'>
+                                                        {modalContent?.resolved_by?.employee?.phone_number}
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item label='Role'>
+                                                        {modalContent?.resolved_by?.user_role?.role_name}
+                                                    </Descriptions.Item>
+                                                </Descriptions>
+                                            }
+                                            title='Employee Info'
+                                            trigger='hover'
+                                        >
+                                            <span style={{ cursor: 'pointer', color: '#1890ff' }}>
+                                                @{modalContent?.resolved_by?.username}
+                                            </span>
+                                        </Popover>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label='Resolved At'>
+                                        {moment(modalContent?.resolved_at).format('dddd, MMMM Do YYYY, h:mm A')}
+                                    </Descriptions.Item>
+                                </Descriptions>
                             </div>
                         )}
                     </Space>
