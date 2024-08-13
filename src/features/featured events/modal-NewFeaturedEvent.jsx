@@ -109,9 +109,7 @@ export default function NewFeaturedEventModal({ isOpen, onFinish, onCancel, isAd
                                     </Typography.Text>
                                 </div>
 
-                                <Typography.Text type='secondary'>
-                                    {option.data?.obj?.event_description}
-                                </Typography.Text>
+                               
                             </div>
                         )}
                     />
