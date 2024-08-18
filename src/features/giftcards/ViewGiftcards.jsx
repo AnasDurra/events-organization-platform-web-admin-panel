@@ -114,6 +114,7 @@ export default function ViewGiftcards() {
                             setActiveTabKey(key);
                         }}
                         items={items}
+                        size='small'
                     />
                 </div>
             </div>

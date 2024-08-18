@@ -72,6 +72,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                         setLoading(false);
 
                         downloadGiftCards(chunk.fileName);
+                        setSelectedRowKeys(null);
                     } else if (chunk.ack == 'In Progress') {
                         setProgress(chunk.progress);
                     }
@@ -156,12 +157,54 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
         setFilteredInfo(newFilters);
     };
 
-    const filteredData = searchDate.length
+    /* const filteredData = searchDate.length
         ? [...giftcards.map((card) => ({ ...card, key: card.id }))].filter((item) => {
               const itemDate = dayjs(item.createdAt);
               return itemDate.isBetween(searchDate[0], searchDate[1], 'day', '[]');
           })
-        : [...giftcards.map((card) => ({ ...card, key: card.id }))];
+        : [...giftcards.map((card) => ({ ...card, key: card.id }))]; */
+
+    const filteredData = giftcards
+        .map((card) => ({ ...card, key: card.id })) // Add keys to the cards
+        .filter((item) => {
+            if (filteredInfo.date && filteredInfo.date.length === 2) {
+                const itemDate = dayjs(item.createdAt);
+                const [startDate, endDate] = filteredInfo.date;
+                if (!itemDate.isBetween(startDate, endDate, 'day', '[]')) {
+                    return false;
+                }
+            }
+
+            if (filteredInfo.price && filteredInfo.price.length > 0) {
+                if (!filteredInfo.price.includes(item.variant.price)) {
+                    return false;
+                }
+            }
+
+            if (filteredInfo.status && filteredInfo.status.length > 0) {
+                const isAvailable = !item.redeemed;
+                if (
+                    (filteredInfo.status.includes('Available') && !isAvailable) ||
+                    (filteredInfo.status.includes('Redeemed') && isAvailable)
+                ) {
+                    return false;
+                }
+            }
+
+            if (filteredInfo.collection && filteredInfo.collection.length > 0) {
+                if (!filteredInfo.collection.includes(item.variant.label)) {
+                    return false;
+                }
+            }
+
+            if (filteredInfo.tickets && filteredInfo.tickets.length > 0) {
+                if (!filteredInfo.tickets.includes(item.variant.tickets)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
 
     const handleExportCSV = () => {
         downloadCardsAsCSV({ selectedRowKeys, cards: filteredData });
@@ -267,9 +310,15 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
             dataIndex: ['variant', 'label'],
             key: 'collection',
             filters: getLabelFilters(filteredData),
-            onFilter: (value, record) => record.variant.label === value,
+            onFilter: (value, record) => {
+                console.log('record: ', record);
+                console.log('value: ', value);
+                console.log('fii: ', filteredInfo);
+                console.log(record.variant.label == value);
+                return record.variant.label == value;
+            },
             filterIcon: () => <FilterOutlined className='text-white' />,
-            filteredValue: filteredInfo.label || null,
+            filteredValue: filteredInfo.collection || null,
         },
         {
             title: 'Actions',
@@ -294,7 +343,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                 </Button>
                 {console.log(filteredInfo)}
                 <div className='flex items-center justify-end space-x-4'>
-                    {selectedRowKeys.length !== 0 && (
+                    {selectedRowKeys && selectedRowKeys.length > 0 && (
                         <div
                             onClick={() => setSelectedRowKeys([])}
                             className='hover:cursor-pointer hover:text-white rounded-lg bg-primary/70 text-white p-2 flex justify-center items-center space-x-2'
@@ -382,6 +431,7 @@ export default function GiftCardsTab({ defaultFilters = {}, onGenerateCards }) {
                 columns={columns}
                 pagination={{ pageSizeOptions: [10, 20, 50, 100], showSizeChanger: true }}
                 onChange={(pagination, filters) => {
+                    console.log('aug: ', filters);
                     setFilteredInfo(filters);
                 }}
                 size='small'
