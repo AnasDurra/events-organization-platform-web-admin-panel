@@ -205,7 +205,7 @@ export default function ViewTransactionsPage() {
                     rowClassName={(record, index) => (index % 2 === 0 ? '' : 'bg-gray-50')}
                     columns={columns2}
                     //TODO check if it's working fine
-                    dataSource={[...ticketsUsage, ...fakeData]}
+                    dataSource={[...ticketsUsage]}
                     size='small'
                     showHeader={true}
                     loading={isTicketsUsageLoading}
