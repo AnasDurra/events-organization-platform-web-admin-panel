@@ -5,7 +5,7 @@ import { MdAdminPanelSettings } from "react-icons/md";
 import { useLoginMutation } from "../services/authSlice";
 import { useNotification } from "../utils/useAntNotification";
 import { useNavigate } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 const { useToken } = theme;
 
 export default function LoginPage() {
